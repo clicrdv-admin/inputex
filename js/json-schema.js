@@ -47,7 +47,7 @@ inputEx.JsonSchema = {
          }
          else if(YAHOO.lang.isObject(type) ) {
             // What do we do ??
-            console.log("type is an object !!");
+            //console.log("type is an object !!");
          }
          
          fieldDef.type = type;

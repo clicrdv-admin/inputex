@@ -12,7 +12,7 @@ Release Notes:
 version 0.2.0:
 --------------
 
-released on October 26th 2008
+released on November 1st 2008
 
 	- Added fields:
 	 	* RadioField

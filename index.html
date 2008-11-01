@@ -52,13 +52,13 @@
 		text-decoration: underline;
 	}
 
-	#layout {
+	.layout {
 		width: 70%;
 	}
 
-	#layout td.left { width: 55%;}
-	#layout td.right { width: 45%;}
-	#layout td.left, #layout td.right {
+	.layout td.left { width: 55%;}
+	.layout td.right { width: 45%;}
+	.layout td.left, .layout td.right {
 		padding: 15px 30px;
 		vertical-align: top;
 	}
@@ -126,14 +126,14 @@
 </div>
 	
 <center>
-<table id="layout">
+<table class="layout">
 	<tr>
 		<td class="left">
 			
 		 <p class="title">About</p>
 		 <p>&nbsp;&nbsp;&nbsp;inputEx is a javascript framework to <strong>build fields and forms.</strong></p>
 		
-		 <p>&nbsp;&nbsp;&nbsp;It uses <strong>no html</strong> (it is the opposite of unobtrusive librairies): All the fields and forms are configured <strong>using <a href="http://json.org/">json</a></strong>. It provides a very efficient abstraction for building <strong>interactive web applications</strong>. For detailed informations, have a look at our <a href="doc/js_docs_out/index.html">complete documentation</a>.</p>
+		 <p>&nbsp;&nbsp;&nbsp;It <strong>doesn't use html</strong> (it is the opposite of unobtrusive librairies): All the fields and forms are configured <strong>using <a href="http://json.org/">json</a></strong>. It provides a very efficient abstraction for building <strong>interactive web applications</strong>. For detailed informations, have a look at our <a href="doc/js_docs_out/index.html">complete documentation</a>.</p>
 
 		 <p>&nbsp;&nbsp;&nbsp;It is built on top of the <a href="http://developer.yahoo.com/yui/">YUI library</a> (2.6.0) and currently supports Firefox 1.5+, Safari 2.0+, IE 7.0+, Chrome 0.2+ and Opera 9+. Please report your specific browser issues in <a href="http://groups.google.com/group/inputex/">the forum</a>.</p>		
 		
@@ -155,13 +155,18 @@
 		<!-- Right Column -->
 		<td class="right">
 			
-			<!-- License -->
-			<p class="title">License</p>
-			<p>&nbsp;&nbsp;&nbsp;inputEx is released under the <a href="license.txt">MIT License</a> and available for <a href="http://code.google.com/p/inputex/downloads/list">download</a> at <a href="http://code.google.com/p/inputex/">GoogleCode</a>.</p>
-
+			<!-- Updates changeset -->
+			<p class="title">Download</p>
+			<p style="text-align:center;font-weight:bold; font-size:15px;"><a href="http://inputex.googlecode.com/files/inputex-0.2.0.zip">Download latest version - 0.2.0</a><br/><span style="font-size: 70%; font-weight: normal;">(inputex-0.2.0.zip - 3.2MB)</span></p>
+			<p>
+				<ul class="starlist">
+					<li><a href="http://inputex.googlecode.com/files/inputex-0.2.0.zip">Version 0.2.0</a> (2008-11-01): Huge release <a href="version.txt">changeset</a>.</li>
+					<li><a href="http://inputex.googlecode.com/files/inputex-0.1.0.zip">Version 0.1.0</a> (2008-05-07): Initial release.</li>
+				</ul>
+			</p>
 			
+			<!-- Documentation -->
 		 <p class="title">Documentation</p>
-
 		 <p>Here are some <b>starting points</b> for our documentation :</p>
 			<ul class="starlist">
 				<li><a href="doc/js_docs_out/index.html">inputEx documentation</a> - built with <a href="http://jsdoctoolkit.org/">JsDoc Toolkit</a></li>
@@ -169,20 +174,32 @@
 				<li><a href="doc/js_docs_out/overview.html">Overview</a> - a quick tour of inputEx</li>
 			</ul>
 			
+			<!-- License -->
+			<p class="title">License</p>
+			<p>&nbsp;&nbsp;&nbsp;inputEx is released under the <a href="license.txt">MIT License</a> and available for <a href="http://code.google.com/p/inputex/downloads/list">download</a> at <a href="http://code.google.com/p/inputex/">GoogleCode</a>.</p>
+
 			
-			<!-- Updates changeset -->
-			<p class="title">Download</p>
-			<p style="text-align:center;font-weight:bold; font-size:15px;"><a href="http://inputex.googlecode.com/files/inputex-0.2.0.zip">Download latest zip (version 0.2.0)</a></p>
-			<p>
-				<ul class="starlist">
-					<li><a href="http://inputex.googlecode.com/files/inputex-0.2.0.zip">Version 0.2.0</a> (2008-10-26): Huge release <a href="version.txt">changeset</a>.</li>
-					<li><a href="http://inputex.googlecode.com/files/inputex-0.1.0.zip">Version 0.1.0</a> (2008-05-07): Initial release.</li>
-				</ul>
-			</p>
+			
 			
 		</td>
 	</tr>
 </table>
+
+
+<!-- Yahoo Pipes badges for blog and forums-->
+<table class="layout">
+	<tr>
+		<td class="left">
+			<p class="title">Community</p>
+			<script src="http://pipes.yahoo.com/js/listbadge.js">{"pipe_id":"GlaqLSao3RGnzLcb_w6H4A","_btype":"list"}</script>
+		</td>
+		<td class="right">
+			<p class="title">&nbsp;</p>
+			<script src="http://pipes.yahoo.com/js/listbadge.js">{"pipe_id":"MLjSkiWo3RGCrSpGBR50VA","_btype":"list"}</script>
+		</td>
+	</tr>
+</table>
+
 <p style="font-size: 8pt;">Copyright (c) 2007-2008 <a href="http://javascript.neyric.com/">Eric Abouaf</a> - <a href="inputEx-doap.xml">XML doap file for this project</a></p>
 </center>
 
