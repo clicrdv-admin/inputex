@@ -1,0 +1,94 @@
+<style>
+#doc3 .page h3 {
+	margin: 10px 0px;
+}
+</style>
+<h2>Getting started</h2>
+
+
+<h3>Installation into your project</h3>
+
+<p>As usual, you will have to copy the javascript, images and css files into your project directory.</p>
+	
+	<ul>
+		<li><a href="http://code.google.com/p/inputex/downloads/list" target="_new">Download</a> the latest inputEx zip file</li>
+		<li>Copy the <i>js,css,images</i> directories into your project corresponding directories</li>
+	</ul>
+	
+	
+<h3>Add inputEx to your page</h3>
+	
+<p>3 ways of doing this :</p>
+	
+	<ul>
+		<li>Using the YUI loader, include the inputEx loader (see <a href="../../examples/yuiloader.html">Using YUI loader</a> for requesting modules)
+			<form><textarea name="code" class="JScript">
+				<!-- YUI loader-->	
+				<script src="http://yui.yahooapis.com/2.6.0/build/yuiloader/yuiloader-min.js"></script> 
+				<!-- inputEx loader -->
+				<script src="../js/inputex-loader.js"></script>
+			</textarea></form>
+		</li>
+		
+		<li>Insert the script and CSS into your page : (inputEx+YUI)
+			<form><textarea name="code" class="JScript">
+			
+				<!-- YUI utilities -->
+				<script src="http://yui.yahooapis.com/2.6.0/build/utilities/utilities.js" type="text/javascript"></script>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/reset-fonts/reset-fonts.css" />
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/assets/skins/sam/skin.css" />
+				... and other yui dependencies...
+				
+				<!-- inputEx -->
+				<link  href="inputex/css/inputEx.css" rel="stylesheet" type="text/css" />
+				<script src="inputex/js/inputex.js" type="text/javascript"></script>
+				<script src="inputex/js/Field.js" type="text/javascript"></script>
+				<script src="inputex/js/Group.js" type="text/javascript"></script>
+				<script src="inputex/js/Form.js" type="text/javascript"></script>
+				<script src="inputex/js/fields/StringField.js" type="text/javascript"></script>
+				<script src="inputex/js/fields/CheckBox.js" type="text/javascript"></script>
+				... and the other fields you need ...
+				
+			</textarea></form>
+		</li>
+		
+		<li>Use the minified files :
+			<form><textarea name="code" class="JScript">
+			
+				<!-- YUI utilities -->
+				<script src="http://yui.yahooapis.com/2.6.0/build/utilities/utilities.js" type="text/javascript"></script>
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/reset-fonts/reset-fonts.css" />
+				<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/assets/skins/sam/skin.css" />
+				... and other yui dependencies...
+				
+				<!-- inputEx minified files -->
+				<script src="inputex/build/inputex-min.js" type="text/javascript"></script>
+				<link  href="inputex/build/inputex-min.css" rel="stylesheet" type="text/css" />
+				
+			</textarea></form>
+		</li>
+	</ul>
+	
+<h3>Basic example</h3>
+		
+	<ul>
+		<li>Create a DOM element that will contain your form: 
+			<form><textarea name="code" class="JScript">
+					<div id='myFormContainer'></div>
+			</textarea></form>
+		</li>
+		<li>Create a basic form after loading:
+			<form><textarea name="code" class="JScript">
+				YAHOO.util.Event.addListener(window, "load", function(){
+					new inputEx.Form({
+						parentEl: 'myFormContainer',
+						fields: [],
+						buttons: []
+					});
+				});
+			</textarea></form>
+		</li>
+	</ul>
+
+
+	
