@@ -5,3 +5,55 @@ what it is intended to cover.
 1. inputEx.cn
     YUI3 has a create node API, e.g.
         Y.Node.create('<div id="abc">content</div>')
+
+2. Use of Logger
+  - log level:
+        error   use in try-catch
+        warn
+        info    when to use info log?
+        debug   when to use debug log?
+
+  - use 'inputEx' as namespace
+
+  - use JSON.stringify to show full information about an object
+    Y.JSON.stringify(this)
+
+  - include the method name in the log
+    - JavaScript doesn't provide stacktrace, and line number that associate with a log message is not necessarily available
+        e.g.
+        Y.log('initializer() - ' + this + ' is initialized', 'debug', 'inputEx');
+
+  - use FF3 console or trigger a Logview with a bookmarklet to avoid include logviewer code in the page.
+
+3. base
+    - base has a 'name' attribute by default.
+
+4. Attribute
+    - set at: Field.ATTRS
+    - support default value, validation,
+    - read: http://developer.yahoo.com/yui/3/attribute/
+
+5. Event
+    - at constructor: this.publish("CustomObject:testEvent");
+    - use 'field:rendered', 'form:xxxEvent'   (see if we need 'group', 'group' is less commonly known concept)
+    - field0.on('rendered', function(args){} )
+    - this.fire('field:rendered')
+
+    - this.fire('field:updated', null, 'newVal', 'oldVal'); // use the null
+      to workaround http://sourceforge.net/tracker/index.php?func=detail&aid=2151030&group_id=165715&atid=836476
+
+6. Docs
+    - follow the standard at Field.js
+    - all attribute shall be docs
+    - if a description has nothing meaning, e.g. "this is a field", just skip the comment line, write sth meaningful
+
+General YUI/JavaScript notes:
+  - use doctype, YUI may behave differently with different doctype 
+    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+    see: http://tech.groups.yahoo.com/group/yui3/message/71
+
+To report to YUI3 team:
+  - [docs]  YUI.add() doc missed the required argument.
+     YUI add ( name , namespace , fn , version ) 
+

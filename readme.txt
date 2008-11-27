@@ -37,4 +37,9 @@ inputEx YUI3 development branch
         - the rendering mechanism
           it's preferable to look at the YUI3 PR2 widget in order to save development efforts
 
+  - The examples HTML in SVN will be made to be directly viewable
+
+TODO
+  - TBC split a /examples/yui3 for new examples  
+
 
