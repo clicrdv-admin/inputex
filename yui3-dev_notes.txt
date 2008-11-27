@@ -1,0 +1,7 @@
+this is a note page for highlighting important information about YUI3 for inputEx development. See the content for
+what it is intended to cover.
+
+
+1. inputEx.cn
+    YUI3 has a create node API, e.g.
+        Y.Node.create('<div id="abc">content</div>')
