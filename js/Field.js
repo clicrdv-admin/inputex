@@ -103,7 +103,7 @@
                     if (!Y.Lang.isUndefined(this.get('value')))
                         Y.log(this + '.set("value") - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     //TODO set value
-                    this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value')); 
+                    this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
                 }
             },
@@ -260,11 +260,43 @@
                 Y.log(this + '.renderComponent() - method should have been overidden!', 'warn', 'inputEx');
             },
 
+            displayMessage:function() {
+                /*if (!this.fieldContainer) { return; }
+                 if (!this.msgEl) {
+                 this.msgEl = inputEx.cn('div', {className: 'inputEx-message'});
+                 try {
+                 var divElements = this.divEl.getElementsByTagName('div')
+                 this.divEl.insertBefore(this.msgEl, divElements[(divElements.length - 1 >= 0) ? divElements.length - 1 : 0]); //insertBefore the clear:both div
+                 } catch(e) {alert(e)}
+                 }
+                 this.msgEl.innerHTML = msg;*/
+            },
+
             focus:function() {
                 this.get('el').focus();
                 return this;
             },
+            _onfocus:function() {
+                /*var el = this.getEl();
+                 Dom.removeClass(el, 'inputEx-empty');
+                 Dom.addClass(el, 'inputEx-focused');*/
 
+            },
+            _onblur:function() {
+                //Dom.removeClass(this.getEl(), 'inputEx-focused');
+
+                // Call setClassFromState on Blur
+                //this.setClassFromState();
+            },
+            show:function() {
+                this.get('el').setStyle('display', '')
+                return this;
+            },
+
+            hide:function() {
+                this.get('el').setStyle('display', 'none')
+                return this;
+            },
             enable:function() {
                 this.get('el').set('disabled', false);
                 return this;
@@ -277,7 +309,15 @@
 
             validate: function() {
                 return true;
-                return this;
+            },
+            /**
+             * Clear the field by setting the field value to this.options.value
+             * @param {boolean} [sendUpdatedEvt] (optional) Wether this clear should fire the updatedEvt or not (default is true, pass false to NOT send the event)
+             */
+            clear: function(sendUpdatedEvt) {
+                /* var disableFireEvent = !sendUpdatedEvt
+                 this.set('value', Y.Lang.isUndefined(this.get('value')) ? '' : )*/
+                //this.setValue(lang.isUndefined(this.options.value) ? '' : this.options.value, sendUpdatedEvt);
             },
 
             /**
@@ -288,7 +328,26 @@
                 return this.get('el');
             },
 
+            /**
+             * Convenient method for Y.Lang.isEmpty(field.get('value'))
+             */
+            isEmpty:function() {
+                return Y.Lang.isEmpty(this.get('value'));
+            },
+
             destructor : function() {
+                /*var el = this.getEl();
+
+                 // Unsubscribe all listeners on the updatedEvt
+                 this.updatedEvt.unsubscribeAll();
+
+                 // Remove from DOM
+                 if(Dom.inDocument(el)) {
+                 el.parentNode.removeChild(el);
+                 }
+
+                 // recursively purge element
+                 util.Event.purgeElement(el, true);*/
                 Y.log(this + 'destructor() - destroyed', 'debug', 'inputEx');
             }
         });
@@ -381,31 +440,6 @@
 
  */
 /**
- * Function called on the focus event
- * @param {Event} e The original 'focus' event
- */
-/*
- onFocus: function(e) {
- var el = this.getEl();
- Dom.removeClass(el, 'inputEx-empty');
- Dom.addClass(el, 'inputEx-focused');
- },
-
- */
-/**
- * Function called on the blur event
- * @param {Event} e The original 'blur' event
- */
-/*
- onBlur: function(e) {
- Dom.removeClass(this.getEl(), 'inputEx-focused');
-
- // Call setClassFromState on Blur
- this.setClassFromState();
- },
-
- */
-/**
  * onChange event handler
  * @param {Event} e The original 'change' event
  */
@@ -416,84 +450,4 @@
 
  close: function() {
  },
-
- /**
- * Disable the field
  */
-/**
- * Purge all event listeners and remove the component from the dom
- */
-/*
- destroy: function() {
- var el = this.getEl();
-
- // Unsubscribe all listeners on the updatedEvt
- this.updatedEvt.unsubscribeAll();
-
- // Remove from DOM
- if(Dom.inDocument(el)) {
- el.parentNode.removeChild(el);
- }
-
- // recursively purge element
- util.Event.purgeElement(el, true);
- },
-
- */
-/**
- * Update the message
- * @param {String} msg Message to display
- */
-/*
- displayMessage: function(msg) {
- if(!this.fieldContainer) { return; }
- if(!this.msgEl) {
- this.msgEl = inputEx.cn('div', {className: 'inputEx-message'});
- try{
- var divElements = this.divEl.getElementsByTagName('div')
- this.divEl.insertBefore(this.msgEl, divElements[(divElements.length-1>=0)?divElements.length-1:0]); //insertBefore the clear:both div
- }catch(e){alert(e)}
- }
- this.msgEl.innerHTML = msg;
- },
-
- */
-/**
- * Show the field
- */
-/*
- show: function() {
- this.divEl.style.display = '';
- },
-
- */
-/**
- * Hide the field
- */
-/*
- hide: function() {
- this.divEl.style.display = 'none';
- },
-
- */
-/**
- * Clear the field by setting the field value to this.options.value
- * @param {boolean} [sendUpdatedEvt] (optional) Wether this clear should fire the updatedEvt or not (default is true, pass false to NOT send the event)
- */
-/*
- clear: function(sendUpdatedEvt) {
- this.setValue(lang.isUndefined(this.options.value) ? '' : this.options.value, sendUpdatedEvt);
- },
-
- */
-/**
- * Should return true if empty
- */
-/*
- isEmpty: function() {
- return this.getValue() === '';
- }
-
- };
-
- })();*/
