@@ -3,7 +3,6 @@
         alert('Error! YUI3 library is not available')
     } //TODO load yui3 base dynamically like a Bookmarklet
 
-  
 
     YUI.add('field', function(Y) {
         Y.inputEx = Y.inputEx || {};
@@ -235,7 +234,7 @@
 
                     var fieldDiv = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
-                    this.renderComponent();
+                    this.renderComponent(fieldDiv);
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
@@ -250,29 +249,35 @@
                     el.appendChild(floatBreaker)
 
                     Y.log(this + '.render() - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
+                    return this;
                 } catch(e) {
                     Y.log(this + '.render() - ' + e, 'error', 'inputEx');
                 }
             },
 
             renderComponent:function() {
-
+                // override me
+                Y.log(this + '.renderComponent() - method should have been overidden!', 'warn', 'inputEx');
             },
 
             focus:function() {
                 this.get('el').focus();
+                return this;
             },
 
             enable:function() {
                 this.get('el').set('disabled', false);
+                return this;
             },
 
             disable:function() {
                 this.get('el').set('disabled', true);
+                return this;
             },
 
             validate: function() {
                 return true;
+                return this;
             },
 
             /**
@@ -280,7 +285,7 @@
              * @deprecated
              */
             getEl: function() {
-                return this.get('el')
+                return this.get('el');
             },
 
             destructor : function() {

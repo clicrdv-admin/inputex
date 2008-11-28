@@ -44,9 +44,9 @@
         };
 
         Y.extend(StringField, Y.inputEx.Field, {
-            renderComponent:function() {
+            renderComponent:function(parentEl) {
                 try {
-                    var el = this.get('el'), id = el.get('id');
+                    var el = parentEl ? parentEl : this.get('el'), id = el.get('id');
                     var fieldEl = Y.Node.create('<div class="inputEx-StringField-wrapper"></div>')
 
                     var field = Y.Node.create('<input id="' + id + '-field" type="' + this.get('type') + '" class="inputEx-Field inputEx-StringField"/>')

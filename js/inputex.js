@@ -17,10 +17,10 @@ if (typeof(inputEx) === 'undefined') {
                         fullpath: "../js/Field.js",type:'js',
                         requires:['inputex-css','base','node']
                     },
-                     'stringfield': {
-                     fullpath: "../js/fields/StringField.js",type:'js',
-                     requires:['field']
-                     }
+                    'stringfield': {
+                        fullpath: "../js/fields/StringField.js",type:'js',
+                        requires:['field']
+                    }
                 }};
             return YUI(yuiCfg);
         }
@@ -33,7 +33,7 @@ if (typeof(inputEx) === 'undefined') {
     } //TODO load yui3 base dynamically like a Bookmarklet
 
 
-    YUI.add('inputex', function(Y){}, '3.0.0pr1', {use:['field','stringfield'],skinnable:true});
+    YUI.add('inputex', function(Y) {}, '3.0.0pr1', {use:['field','stringfield'],skinnable:true});
 })());
 
 /*

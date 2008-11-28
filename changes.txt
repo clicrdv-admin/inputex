@@ -1,0 +1,17 @@
+log changes to annouce to users about the update
+
+
+1. need to call .render() now
+
+2. attributes may have changed. check docs for every field. :-)
+    - some attributes require correct sequence:
+        - put 'name' as the first attribute if you want to use it to as element id
+        - if both parentEl and el are specified, parentEl shall go first in order to put the el under parentEl
+
+    - support more options:
+        instead providing a parentEl
+
+3. fluent API
+    - most methods are now return the field instance to support chaining
+    - in general, except getter, the other method are likely to support chaining
+    
