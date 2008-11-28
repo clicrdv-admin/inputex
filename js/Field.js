@@ -15,20 +15,22 @@
              * @event field:update
              * @description
              * @preventable TODO DUMMY, REMOVE THIS
-             * @param {Event} TODO DUMMY, REMOVE THIS
+             * @param {Event} newVal, oldVal
              * @bubbles TODO DUMMY, REMOVE THIS
              * @type Event.Custom
+             * //TODO consider to pass the field as param
              */
                 EV_UPDATE = 'field:update',
             /**
-             * @event field:rendered
+             * @event field:render
              * @description
              * @preventable TODO DUMMY, REMOVE THIS
-             * @param {Event} TODO DUMMY, REMOVE THIS
+             * @param {Event} node
              * @bubbles TODO DUMMY, REMOVE THIS
              * @type Event.Custom
+             * //TODO consider to pass the field as param
              */
-                EV_RENDERED = 'field:rendered'
+                EV_RENDER = 'field:render'
         /**
          * @class Field
          * @extends Base
@@ -36,7 +38,8 @@
          */
         var Field = function(cfg) {
             Field.superclass.constructor.apply(this, arguments);
-            this.publish("field:updated");
+            this.publish(EV_UPDATE);
+            this.publish(EV_RENDER);
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this); 
         };
         Y.augment(Field, Y.Event.Target);
@@ -249,6 +252,7 @@
                     el.appendChild(floatBreaker)
 
                     Y.log(this + '.render() - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
+                    this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
                     return this;
                 } catch(e) {
                     Y.log(this + '.render() - ' + e, 'error', 'inputEx');
