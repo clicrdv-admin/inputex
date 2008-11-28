@@ -4,7 +4,7 @@
     }
 
     YUI.add('stringfield', function(Y) {
-//        if (!Y.inputEx){alert('Y.inputEx is not available')}
+        //        if (!Y.inputEx){alert('Y.inputEx is not available')}
         Y.inputEx = Y.inputEx || {};
 
         /**
@@ -21,12 +21,48 @@
 
         StringField.NAME = "stringfield";
         StringField.ATTRS = {
-            //TODO add StringField attrs
+            type:{value:'text',readOnly:true},
+            size:{value:null},
+            maxLength:{value:null},
+            typeInvite:{value:null},
+            readonly:{value:false},
+
+            /**
+             * @attribute minLength
+             * @description for validation, it will be changed to 'validator' in future version
+             * @type Integer
+             */
+            minLength:{value:0},
+
+            /**
+             * @attribute regexp
+             * @description for validation, it will be changed to 'validator' in future version
+             * @type String
+             */
+            regexp:{value:'text'}
+
         };
 
         Y.extend(StringField, Y.inputEx.Field, {
             renderComponent:function() {
-                Y.log(this+'renderComponent() - done', 'debug', 'inputEx');
+                try {
+                    var el = this.get('el'), id = el.get('id');
+                    var fieldEl = Y.Node.create('<div class="inputEx-StringField-wrapper"></div>')
+
+                    var field = Y.Node.create('<input id="' + id + '-field" type="' + this.get('type') + '"/>')
+
+                    if (this.get('name')) field.set('name', this.get('name'))
+                    if (this.get('size')) field.set('size', this.get('size'))
+                    if (this.get('readonly')) field.set('readonly', this.get('readonly'))
+                    if (this.get('maxLength')) field.set('maxLength', this.get('maxLength'))
+
+                    fieldEl.appendChild(field);
+                    el.appendChild(fieldEl);
+                    Y.log(this + '.renderComponent() - done', 'debug', 'inputEx');
+                } catch(e) {
+                    Y.log(this + '.renderComponent() - e: ' + e, 'error', 'inputEx');
+                }
+
             }
         });
 
@@ -35,8 +71,8 @@
 
     }, '3.0.0pr1', {requires:['field']});
 
-//    YUI.add('inputex', function(Y) {
-//    }, '3.0.0pr1', {use:['inputex','field'],skinnable:true})
+    //    YUI.add('inputex', function(Y) {
+    //    }, '3.0.0pr1', {use:['inputex','field'],skinnable:true})
 })();
 
 
@@ -290,34 +326,6 @@
  this.options.readonly = options.readonly;
  },
 
-
- */
-/**
- * Render an 'INPUT' DOM node
- */
-/*
- renderComponent: function() {
-
- // This element wraps the input node in a float: none div
- this.wrapEl = inputEx.cn('div', {className: 'inputEx-StringField-wrapper'});
-
- // Attributes of the input field
- var attributes = {};
- attributes.type = 'text';
- attributes.id = this.divEl.id?this.divEl.id+'-field':YAHOO.util.Dom.generateId();
- if(this.options.size) attributes.size = this.options.size;
- if(this.options.name) attributes.name = this.options.name;
- if(this.options.readonly) attributes.readonly = 'readonly';
-
- if(this.options.maxLength) attributes.maxLength = this.options.maxLength;
-
- // Create the node
- this.el = inputEx.cn('input', attributes);
-
- // Append it to the main element
- this.wrapEl.appendChild(this.el);
- this.fieldContainer.appendChild(this.wrapEl);
- },
 
  */
 /**
