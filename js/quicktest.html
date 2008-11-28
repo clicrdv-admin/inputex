@@ -12,7 +12,7 @@
 <div id="test"></div>
 <textarea id="result" rows="30" cols="120"></textarea>
 <script type="text/javascript">
-    inputEx.YUI().use('node', 'json','field','stringfield', function(Y) { //TODO figure out how to use 'inputex' to cover all
+    inputEx.YUI().use('stringfield', function(Y) { // incl ,'json' if need to use Y.JSON.stringify()
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
 //            var global = new Y.inputEx.Global()
