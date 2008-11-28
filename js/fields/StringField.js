@@ -49,12 +49,13 @@
                     var el = this.get('el'), id = el.get('id');
                     var fieldEl = Y.Node.create('<div class="inputEx-StringField-wrapper"></div>')
 
-                    var field = Y.Node.create('<input id="' + id + '-field" type="' + this.get('type') + '"/>')
+                    var field = Y.Node.create('<input id="' + id + '-field" type="' + this.get('type') + '" class="inputEx-Field inputEx-StringField"/>')
 
                     if (this.get('name')) field.set('name', this.get('name'))
                     if (this.get('size')) field.set('size', this.get('size'))
                     if (this.get('readonly')) field.set('readonly', this.get('readonly'))
                     if (this.get('maxLength')) field.set('maxLength', this.get('maxLength'))
+                    if (this.get('value')) field.set('value', this.get('value'))
 
                     fieldEl.appendChild(field);
                     el.appendChild(fieldEl);

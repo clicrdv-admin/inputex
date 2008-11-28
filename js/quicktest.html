@@ -18,13 +18,15 @@
 //            var global = new Y.inputEx.Global()
             var field = new Y.inputEx.StringField({
                 name:'hello',
-                value:'init value',
+                value:'default',
                 parentEl:'test',
                 el:'field1',
                 required:true,
                 label:'this is a test field',
                 description:'this field is for demonstration purpose only'});
+
             field.render();
+
             /*field.on('updated', function(evt, newVal, oldVal) {
                 alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
             });*/
@@ -35,13 +37,16 @@
              field.get('parentEl').set('innerHTML', 'found, el: ' + field.get('el'))
              }*/
             //Y.get('body').appendChild(field.get('el'))
+            var testHTML =Y.Node.get('#test').get('innerHTML')
+            testHTML = testHTML.replace(/</g,'&lt;')
+            testHTML = testHTML.replace(/>/g,'&gt;')
 
-            Y.Node.get('#result').set('innerHTML', Y.Node.get('#test').get('innerHTML'))
+            Y.Node.get('#result').set('innerHTML', testHTML)
             
             field.set('label','this is a new label')
             field.set('description','this is a new description')
 
-            runTabifier('result','result','HTML')
+           runTabifier('result','result','HTML')
 
             //alert( Y.get('body') instanceof Y.Node )
 
