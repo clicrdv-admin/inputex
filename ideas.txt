@@ -1,0 +1,10 @@
+These are some ideas generated during the development. none of them will be implement in order to make the YUI3 version
+compatiable to the previous version.
+
+ - use a renderer,componentRenderer to render content
+   render(){
+        Y.bind( this.get('renderer').render, this)()
+        // check the correct syntax. the point is to bind this to the renderer,
+        // so a new field may not necessarily need to create a class
+        // a default template renderer to be provided
+   }

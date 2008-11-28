@@ -1,21 +1,26 @@
 (function () {
-    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available')}
+    if (typeof(YUI) === 'undefined') {
+        alert('Error! YUI3 library is not available')
+    } //TODO load yui3 base dynamically like a Bookmarklet
+
+  
 
     YUI.add('field', function(Y) {
         Y.inputEx = Y.inputEx || {};
 
-
         /**
          * @module inputEx
          */
-        /**
-         * @class Field
-         * @extends Base
-         * @constructor
-         */
-
-
-        var FD = Y.inputEx.FD,
+        var FD = Y.inputEx.FD,  //TODO review this
+            /**
+             * @event field:update
+             * @description
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} TODO DUMMY, REMOVE THIS
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_UPDATE = 'field:update',
             /**
              * @event field:rendered
              * @description
@@ -25,9 +30,12 @@
              * @type Event.Custom
              */
                 EV_RENDERED = 'field:rendered'
-
-
-        var Field = function(el, cfg) {
+        /**
+         * @class Field
+         * @extends Base
+         * @constructor
+         */
+        var Field = function(cfg) {
             Field.superclass.constructor.apply(this, arguments);
             this.publish("field:updated");
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this); 
@@ -49,22 +57,31 @@
              * @type Y.Node
              */
             parentEl:{
-                set:function(cfg) { return Field.getNode(cfg); },
+                set:function(cfg) {
+                    return Field.getNode(cfg);
+                },
                 //value: Y.Node.get('body'),
                 writeOnce:true
             },
 
             /**
-             *
+             * el could be defined in a number of ways:
+             * - if cfg is a String, we look up for a node with and without a '#' prefix. If no node is found, we create
+             * one with the cfg as id.
+             * - if cfg is a Node, it is used.
+             * - otherwise, we try to lookup a node
              */
             el:{
                 set:function(cfg) {
                     var el;
-                    if (!Y.Lang.isNull(cfg)) { el = Field.getNode(cfg) }
+                    if (!Y.Lang.isNull(cfg)) {
+                        el = Field.getNode(cfg)
+                    }
 
                     if (!el) { //create a new el under parent
-                        var id = Y.Lang.isUndefined(this.get('name')) ? Y.guid('div') : this.get('name')
-                        el = Y.Node.create('<div id="'+id+'"></div>'); //TODO generate an id if name is not available
+                        var id = Y.Lang.isString(cfg) ? cfg.charAt(0) == '#' ? cfg.substring(1, cfg.length) : cfg : null
+                        id = (id) ? id : Y.Lang.isUndefined(this.get('name')) ? Y.guid('div') : this.get('name')
+                        el = Y.Node.create('<div id="' + id + '"></div>');
                         if (!Y.Lang.isUndefined(this.get('parentEl'))) {
                             this.get('parentEl').appendChild(el);
                         }//else, the node must be manually appended to the DOM
@@ -83,17 +100,12 @@
              * @type String
              */
             value:{
-                set:function(e) {
+                set:function(v) {
                     if (!Y.Lang.isUndefined(this.get('value')))
-                        Y.log(this + '.value - updated from "' + this.get('value') + '" to "' + e + '"', 'debug', 'inputEx')
-                    /**
-                     * @event updated
-                     * @param {Event} ev, {String} newVal, {String} oldVal
-                     * @type Event.Custom
-                     */
-                    //this.fire('field:updated', e, this.get('value'));
-                    this.fire('field:updated', null, e, this.get('value')); //workaround
-                    return e;
+                        Y.log(this + '.set("value") - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
+                    //TODO set value
+                    this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value')); 
+                    return v;
                 }
             },
 
@@ -103,21 +115,39 @@
              * //TODO check what's the YUI3 way to manage id
              * // TODO auto generate ID
              */
-            id:{},
+            //id:{},
 
             /**
              * @attribute label
              * @description a short descriptive text for a field, normally show at the left hand side of the field element
              * @type String
              */
-            label:{},
+            label:{
+                set:function(v) {
+                    if (!Y.Lang.isUndefined(this.get('label')))
+                        Y.log(this + '.set("label") - updated from "' + this.get('label') + '" to "' + v + '"', 'debug', 'inputEx')
+
+                    var labelEl = this.get('el').query('#' + this.get('el').get('id') + '-label')
+                    if (labelEl) labelEl.set('innerHTML', v);
+                    return v;
+                },
+                value:''
+            },
 
             /**
              * @attribute description
              * @description a long descriptive text for a field, normally show at the bottom of the field element
              * @type String
              */
-            description:{},
+            description:{
+                set:function(v) {
+                    if (!Y.Lang.isUndefined(this.get('description')))
+                        Y.log(this + '.set("description") - updated from "' + this.get('description') + '" to "' + v + '"', 'debug', 'inputEx')
+                    var descEl = this.get('el').query('#' + this.get('el').get('id') + '-description')
+                    if (descEl) descEl.set('innerHTML', v);
+                    return v;
+                },
+                value:''},
 
             /**
              * @attribute messages
@@ -133,7 +163,8 @@
              * @type String
              */
             className:{
-                value:'inputEx-Field'
+                value:'inputEx-Field',
+                writeOnce:true
             },
 
             /**
@@ -142,25 +173,38 @@
              * be replaced with a validator implementation in future version
              * @type Boolean
              */
-            required:{value:false},
+            required:{
+                value:false
+            },
 
             /**
              * @attribute showMsg
              * @description ???
              * @type Boolean
              */
-            showMsg:{value:false}
+            showMsg:{
+                value:false
+            }
 
-        }
+        };
 
         /**
          * Static methods
          */
         Field.getNode = function(cfg, defaultNde) { //TODO impl defaultNode
             var node;
-            if (Y.Lang.isString(cfg)) { node = Y.Node.get(cfg.charAt(0) == '#' ? cfg : '#' + cfg);}
-            else if (cfg instanceof Y.Node) { node = cfg}
-            else { try {node = Y.Node.get(cfg)} catch(e) {} }
+            if (Y.Lang.isString(cfg)) {
+                node = Y.Node.get(cfg.charAt(0) == '#' ? cfg : '#' + cfg);
+            }
+            else if (cfg instanceof Y.Node) {
+                node = cfg
+            }
+            else {
+                try {
+                    node = Y.Node.get(cfg)
+                } catch(e) {
+                }
+            }
             /*if (Y.Lang.isUndefined(parentNode)) {
              Y.log(this + ' parentEl cannot be identified, parentNode is set to BODY, cfg: ' + cfg, 'warn', 'inputEx');
              parentNode = Y.Node.get('body');
@@ -169,34 +213,87 @@
         }
 
         Y.extend(Field, Y.Base, {
-            _state:{dom:false,com:false,demo:false},
+            _state:{},
             initializer : function(cfg) {
-                Y.stamp(this);
-                Y.log('initializer() - ' + this + ' is initialized', 'debug', 'inputEx');
+                Y.log(this + '.initializer() - initialized', 'debug', 'inputEx');
             },
 
             render:function() {
+                try {
+                    var el = this.get('el'), id = el.get('id');
+                    el.addClass('inputEx-fieldWrapper')
 
+                    if (this.get('required')) el.addClass('inputEx-required')
+
+                    if (this.get('label')) {
+                        var labelDiv = Y.Node.create('<div class="inputEx-label"></div>')
+                        var label = Y.Node.create('<label id="' + id + '-label" for="' + id + '-field">' + this.get('label') + '</label>')
+                        labelDiv.appendChild(label)
+                        el.appendChild(labelDiv)
+                        //TODO the trunk has error. backport the label for
+                    }
+
+                    var fieldDiv = Y.Node.create('<div class="' + this.get('className') + '"></div>');
+
+                    this.renderComponent();
+
+                    if (this.get('description')) {
+                        var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
+                        desc.set('innerHTML', this.get('description'))
+                        fieldDiv.appendChild(desc)
+                        //TODO update docs: use description instead of 'desc', unless we change them all globally, always be consistent in naming
+                    }
+
+                    el.appendChild(fieldDiv);
+
+                    var floatBreaker = Y.Node.create('<div style="clear:both"/>')
+                    el.appendChild(floatBreaker)
+
+                    Y.log(this + '.render() - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
+                } catch(e) {
+                    Y.log(this + '.render() - ' + e, 'error', 'inputEx');
+                }
             },
 
             renderComponent:function() {
 
             },
 
-            debug:function() {
-                //alert(Y.JSON.stringify(this.get('required')))
-                alert(this.get('name'))
+            focus:function() {
+                this.get('el').focus();
             },
 
-            destructor : function() { Y.log('destructor() - ' + this + ' is destroyed', 'debug', 'inputEx'); }
+            enable:function() {
+                this.get('el').set('disabled', false);
+            },
+
+            disable:function() {
+                this.get('el').set('disabled', true);
+            },
+
+            validate: function() {
+                return true;
+            },
+
+            /**
+             * This method is provided for backward compatiability. Please use get('el') instead
+             * @deprecated
+             */
+            getEl: function() {
+                return this.get('el')
+            },
+
+            destructor : function() {
+                Y.log(this + 'destructor() - destroyed', 'debug', 'inputEx');
+            }
         });
 
         Y.namespace('inputEx');
         Y.inputEx.Field = Field;
+    }, '3.0.0pr1', {requires:['base', 'node']});
+    //}, '3.0.0pr1', {requires:['base', 'io', 'node', 'json','queue']});
 
-    }, '3.0.0pr1', {requires:['base', 'io', 'node', 'json','queue','cookie']});
 
-    YUI.add('inputEx', function(Y) {}, '3.0.0pr1', {use:['field','json','node'],skinnable:true})
 })();
 
 
@@ -205,67 +302,6 @@
  this.options.messages.invalid = (options.messages && options.messages.invalid) ? options.messages.invalid : inputEx.messages.invalid;
  //this.options.messages.valid = (options.messages && options.messages.valid) ? options.messages.valid : inputEx.messages.valid;
 
- * Default render of the dom element. Create a divEl that wraps the field.
- */
-/*
- render: function() {
-
- // Create a DIV element to wrap the editing el and the image
- this.divEl = inputEx.cn('div', {className: 'inputEx-fieldWrapper'});
- if(this.options.id) {
- this.divEl.id = this.options.id;
- }
- if(this.options.required) {
- Dom.addClass(this.divEl, "inputEx-required");
- }
-
- // Label element
- if(this.options.label) {
- this.labelDiv = inputEx.cn('div', {id: this.divEl.id+'-label', className: 'inputEx-label', 'for': this.divEl.id+'-field'});
- this.labelEl = inputEx.cn('label');
- this.labelEl.appendChild( document.createTextNode(this.options.label) );
- this.labelDiv.appendChild(this.labelEl);
- this.divEl.appendChild(this.labelDiv);
- }
-
- this.fieldContainer = inputEx.cn('div', {className: this.options.className}); // for wrapping the field and description
-
- // Render the component directly
- this.renderComponent();
-
- // Description
- if(this.options.description) {
- this.fieldContainer.appendChild(inputEx.cn('div', {id: this.divEl.id+'-desc', className: 'inputEx-description'}, null, this.options.description));
- }
-
- this.divEl.appendChild(this.fieldContainer);
-
- // Insert a float breaker
- this.divEl.appendChild( inputEx.cn('div',null, {clear: 'both'}," ") );
-
- },
-
- */
-/**
- * Render the interface component into this.divEl
- */
-/*
- renderComponent: function() {
- // override me
- },
-
- */
-/**
- * The default render creates a div to put in the messages
- * @return {HTMLElement} divEl The main DIV wrapper
- */
-/*
- getEl: function() {
- return this.divEl;
- },
-
- */
-/*
  setValue: function(value, sendUpdatedEvt) {
  // to be inherited
 
@@ -340,16 +376,6 @@
 
  */
 /**
- * Validation of the field
- * @return {Boolean} field validation status (true/false)
- */
-/*
- validate: function() {
- return true;
- },
-
- */
-/**
  * Function called on the focus event
  * @param {Event} e The original 'focus' event
  */
@@ -383,38 +409,11 @@
  this.fireUpdatedEvt();
  },
 
- */
-/**
- * Close the field and eventually opened popups...
- */
-/*
  close: function() {
  },
 
- */
-/**
+ /**
  * Disable the field
- */
-/*
- disable: function() {
- },
-
- */
-/**
- * Enable the field
- */
-/*
- enable: function() {
- },
-
- */
-/**
- * Focus the field
- */
-/*
- focus: function() {
- },
-
  */
 /**
  * Purge all event listeners and remove the component from the dom

@@ -2,37 +2,50 @@
 <html>
 <head>
     <title>Quick Test</title>
-    <meta name="description" content="keep this page as simple as possible for testing">
-    <script type="text/javascript" src="http://yui.yahooapis.com/combo?3.0.0pr1/build/yui/yui-min.js&3.0.0pr1/build/oop/oop-min.js&3.0.0pr1/build/event/event-min.js&3.0.0pr1/build/dom/dom-min.js&3.0.0pr1/build/node/node-min.js&3.0.0pr1/build/io/io-min.js&3.0.0pr1/build/json/json-min.js&3.0.0pr1/build/queue/queue-min.js&3.0.0pr1/build/dump/dump-min.js&3.0.0pr1/build/substitute/substitute-min.js&3.0.0pr1/build/attribute/attribute-min.js&3.0.0pr1/build/base/base-min.js"></script>
-    <script type="text/javascript" src="Field.js"></script>
+    <script type="text/javascript" src="../lib/yui3/yui/yui-min.js"></script>
+    <!--<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.0.0pr1/build/yui/yui-min.js&3.0.0pr1/build/oop/oop-min.js&3.0.0pr1/build/event/event-min.js&3.0.0pr1/build/dom/dom-min.js&3.0.0pr1/build/node/node-min.js&3.0.0pr1/build/io/io-min.js&3.0.0pr1/build/json/json-min.js&3.0.0pr1/build/queue/queue-min.js&3.0.0pr1/build/dump/dump-min.js&3.0.0pr1/build/substitute/substitute-min.js&3.0.0pr1/build/attribute/attribute-min.js&3.0.0pr1/build/base/base-min.js"></script>-->
+    <!--<script type="text/javascript" src="Field.js"></script>-->
+    <script type="text/javascript" src="inputex.js"></script>
 </head>
 <body>
-
 <div id="test"></div>
-
+<textarea id="result" rows="10" cols="120"></textarea>
 <script type="text/javascript">
-    YUI().use('node', 'json', 'inputEx', function(Y) {
+    inputEx.YUI().use('node', 'json','inputex','field', function(Y) { //TODO figure out how to use 'inputex' to cover all
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
-
-            var field = new Y.inputEx.Field({name:'hello',value:'init value'});
-            field.on('updated', function(evt, newVal, oldVal) {
-               // alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
-            })
+//            var global = new Y.inputEx.Global()
+            var field = new Y.inputEx.Field({
+                name:'hello',
+                value:'init value',
+                parentEl:'test',
+                el:'field1',
+                required:true,
+                label:'this is a test field',
+                description:'this field is for demonstration purpose only'});
+            field.render();
+            /*field.on('updated', function(evt, newVal, oldVal) {
+                alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
+            });*/
             //field.set('value', 'new value')
-             alert('el: ' + field.get('el'))
+            //alert('el: ' + field.get('el'))
             //Y.get('#test').set('innerHTML', 'parentEl: ' + field.get('parentEl')); //require 'node'
             /*if (field.get('parentEl')){
-                field.get('parentEl').set('innerHTML', 'found, el: ' + field.get('el'))
-            }*/
-            Y.get('body').appendChild(field.get('el'))
+             field.get('parentEl').set('innerHTML', 'found, el: ' + field.get('el'))
+             }*/
+            //Y.get('body').appendChild(field.get('el'))
+
+            Y.Node.get('#result').set('innerHTML', Y.Node.get('#test').get('innerHTML'))
+            
+            field.set('label','this is a new label')
+            field.set('description','this is a new description')
 
             //alert( Y.get('body') instanceof Y.Node )
 
         } catch(e) {
             Y.log(e, 'error', 'inputEx');
         }
-    })
+    });
 </script>
 
 
