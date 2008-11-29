@@ -63,6 +63,10 @@
                 } catch(e) {
                     Y.log(this + '.renderComponent() - e: ' + e, 'error', 'inputEx');
                 }
+            },
+
+            _onchange:function(){
+                
             }
         });
 
@@ -77,64 +81,9 @@
 
 
 /*
- (function() {
-
- var inputEx = YAHOO.inputEx, lang = YAHOO.lang, Event = YAHOO.util.Event, Dom = YAHOO.util.Dom;
-
- */
-/**
- * @class Basic string field (equivalent to the input type "text")
- * @extends inputEx.Field
- * @constructor
- * @param {Object} options Added options:
- * <ul>
- *      <li>regexp: regular expression used to validate (otherwise it always validate)</li>
- *   <li>size: size attribute of the input</li>
- *   <li>maxLength: maximum size of the string field (no message display, uses the maxlength html attribute)</li>
- *   <li>minLength: minimum size of the string field (will display an error message if shorter)</li>
- *   <li>typeInvite: string displayed when the field is empty</li>
- *   <li>readonly: set the field as readonly</li>
- * </ul>
- */
-/*
- inputEx.StringField = function(options) {
- inputEx.StringField.superclass.constructor.call(this, options);
-
  if(this.options.typeInvite) {
  this.updateTypeInvite();
- }
- };
 
- lang.extend(inputEx.StringField, inputEx.Field,
- */
-/**
- * @scope inputEx.StringField.prototype
- */
-/*
- {
- */
-/**
- * Set the default values of the options
- * @param {Object} options Options object (inputEx inputParams) as passed to the constructor
- */
-/*
- setOptions: function(options) {
- inputEx.StringField.superclass.setOptions.call(this, options);
-
- this.options.regexp = options.regexp;
- this.options.size = options.size;
- this.options.maxLength = options.maxLength;
- this.options.minLength = options.minLength;
- this.options.typeInvite = options.typeInvite;
- this.options.readonly = options.readonly;
- },
-
-
- */
-/**
- * Register the change, focus and blur events
- */
-/*
  initEvents: function() {
  Event.addListener(this.el, "change", this.onChange, this, true);
 

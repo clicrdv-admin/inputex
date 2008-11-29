@@ -23,6 +23,7 @@
 
     <script type="text/javascript" src="../lib/yui3/yui/yui-min.js"></script>
     <script type="text/javascript" src="../js/inputex.js"></script>
+
 </head>
 
 <body>
@@ -79,8 +80,10 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-            //new YAHOO.inputEx.StringField({size: 40, value: 'size is set to 40 (default is 20)', parentEl:'container3'});
-            new Y.inputEx.StringField({size: 40, value: 'size is set to 40 (default is 20)', parentEl: 'container3'}).render();
+            //new YAHOO.inputEx.StringField({size: 40, value: 'size is set to 40 (default is 20)',
+            parentEl:'container3'});
+            new Y.inputEx.StringField({size: 40, value: 'size is set to 40 (default is 20)', parentEl:
+            'container3'}).render();
         </textarea>
     </div>
 
@@ -100,7 +103,8 @@
         <textarea name="code" class="js" cols="60" rows="1">
             //new YAHOO.inputEx.StringField({value: '0123456789', showMsg: true, minLength: 3, maxLength: 10, parentEl:
             'container4'});
-            new Y.inputEx.StringField({value: '0123456789', showMsg: true, minLength: 3, maxLength: 10, parentEl: 'container4'}).render();
+            new Y.inputEx.StringField({value: '0123456789', showMsg: true, minLength: 3, maxLength: 10, parentEl:
+            'container4'}).render();
         </textarea>
     </div>
 
@@ -285,36 +289,25 @@
 
 </div>
 
-
-<!-- YUI Library -->
-<script type="text/javascript" src="../lib/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="../lib/yui/container/container-min.js"></script>
-
-<!-- InputEx -->
-<script src="../js/inputex.js" type='text/javascript'></script>
-<script src="../js/Field.js" type='text/javascript'></script>
-<script src="../js/fields/StringField.js" type='text/javascript'></script>
-
-
 <script>
     inputEx.YUI().use('stringfield', function(Y) {
-        Y.on('event:ready', function() {
-            // Example 1
-            new Y.inputEx.StringField({parentEl:'container1'}).render();
+        //Y.on('event:ready', function() {
+        // Example 1
+        new Y.inputEx.StringField({parentEl:'container1'}).render();
 
-            // Example 2
-            new Y.inputEx.StringField({value: 'inputEx rocks',parentEl: 'container2'}).render();
+        // Example 2
+        new Y.inputEx.StringField({value: 'inputEx rocks',parentEl: 'container2'}).render();
 
-           // Example 3
-            new Y.inputEx.StringField({size: 40, value: 'size is set to 40 (default is 20)', parentEl: 'container3'}).render();
+        // Example 3
+        new Y.inputEx.StringField({size: 40, value: 'size is set to 40 (default is 20)', parentEl: 'container3'}).render();
 
-            // Example 4
-            new Y.inputEx.StringField({value: '0123456789', showMsg: true, minLength: 3, maxLength: 10, parentEl: 'container4'}).render();
+        // Example 4
+        new Y.inputEx.StringField({value: '0123456789', showMsg: true, minLength: 3, maxLength: 10, parentEl: 'container4'}).render();
 
-            // Example 5
-            new Y.inputEx.StringField({required: true, showMsg: true, parentEl: 'container5'}).render();
+        // Example 5
+        new Y.inputEx.StringField({required: true, showMsg: true, parentEl: 'container5'}).render();
 
-        });
+        //});
     })
 
         /*

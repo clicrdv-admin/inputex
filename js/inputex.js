@@ -33,7 +33,14 @@ if (typeof(inputEx) === 'undefined') {
     } //TODO load yui3 base dynamically like a Bookmarklet
 
 
-    YUI.add('inputex', function(Y) {}, '3.0.0pr1', {use:['field','stringfield'],skinnable:true});
+    YUI.add('inputex', function(Y) {
+        Y.inputEx = Y.inputEx || {};
+        Y.inputEx.escapeHTML = function(unescaped) {
+            var escaped = unescaped.replace(/</g, '&lt;')
+            escaped = escaped.replace(/>/g, '&gt;')
+            return escaped;
+        }
+    }, '3.0.0pr1', {use:['field','stringfield'],skinnable:true}); //TODO don't know what the 'use' exactly do
 })());
 
 /*

@@ -12,7 +12,7 @@
 <div id="test"></div>
 <textarea id="result" rows="30" cols="120"></textarea>
 <script type="text/javascript">
-    inputEx.YUI().use('stringfield', function(Y) { // incl ,'json' if need to use Y.JSON.stringify()
+    inputEx.YUI().use('inputex','stringfield', function(Y) { // incl ,'json' if need to use Y.JSON.stringify()
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
 //            var global = new Y.inputEx.Global()
@@ -37,10 +37,7 @@
              }*/
             //Y.get('body').appendChild(field.get('el'))
             var testHTML =Y.Node.get('#test').get('innerHTML')
-            testHTML = testHTML.replace(/</g,'&lt;')
-            testHTML = testHTML.replace(/>/g,'&gt;')
-
-            Y.Node.get('#result').set('innerHTML', testHTML)
+            Y.Node.get('#result').set('innerHTML', Y.inputEx.escapeHTML(testHTML))
             
             field.set('label','this is a new label')
             field.set('description','this is a new description')

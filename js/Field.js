@@ -84,9 +84,11 @@
                         var id = Y.Lang.isString(cfg) ? cfg.charAt(0) == '#' ? cfg.substring(1, cfg.length) : cfg : null
                         id = (id) ? id : Y.Lang.isUndefined(this.get('name')) ? Y.guid('div') : this.get('name')
                         el = Y.Node.create('<div id="' + id + '"></div>');
-                        if (!Y.Lang.isUndefined(this.get('parentEl'))) {
+                        if (this.get('parentEl')) {
                             this.get('parentEl').appendChild(el);
-                        }//else, the node must be manually appended to the DOM
+                        }else{
+                            Y.log(this+'.set("el") - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el, 'warn', 'inputEx');
+                        }
 
                     }
                     Y.log(this + '.set("el") - el: ' + el + ', cfg: ' + cfg + ', parentEl: ' + this.get('parentEl') + ', name: ' + this.get('name'), 'debug', 'inputEx')
