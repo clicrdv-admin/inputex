@@ -47,9 +47,11 @@
             renderComponent:function(parentEl) {
                 try {
                     var el = parentEl ? parentEl : this.get('el'), id = this.get('el').get('id');
+                    parentEl.addClass('inputEx-StringField')
                     var fieldEl = Y.Node.create('<div class="inputEx-StringField-wrapper"></div>')
 
-                    var field = Y.Node.create('<input id="' + id + '-field" type="' + this.get('type') + '" class="inputEx-Field inputEx-StringField"/>')
+                    //Note: for simple DOM, uses  class="inputEx-Field inputEx-StringField" on input
+                    var field = Y.Node.create('<input id="' + id + '-field" type="' + this.get('type') + '"/>')
 
                     if (this.get('name')) field.set('name', this.get('name'))
                     if (this.get('size')) field.set('size', this.get('size'))
@@ -65,8 +67,22 @@
                 }
             },
 
-            _onchange:function(){
-                
+            validate:function() {
+                // Check regex matching and minLength (both used in password field...)
+                var result = true;
+
+                // if we are using a regular expression
+                if (this.get('regexp')) {
+                    result = result && this.get('value').match(this.get('regexp'));
+                }
+                if (this.get('minLength')) {
+                    result = result && this.get('value').length >= this.get('minLength');
+                }
+                return result;
+            },
+
+            _onchange:function() {
+
             }
         });
 
@@ -124,33 +140,6 @@
 
  // call parent class method to set style and fire updatedEvt
  inputEx.StringField.superclass.setValue.call(this, value, sendUpdatedEvt);
- },
-
- */
-/**
- * Uses the optional regexp to validate the field value
- */
-/*
- validate: function() {
- var val = this.getValue();
-
- // empty field
- if (val == '') {
- // validate only if not required
- return !this.options.required;
- }
-
- // Check regex matching and minLength (both used in password field...)
- var result = true;
-
- // if we are using a regular expression
- if( this.options.regexp ) {
- result = result && val.match(this.options.regexp);
- }
- if( this.options.minLength ) {
- result = result && val.length >= this.options.minLength;
- }
- return result;
  },
 
  */

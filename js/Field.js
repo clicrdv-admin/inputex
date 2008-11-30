@@ -86,8 +86,8 @@
                         el = Y.Node.create('<div id="' + id + '"></div>');
                         if (this.get('parentEl')) {
                             this.get('parentEl').appendChild(el);
-                        }else{
-                            Y.log(this+'.set("el") - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el, 'warn', 'inputEx');
+                        } else {
+                            Y.log(this + '.set("el") - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el, 'warn', 'inputEx');
                         }
 
                     }
@@ -96,8 +96,6 @@
                 },
                 value:null,
                 writeOnce:true},
-
-
 
             /**
              * @attribute value
@@ -189,7 +187,6 @@
             showMsg:{
                 value:false
             }
-
         };
 
         /**
@@ -250,7 +247,7 @@
 
                     el.appendChild(fieldDiv);
 
-                    var floatBreaker = Y.Node.create('<div style="clear:both"/>')
+                    var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
 
                     Y.log(this + '.render() - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
@@ -266,16 +263,20 @@
                 Y.log(this + '.renderComponent() - method should have been overidden!', 'warn', 'inputEx');
             },
 
-            displayMessage:function() {
-                /*if (!this.fieldContainer) { return; }
-                 if (!this.msgEl) {
-                 this.msgEl = inputEx.cn('div', {className: 'inputEx-message'});
-                 try {
-                 var divElements = this.divEl.getElementsByTagName('div')
-                 this.divEl.insertBefore(this.msgEl, divElements[(divElements.length - 1 >= 0) ? divElements.length - 1 : 0]); //insertBefore the clear:both div
-                 } catch(e) {alert(e)}
-                 }
-                 this.msgEl.innerHTML = msg;*/
+            displayMessage:function(msg) {
+                var el = this.get('el')
+                var fieldDiv = el.query('div.inputEx-Field');
+                if (!fieldDiv) {
+                    return;
+                }
+
+                var msgDiv = el.query('div.inputEx-message');
+                if (!msgDiv) {
+                    msgDiv = Y.Node.create('<div class="inputEx-message"></div>');
+                    el.appendChild(msgDiv);
+                    el.insertBefore(msgDiv, el.query('div.inputEx-br'))
+                }
+                msgDiv.set('innerHTML', msg)
             },
 
             focus:function() {
@@ -283,16 +284,33 @@
                 return this;
             },
             _onfocus:function() {
-                /*var el = this.getEl();
-                 Dom.removeClass(el, 'inputEx-empty');
-                 Dom.addClass(el, 'inputEx-focused');*/
-
+                this.get('el').removeClass('inputEx-empty')
+                this.get('el').addClass('inputEx-focused')
             },
             _onblur:function() {
-                //Dom.removeClass(this.getEl(), 'inputEx-focused');
+                this.get('el').removeClass('inputEx-focused')
+                this._setClassFromState();
+            },
+            __setClassFromState:function() {
 
-                // Call setClassFromState on Blur
-                //this.setClassFromState();
+            },
+            getStateString: function(state) {
+                if (state == inputEx.stateRequired) {
+                    return this.options.messages.required;
+                }
+                else if (state == inputEx.stateInvalid) {
+                    return this.options.messages.invalid;
+                }
+                else {
+                    return '';
+                }
+            },
+            getState: function() {
+                // if the field is empty :
+                if (this.isEmpty()) {
+                    return this.options.required ? inputEx.stateRequired : inputEx.stateEmpty;
+                }
+                return this.validate() ? inputEx.stateValid : inputEx.stateInvalid;
             },
             show:function() {
                 this.get('el').setStyle('display', '')
@@ -303,13 +321,18 @@
                 this.get('el').setStyle('display', 'none')
                 return this;
             },
+
             enable:function() {
-                this.get('el').set('disabled', false);
+                var el = this.get('el'), id = el.getAttribute('id')
+                var field = el.query('#' + id + '-field')
+                if (field) field.set('disabled', false);
                 return this;
             },
 
             disable:function() {
-                this.get('el').set('disabled', true);
+                var el = this.get('el'), id = el.getAttribute('id')
+                var field = el.query('#' + id + '-field')
+                if (field) field.set('disabled', true);
                 return this;
             },
 
@@ -385,66 +408,7 @@
  },
 
  */
-/**
- * Set the styles for valid/invalide state
- */
-/*
- setClassFromState: function() {
 
- // remove previous class
- if( this.previousState ) {
- // remove invalid className for both required and invalid fields
- var className = 'inputEx-'+((this.previousState == inputEx.stateRequired) ? inputEx.stateInvalid : this.previousState)
- Dom.removeClass(this.divEl, className);
- }
-
- // add new class
- var state = this.getState();
- if( !(state == inputEx.stateEmpty && Dom.hasClass(this.divEl, 'inputEx-focused') ) ) {
- // add invalid className for both required and invalid fields
- var className = 'inputEx-'+((state == inputEx.stateRequired) ? inputEx.stateInvalid : state)
- Dom.addClass(this.divEl, className );
- }
-
- if(this.options.showMsg) {
- this.displayMessage( this.getStateString(state) );
- }
-
- this.previousState = state;
- },
-
- */
-/**
- * Get the string for the given state
- */
-/*
- getStateString: function(state) {
- if(state == inputEx.stateRequired) {
- return this.options.messages.required;
- }
- else if(state == inputEx.stateInvalid) {
- return this.options.messages.invalid;
- }
- else {
- return '';
- }
- },
-
- */
-/**
- * Returns the current state (given its value)
- * @return {String} One of the following states: 'empty', 'required', 'valid' or 'invalid'
- */
-/*
- getState: function() {
- // if the field is empty :
- if( this.isEmpty() ) {
- return this.options.required ? inputEx.stateRequired : inputEx.stateEmpty;
- }
- return this.validate() ? inputEx.stateValid : inputEx.stateInvalid;
- },
-
- */
 /**
  * onChange event handler
  * @param {Event} e The original 'change' event
