@@ -342,6 +342,8 @@
                         if (i != 0) { htmlMsg += '<br/>'}
                         htmlMsg += m;
                     }
+                } else if (Y.Lang.isString(msg)) {
+                    htmlMsg = msg;
                 }
 
                 var msgDiv = el.query('div.inputEx-message');
@@ -476,45 +478,50 @@
              * validate only on 'field:change'
              */
             validate: function() {
-                if (!this.getField()) return; //no validation before the field is rendered
-                var value = this.getField().get('value'), result = true, violations = [];
+                try {
+                    if (!this.getField()) return; //no validation before the field is rendered
+                    var value = this.getField().get('value'), result = true, violations = [];
 
-                if (this.get('validator')) {
-                    Y.each(this.get('validator'), function(rule) {
-                        var rulePassed = true;
-                        if (!Y.Lang.isUndefined(rule.required) && rule.required) {
-                            rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
-                        } else if (rule.regex || rule.regexp) {
-                            var regex = rule.regex ? rule.regex : rule.regexp;
-                            rulePassed = value.match(regex);
-                        } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
-                            if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = (value.length >= rule.minLength)
-                            if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = (value.length <= rule.maxLength)
+                    if (this.get('validator')) {
+                        Y.each(this.get('validator'), function(rule) {
+                            var rulePassed = true;
+                            if (!Y.Lang.isUndefined(rule.required) && rule.required) {
+                                rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
+                            } else if (rule.regex || rule.regexp) {
+                                var regex = rule.regex ? rule.regex : rule.regexp;
+                                rulePassed = value.match(regex);
+                            } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
+                                if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = rulePassed && (value.length >= rule.minLength)
+                                if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = rulePassed && (value.length <= rule.maxLength)
+                            } else {
+                                Y.log(this + '.validate() - Field - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
+                            }
+                            if (!rulePassed) {
+                                violations.push(rule)
+                                Y.log(this + '.validate() - Field - failed validation rule: ' + Y.JSON.stringify(rule), 'info', 'inputEx');
+                            }
+                            result = result && rulePassed;
+                        })
+                    }
 
-                        } else {
-                            Y.log(this + '.validate() - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
-                        }
-                        if (!rulePassed) {
-                            violations.push(rule)
-                            Y.log(this + '.validate() - failed validation rule: ' + Y.JSON.stringify(rule), 'info', 'inputEx');
-                        }
-                        result = result && rulePassed;
-                    })
+                    this._violations = violations;
+                    if (this._violations.length > 0) {
+                        var messages = []
+                        Y.each(violations, function(v, k, obj) {
+                            var violation = obj[0]
+                            var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
+                            messages.push(message)
+                        })
+                        this.displayMessage(messages);
+                        this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
+                    } else {
+                        this.displayMessage('')
+                    }
+                    Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
+                    return result;
+                } catch(e) {
+                    Y.log(this + '.validate() - Field - e: ' + e, 'error', 'inputEx');
                 }
-
-                this._violations = violations;
-                if (this._violations.length > 0) {
-                    var messages = []
-                    Y.each(violations, function(v, k, obj) {
-                        var violation = obj[0]
-                        var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
-                        messages.push(message)
-                    })
-                    this.displayMessage(messages);
-                    this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
-                }
-                Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((violations.length == 0) ? 'passed all validation rule(s)' : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
-                return result;
             },
 
             /**
