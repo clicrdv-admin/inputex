@@ -16,3 +16,18 @@ log changes to annouce to users about the update
     - in general, except getter, the other method are likely to support chaining
     
 4. Some public methods are made private as _xxx: function(){}
+
+5. for YUI3, all HTMLElement are wrapped by a Y.Node, you don't directly use any HTMLElement
+
+6. *** In inputEx-YUI2, there are 'el' and 'divEl',
+    - el refer to the field element, such as <input ... >
+    - divEl refer to the top level div wrapper
+
+    in inputEx-YUI3, 'el' is mistakenly translated to the top level div element!!! instead of the field element
+    TODO: review the naming
+
+     - a getField() method is provided to get the Field node if available.
+
+
+7. inputEx.cn and sn are removed for Y.Node.create()
+    - sn is perhaps still needed

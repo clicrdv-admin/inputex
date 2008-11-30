@@ -30,7 +30,25 @@
              * @type Event.Custom
              * //TODO consider to pass the field as param
              */
-                EV_RENDER = 'field:render'
+                EV_RENDER = 'field:render',
+            /**
+             * @event field:focus
+             * @description
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} node
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_FOCUS = 'field:focus',
+            /**
+             * @event field:blur
+             * @description
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} node
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_BLUR = 'field:blur'
         /**
          * @class Field
          * @extends Base
@@ -40,7 +58,9 @@
             Field.superclass.constructor.apply(this, arguments);
             this.publish(EV_UPDATE);
             this.publish(EV_RENDER);
-            //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this); 
+            this.publish(EV_FOCUS);
+            this.publish(EV_BLUR);
+            //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this);
         };
         Y.augment(Field, Y.Event.Target);
 
@@ -103,12 +123,14 @@
              */
             value:{
                 set:function(v) {
-                    if (!Y.Lang.isUndefined(this.get('value')))
+                    if (!Y.Lang.isUndefined(this.get('value'))) { // skip the inital set value
                         Y.log(this + '.set("value") - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
-                    //TODO set value
+                    }
+                    this._setClassFromState()
                     this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
-                }
+                },
+                value:''
             },
 
             /**
@@ -214,9 +236,8 @@
         }
 
         Y.extend(Field, Y.Base, {
-            _state:{},
             initializer : function(cfg) {
-                Y.log(this + '.initializer() - initialized', 'debug', 'inputEx');
+                Y.log(this + '.initializer() - Field initialized', 'debug', 'inputEx');
             },
 
             render:function() {
@@ -291,27 +312,87 @@
                 this.get('el').focus();
                 return this;
             },
+
+            /**
+             * Remarks: New API
+             */
+            getField:function() {
+                var fieldEl;
+                var el = this.get('el')
+                if (el) { fieldEl = el.query('#' + this.get('el').get('id') + '-field'); }
+                if (!fieldEl) { Y.log(this + '.getField() - return undefined', 'warn', 'inputEx'); }
+                return fieldEl;
+            },
+
             _onFocus:function() {
                 this.get('el').removeClass('inputEx-empty')
                 this.get('el').addClass('inputEx-focused')
+                this.fire(EV_FOCUS, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+                Y.log(this + '._onFocus() - Field', 'debug', 'inputEx');
             },
+
             _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
                 this._setClassFromState();
+                this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+                Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
             },
+
+            _previousState:null,
+
+            /**
+             * Set the styles for valid/invalide state. This is called in upon the following events:
+             *  - when the field value is updated
+             *  - onblur
+             *
+             */
             _setClassFromState:function() {
-                Y.log(this + '._setClassFromState() - under dev', 'info', 'inputEx');
+                // remove previous class
+                if (this.previousState) {
+                    // remove invalid className for both required and invalid fields
+                    var className = 'inputEx-' + ((this.previousState == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : this.previousState)
+                    this.get('el').removeClass(className);
+                }
+
+                // add new class
+                var state = this.getState();
+                if (!(state == Y.inputEx.stateEmpty && this.get('el').hasClass('inputEx-focused') )) {
+                    // add invalid className for both required and invalid fields
+                    var className = 'inputEx-' + ((state == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : state)
+                    this.get('el').addClass(className);
+                }
+
+                if (this.get('showMsg')) {
+                    this.displayMessage(this.getStateString(state));
+                }
+
+                Y.log(this + '._setClassFromState() - previousState: ' + this.previousState + ', state: ' + state, 'debug', 'inputEx');
+                this.previousState = state;
             },
-            getStateString: function(state) {
-                if (state == inputEx.stateRequired) { return this.options.messages.required; }
-                else if (state == inputEx.stateInvalid) { return this.options.messages.invalid; }
-                else { return ''; }
-            },
+
+            /**
+             * Returns the current state (given its value)
+             * @return {String} One of the following states: 'empty', 'required', 'valid' or 'invalid'
+             */
             getState: function() {
                 // if the field is empty :
-                if (this.isEmpty()) { return this.options.required ? inputEx.stateRequired : inputEx.stateEmpty; }
-                return this.validate() ? inputEx.stateValid : inputEx.stateInvalid;
+                if (this.isEmpty()) { return this.get('required') ? Y.inputEx.stateRequired : Y.inputEx.stateEmpty; }
+                return this.validate() ? Y.inputEx.stateValid : Y.inputEx.stateInvalid;
             },
+
+            /**
+             * Get the string for the given state
+             */
+            getStateString: function(state) {
+                if (state == Y.inputEx.stateRequired) {
+                    return this.get('messages').required;
+                } else if (state == Y.inputEx.stateInvalid) {
+                    return this.get('messages').invalid;
+                } else {
+                    return '';
+                }
+            },
+
             show:function() {
                 this.get('el').setStyle('display', '')
                 return this;
@@ -323,20 +404,19 @@
             },
 
             enable:function() {
-                var el = this.get('el'), id = el.getAttribute('id')
-                var field = el.query('#' + id + '-field')
+                var field = this.getField();
                 if (field) field.set('disabled', false);
                 return this;
             },
 
             disable:function() {
-                var el = this.get('el'), id = el.getAttribute('id')
-                var field = el.query('#' + id + '-field')
+                var field = this.getField();
                 if (field) field.set('disabled', true);
                 return this;
             },
 
             validate: function() { return true; },
+
             /**
              * Clear the field by setting the field value to this.options.value
              * @param {boolean} [sendUpdatedEvt] (optional) Wether this clear should fire the updatedEvt or not (default is true, pass false to NOT send the event)
@@ -354,9 +434,13 @@
             getEl: function() { return this.get('el'); },
 
             /**
-             * Convenient method for Y.Lang.isEmpty(field.get('value'))
+             * Should return true if empty
              */
-            isEmpty:function() { return Y.Lang.isEmpty(this.get('value')); },
+            isEmpty: function() {
+                var result = this.get('value') === '';
+                //Y.log(this + '.isEmpty() - ' + result, 'debug', 'inputEx')
+                return result;
+            },
 
             destructor : function() {
                 /*var el = this.getEl();
@@ -377,7 +461,7 @@
 
         Y.namespace('inputEx');
         Y.inputEx.Field = Field;
-    }, '3.0.0pr1', {requires:['base', 'node']});
+    }, '3.0.0pr1', {requires:['inputex','base', 'node']});
     //}, '3.0.0pr1', {requires:['base', 'io', 'node', 'json','queue']});
 
 

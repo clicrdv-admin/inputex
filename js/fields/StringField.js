@@ -24,7 +24,26 @@
             type:{value:'text',readOnly:true},
             size:{value:null},
             maxLength:{value:null},
-            typeInvite:{value:''},
+            typeInvite:{
+                set:function(v) {
+                    if (!this._typeInviteSubscriber) {
+                        this._typeInviteSubscriber = function() {
+                            this._updateTypeInvite();
+                        }
+                    }
+
+                    if (v && v !== '') {
+                        this.on('field:render', this._typeInviteSubscriber, this)
+                        this.on('field:focus', this._typeInviteSubscriber, this)
+                        this.on('field:blur', this._typeInviteSubscriber, this)
+                    } else {
+                        this.unsubscribe('field:render', this._typeInviteSubscriber, this)
+                        this.unsubscribe('field:focus', this._typeInviteSubscriber, this)
+                        this.unsubscribe('field:blur', this._typeInviteSubscriber, this)
+                    }
+                },
+                value:''
+            },
             readonly:{value:false},
 
             /**
@@ -44,6 +63,12 @@
         };
 
         Y.extend(StringField, Y.inputEx.Field, {
+            _typeInviteSubscriber:null,
+
+            initializer : function(cfg) {
+                Y.log(this + '.initializer() - StringField initialized', 'debug', 'inputEx');
+            },
+
             renderComponent:function(parentEl) {
                 try {
                     var el = parentEl ? parentEl : this.get('el'), id = this.get('el').get('id');
@@ -98,40 +123,29 @@
                 return result;
             },
 
-            updateTypeInvite: function() {
-                // field not focused
-                /*if (!Dom.hasClass(this.divEl, "inputEx-focused")) {
-
-                    // show type invite if field is empty
-                    if (this.isEmpty()) {
-                        Dom.addClass(this.divEl, "inputEx-typeInvite");
-                        this.el.value = this.options.typeInvite;
-
+            _updateTypeInvite: function() {
+                if (!this.get('el').hasClass('inputEx-focused')) {
+                    if (this.isEmpty()) {// show type invite if field is empty
+                        this.get('el').addClass('inputEx-typeInvite');
+                        this.getField().set('value', this.get('typeInvite')); //TODO see if we should use this.set('value') instead
                         // important for setValue to work with typeInvite
                     } else {
-                        Dom.removeClass(this.divEl, "inputEx-typeInvite");
+                        this.get('el').removeClass('inputEx-typeInvite');
                     }
-
-                    // field focused : remove type invite
                 } else {
-                    if (Dom.hasClass(this.divEl, "inputEx-typeInvite")) {
-                        // remove text
-                        this.el.value = "";
-
-                        // remove the "empty" state and class
-                        this.previousState = null;
-                        Dom.removeClass(this.divEl, "inputEx-typeInvite");
+                    if (this.get('el').hasClass('inputEx-typeInvite')) {
+                        this.getField().set('value', ''); // remove test
+                        this.previousState = null; // remove the "empty" state and class
+                        this.get('el').removeClass('inputEx-typeInvite');
                     }
-                }*/
-            },
-
-            _onFocus:function() {
-                StringField.superclass._onFocus.apply(this, arguments);
-
-                if (this.get('typeInvite')) {
-                    this.updateTypeInvite();
                 }
             },
+
+/*
+            _onFocus:function() {
+                StringField.superclass._onFocus.apply(this, arguments);
+            },
+*/
 
             _onChange:function(evt, oldVal) {
                 alert('from ' + oldVal + ' to ' + this.get('value'))
@@ -215,22 +229,7 @@
  },
 
  */
-/**
- * Return (stateEmpty|stateRequired)
- */
-/*
- getState: function() {
- var val = this.getValue();
 
- // if the field is empty :
- if( val === '') {
- return this.options.required ? inputEx.stateRequired : inputEx.stateEmpty;
- }
-
- return this.validate() ? inputEx.stateValid : inputEx.stateInvalid;
- },
-
- */
 /**
  * Add the minLength string message handling
  */

@@ -47,6 +47,10 @@ what it is intended to cover.
     - all attribute shall be docs
     - if a description has nothing meaning, e.g. "this is a field", just skip the comment line, write sth meaningful
 
+
+7. Changed implementation to use events
+    - for updateTypeInvite, instead of 
+
 General YUI/JavaScript notes:
   - use doctype, YUI may behave differently with different doctype 
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

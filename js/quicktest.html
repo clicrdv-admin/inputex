@@ -18,14 +18,15 @@
 //            var global = new Y.inputEx.Global()
             var field = new Y.inputEx.StringField({
                 name:'hello',
-                value:'default',
+                //value:'default',
                 parentEl:'test',
                 el:'field1',
                 required:true,
                 label:'this is a test field',
+                typeInvite: 'please enter some data', size: 60,
                 description:'this field is for demonstration purpose only'});
             field.render();
-            field.displayMessage('hello world');
+           
             /*field.on('updated', function(evt, newVal, oldVal) {
                 alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
             });*/
@@ -43,9 +44,6 @@
             field.set('description','this is a new description')
 
            runTabifier('result','result','HTML')
-
-
-
 
             //alert( Y.get('body') instanceof Y.Node )
 
