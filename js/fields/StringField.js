@@ -25,23 +25,6 @@
             size:{value:null},
             maxLength:{value:null},
             typeInvite:{
-                set:function(v) {
-                    if (!this._typeInviteSubscriber) {
-                        this._typeInviteSubscriber = function() {
-                            this._updateTypeInvite();
-                        }
-                    }
-
-                    if (v && v !== '') {
-                        this.on('field:render', this._typeInviteSubscriber, this)
-                        this.on('field:focus', this._typeInviteSubscriber, this)
-                        this.on('field:blur', this._typeInviteSubscriber, this)
-                    } else {
-                        this.unsubscribe('field:render', this._typeInviteSubscriber, this)
-                        this.unsubscribe('field:focus', this._typeInviteSubscriber, this)
-                        this.unsubscribe('field:blur', this._typeInviteSubscriber, this)
-                    }
-                },
                 value:''
             },
             readonly:{value:false},
@@ -63,10 +46,15 @@
         };
 
         Y.extend(StringField, Y.inputEx.Field, {
-            _typeInviteSubscriber:null,
-
             initializer : function(cfg) {
-                Y.log(this + '.initializer() - StringField initialized', 'debug', 'inputEx');
+                if (this.get('typeInvite')) {
+                    this.on('field:render', this._updateTypeInvite, this)
+                    this.on('field:focus', this._updateTypeInvite, this)
+                    this.on('field:blur', this._updateTypeInvite, this)
+                    Y.log(this + '.initializer() - StringField - initialized - subscribed _updateTypeInvite to render,focus & blur', 'debug', 'inputEx');
+                } else {
+                    Y.log(this + '.initializer() - StringField - initialized', 'debug', 'inputEx');
+                }
             },
 
             renderComponent:function(parentEl) {
@@ -86,13 +74,14 @@
 
                     fieldEl.appendChild(field);
                     el.appendChild(fieldEl);
-                    Y.log(this + '.renderComponent() - done', 'debug', 'inputEx');
+                    Y.log(this + '.renderComponent() - StringField - done', 'debug', 'inputEx');
                 } catch(e) {
-                    Y.log(this + '.renderComponent() - e: ' + e, 'error', 'inputEx');
+                    Y.log(this + '.renderComponent() - StringField - e: ' + e, 'error', 'inputEx');
                 }
             },
 
             _initEvents:function() {
+                StringField.superclass._initEvents.apply(this, arguments);
                 var el = this.get('el'), id = this.get('el').get('id'), field = el.query('#' + id + '-field')
 
                 /*if (Y.UA.ie) { // refer to inputEx-95
@@ -101,8 +90,7 @@
                  field.focus();
                  }}).enable()
                  }*/
-                field.on('focus', Y.bind(this._onFocus, this));
-                field.on('blur', Y.bind(this._onBlur, this));
+
 
                 field.on('change', this._onChange, null, this.get('value')) // null for workaround
                 field.on('keypress', Y.bind(this._onKeyPress, this));
@@ -126,6 +114,7 @@
             _updateTypeInvite: function() {
                 if (!this.get('el').hasClass('inputEx-focused')) {
                     if (this.isEmpty()) {// show type invite if field is empty
+                        Y.log(this + '._updateTypeInvite() - StringField - value is empty, set to typeInvite, value: ' + this.get('value'), 'debug', 'inputEx');
                         this.get('el').addClass('inputEx-typeInvite');
                         this.getField().set('value', this.get('typeInvite')); //TODO see if we should use this.set('value') instead
                         // important for setValue to work with typeInvite
@@ -141,14 +130,14 @@
                 }
             },
 
-/*
-            _onFocus:function() {
-                StringField.superclass._onFocus.apply(this, arguments);
-            },
-*/
+            /*
+             _onFocus:function() {
+             StringField.superclass._onFocus.apply(this, arguments);
+             },
+             */
 
             _onChange:function(evt, oldVal) {
-                alert('from ' + oldVal + ' to ' + this.get('value'))
+                Y.log(this + '._onChange() - StringField - from ' + oldVal + ' to ' + this.get('value'), 'debug', 'inputEx')
             },
             _onKeyPress:function() {
                 // override me

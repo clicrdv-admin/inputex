@@ -107,11 +107,11 @@
                         if (this.get('parentEl')) {
                             this.get('parentEl').appendChild(el);
                         } else {
-                            Y.log(this + '.set("el") - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el, 'warn', 'inputEx');
+                            Y.log(this + '.set("el") - Field - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el, 'warn', 'inputEx');
                         }
 
                     }
-                    Y.log(this + '.set("el") - el: ' + el + ', cfg: ' + cfg + ', parentEl: ' + this.get('parentEl') + ', name: ' + this.get('name'), 'debug', 'inputEx')
+                    Y.log(this + '.set("el") - Field - el: ' + el + ', cfg: ' + cfg + ', parentEl: ' + this.get('parentEl') + ', name: ' + this.get('name'), 'debug', 'inputEx')
                     return el;
                 },
                 value:null,
@@ -122,9 +122,9 @@
              * @type String
              */
             value:{
-                set:function(v) {
+                set:function(v, disableUpdateEvent) {
                     if (!Y.Lang.isUndefined(this.get('value'))) { // skip the inital set value
-                        Y.log(this + '.set("value") - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
+                        Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '", disableUpdateEvent: ' + disableUpdateEvent, 'debug', 'inputEx')
                     }
                     this._setClassFromState()
                     this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
@@ -149,7 +149,7 @@
             label:{
                 set:function(v) {
                     if (!Y.Lang.isUndefined(this.get('label')))
-                        Y.log(this + '.set("label") - updated from "' + this.get('label') + '" to "' + v + '"', 'debug', 'inputEx')
+                        Y.log(this + '.set("label") - Field - updated from "' + this.get('label') + '" to "' + v + '"', 'debug', 'inputEx')
 
                     var labelEl = this.get('el').query('#' + this.get('el').get('id') + '-label')
                     if (labelEl) labelEl.set('innerHTML', v);
@@ -166,7 +166,7 @@
             description:{
                 set:function(v) {
                     if (!Y.Lang.isUndefined(this.get('description')))
-                        Y.log(this + '.set("description") - updated from "' + this.get('description') + '" to "' + v + '"', 'debug', 'inputEx')
+                        Y.log(this + '.set("description") - Field - updated from "' + this.get('description') + '" to "' + v + '"', 'debug', 'inputEx')
                     var descEl = this.get('el').query('#' + this.get('el').get('id') + '-description')
                     if (descEl) descEl.set('innerHTML', v);
                     return v;
@@ -237,7 +237,7 @@
 
         Y.extend(Field, Y.Base, {
             initializer : function(cfg) {
-                Y.log(this + '.initializer() - Field initialized', 'debug', 'inputEx');
+                Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
             render:function() {
@@ -273,21 +273,29 @@
 
                     if (!this._eventInitialized) { this._initEvents();}
 
-                    Y.log(this + '.render() - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
+                    Y.log(this + '.render() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
                     this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
                     return this;
                 } catch(e) {
-                    Y.log(this + '.render() - ' + e, 'error', 'inputEx');
+                    Y.log(this + '.render() - Field - ' + e, 'error', 'inputEx');
                 }
             },
 
             renderComponent:function() {
                 // override me
-                Y.log(this + '.renderComponent() - method should have been overidden!', 'warn', 'inputEx');
+                Y.log(this + '.renderComponent() - Field - method should have been overidden!', 'warn', 'inputEx');
             },
 
             _eventInitialized:false,
             _initEvents:function() {
+                if (this._eventInitialized) return;
+                if (this.getField()) {
+                    this.getField().on('focus', Y.bind(this._onFocus, this));
+                    this.getField().on('blur', Y.bind(this._onBlur, this));
+                    Y.log(this + '.initEvent() - Field - subscribed to focus & blur', 'debug', 'inputEx');
+                } else {
+                    Y.log(this + '.initEvent() - Field - no available field', 'warn', 'inputEx');
+                }
                 this._eventInitialized = true;
             },
 
@@ -304,7 +312,7 @@
                     el.appendChild(msgDiv);
                     el.insertBefore(msgDiv, el.query('div.inputEx-br'))
                 }
-                Y.log(this + '.displayMessage() - from "' + msgDiv.get('innerHTML') + '" to "' + msg + '"', 'debug', 'inputEx')
+                Y.log(this + '.displayMessage() - Field - from "' + msgDiv.get('innerHTML') + '" to "' + msg + '"', 'debug', 'inputEx')
                 msgDiv.set('innerHTML', msg)
             },
 
@@ -320,7 +328,7 @@
                 var fieldEl;
                 var el = this.get('el')
                 if (el) { fieldEl = el.query('#' + this.get('el').get('id') + '-field'); }
-                if (!fieldEl) { Y.log(this + '.getField() - return undefined', 'warn', 'inputEx'); }
+                if (!fieldEl) { Y.log(this + '.getField() - Field - return undefined', 'warn', 'inputEx'); }
                 return fieldEl;
             },
 
@@ -366,7 +374,7 @@
                     this.displayMessage(this.getStateString(state));
                 }
 
-                Y.log(this + '._setClassFromState() - previousState: ' + this.previousState + ', state: ' + state, 'debug', 'inputEx');
+                Y.log(this + '._setClassFromState() - Field - previousState: ' + this.previousState + ', state: ' + state, 'debug', 'inputEx');
                 this.previousState = state;
             },
 
@@ -455,7 +463,7 @@
 
                  // recursively purge element
                  util.Event.purgeElement(el, true);*/
-                Y.log(this + 'destructor() - destroyed', 'debug', 'inputEx');
+                Y.log(this + 'destructor() - Field - destroyed', 'debug', 'inputEx');
             }
         });
 
