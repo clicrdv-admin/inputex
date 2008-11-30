@@ -31,3 +31,19 @@ log changes to annouce to users about the update
 
 7. inputEx.cn and sn are removed for Y.Node.create()
     - sn is perhaps still needed
+
+
+
+To developer
+1. typeInvite
+    - updateTypeInvite is now triggered by custom event. this changes reduces coupling
+    - typeInvite doesn't update the value attribute, it just set the field
+    - TODO onsubmit, it should set the field value to the valie attribute
+    - TODO review this change. is it good to separate the visible field value and the value attribute?!
+        rationale: the reason of change is to utilize the YUI3 attribute mechanism to set the default 'value', and it
+            causes a side effect(benefit?) of separating the field value and attribute value.
+        pro:
+            - we can set a value before a field is rendered
+            - we may display the value differently, e.g. a date is stored as 2008-11-30 but display as Nov 30, 2008
+        con:
+            - upon submit, it needs to update the field, otherwise, typeInvite value may be sent to the server (if there is no validation requirement)

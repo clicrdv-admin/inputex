@@ -169,56 +169,6 @@
  this.updateTypeInvite();
 
  /*
- getValue: function() {
- return (this.options.typeInvite && this.el.value == this.options.typeInvite) ? '' : this.el.value;
- },
-
- */
-/**
- * Function to set the value
- * @param {String} value The new value
- * @param {boolean} [sendUpdatedEvt] (optional) Wether this setValue should fire the updatedEvt or not (default is true, pass false to NOT send the event)
- */
-/*
- setValue: function(value, sendUpdatedEvt) {
- this.el.value = value;
-
- // call parent class method to set style and fire updatedEvt
- inputEx.StringField.superclass.setValue.call(this, value, sendUpdatedEvt);
- },
-
- */
-/**
- * Disable the field
- */
-/*
- disable: function() {
- this.el.disabled = true;
- },
-
- */
-/**
- * Enable the field
- */
-/*
- enable: function() {
- this.el.disabled = false;
- },
-
- */
-/**
- * Set the focus to this field
- */
-/*
- focus: function() {
- // Can't use lang.isFunction because IE >= 6 would say focus is not a function, even if it is !!
- if(!!this.el && !lang.isUndefined(this.el.focus) ) {
- this.el.focus();
- }
- },
-
- */
-
 /**
  * Add the minLength string message handling
  */
