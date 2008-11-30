@@ -3,19 +3,20 @@
 <head>
     <title>Quick Test</title>
     <script type="text/javascript" src="../lib/yui3/yui/yui-min.js"></script>
-    <!--<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.0.0pr1/build/yui/yui-min.js&3.0.0pr1/build/oop/oop-min.js&3.0.0pr1/build/event/event-min.js&3.0.0pr1/build/dom/dom-min.js&3.0.0pr1/build/node/node-min.js&3.0.0pr1/build/io/io-min.js&3.0.0pr1/build/json/json-min.js&3.0.0pr1/build/queue/queue-min.js&3.0.0pr1/build/dump/dump-min.js&3.0.0pr1/build/substitute/substitute-min.js&3.0.0pr1/build/attribute/attribute-min.js&3.0.0pr1/build/base/base-min.js"></script>-->
-    <!--<script type="text/javascript" src="Field.js"></script>-->
+    <!--<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.0.0pr1/build/yui/yui-min.js&3.0.0pr1/build/oop/oop-min.js&3.0.0pr1/build/event/event-min.js&3.0.0pr1/build/dom/dom-min.js&3.0.0pr1/build/node/node-min.js&3.0.0pr1/build/io/io-min.js&3.0.0pr1/build/json/json-min.js&3.0.0pr1/build/queue/queue-min.js&3.0.0pr1/build/dump/dump-min.js&3.0.0pr1/build/substitute/substitute-min.js&3.0.0pr1/build/attribute/attribute-min.js&3.0.0pr1/build/base/base-min.js"></script>--><!--
+    --><!--<script type="text/javascript" src="Field.js"></script>-->
     <script type="text/javascript" src="inputex.js"></script>
     <script type="text/javascript" src="../lib/tabifier/tabifier.js"></script>
+
 </head>
-<body>
+<body class="yui-skin-sam">
 <div id="test"></div>
 <textarea id="result" rows="30" cols="120"></textarea>
 <script type="text/javascript">
-    inputEx.YUI().use('inputex','stringfield', function(Y) { // incl ,'json' if need to use Y.JSON.stringify()
+    inputEx.YUI().use('inputex', 'stringfield', 'json', function(Y) { // 'json' is required for the stringify on this method
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
-//            var global = new Y.inputEx.Global()
+            //            var global = new Y.inputEx.Global()
             var field = new Y.inputEx.StringField({
                 name:'hello',
                 //value:'default',
@@ -26,10 +27,11 @@
                 typeInvite: 'please enter some data', size: 60,
                 description:'this field is for demonstration purpose only'});
             field.render();
-           
+            //field.on('field:change', function(evt) {alert('from "' + evt.details[0] + '" to "' + evt.details[1] + '"')})
+
             /*field.on('updated', function(evt, newVal, oldVal) {
-                alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
-            });*/
+             alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
+             });*/
             //field.set('value', 'new value')
             //alert('el: ' + field.get('el'))
             //Y.get('#test').set('innerHTML', 'parentEl: ' + field.get('parentEl')); //require 'node'
@@ -37,13 +39,13 @@
              field.get('parentEl').set('innerHTML', 'found, el: ' + field.get('el'))
              }*/
             //Y.get('body').appendChild(field.get('el'))
-            var testHTML =Y.Node.get('#test').get('innerHTML')
+            var testHTML = Y.Node.get('#test').get('innerHTML')
             Y.Node.get('#result').set('innerHTML', Y.inputEx.escapeHTML(testHTML))
-            
-            field.set('label','this is a new label')
-            field.set('description','this is a new description')
 
-           runTabifier('result','result','HTML')
+            field.set('label', 'this is a new label')
+            field.set('description', 'this is a new description')
+
+            runTabifier('result', 'result', 'HTML')
 
             //alert( Y.get('body') instanceof Y.Node )
 
@@ -53,6 +55,19 @@
     });
 </script>
 
+<!--
+<p><a href="javascript:
+    var w=window.d=document,l=d.location;
+    if (typeof(YAHOO)=='undefined'){
+        var head=d.getElementsByTagName('head')[0];
+        var _l=d.createElement('link');_l.ref='stylesheet';_l.type='text/css';_l.href='http://yui.yahooapis.com/combo?2.6.0/build/logger/assets/skins/sam/logger.css';head.appendChild(_l);
+        var _s=d.createElement('script');_s.src='http://yui.yahooapis.com/combo?2.6.0/build/yahoo-dom-event/yahoo-dom-event.js&2.6.0/build/dragdrop/dragdrop-min.js&2.6.0/build/logger/logger-min.js';head.appendChild(_s);
+    }
+    var main=function(){
+new YAHOO.widget.LogReader();
+    };
+    var st = function() {if (typeof(YAHOO) === 'undefined') {setTimeout(st, 1000)} else {main()}};st();
+    ">dev</a></p>-->
 
 </body>
 </html>

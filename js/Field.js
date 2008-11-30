@@ -48,7 +48,16 @@
              * @bubbles TODO DUMMY, REMOVE THIS
              * @type Event.Custom
              */
-                EV_BLUR = 'field:blur'
+                EV_BLUR = 'field:blur',
+            /**
+             * @event field:change
+             * @description This is similar to the JavaScript onchange event, with additional handling for the enter keypress in IE
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} node
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_CHANGE = 'field:change'
         /**
          * @class Field
          * @extends Base
@@ -60,6 +69,7 @@
             this.publish(EV_RENDER);
             this.publish(EV_FOCUS);
             this.publish(EV_BLUR);
+            this.publish(EV_CHANGE);
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this);
         };
         Y.augment(Field, Y.Event.Target);
@@ -290,9 +300,10 @@
             _initEvents:function() {
                 if (this._eventInitialized) return;
                 if (this.getField()) {
+                    this.getField().on('change', Y.bind(this._onChange, this));
                     this.getField().on('focus', Y.bind(this._onFocus, this));
                     this.getField().on('blur', Y.bind(this._onBlur, this));
-                    Y.log(this + '.initEvent() - Field - subscribed to focus & blur', 'debug', 'inputEx');
+                    Y.log(this + '.initEvent() - Field - subscribed to change, focus & blur', 'debug', 'inputEx');
                 } else {
                     Y.log(this + '.initEvent() - Field - no available field', 'warn', 'inputEx');
                 }
@@ -335,16 +346,22 @@
             _onFocus:function() {
                 this.get('el').removeClass('inputEx-empty')
                 this.get('el').addClass('inputEx-focused')
-                this.fire(EV_FOCUS, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
                 Y.log(this + '._onFocus() - Field', 'debug', 'inputEx');
+                this.fire(EV_FOCUS, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
                 this._setClassFromState();
                 if (this.get('value') !== this.getField().get('value')) { this.set('value', this.getField().get('value'))}
-                this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
                 Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
+                this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+            },
+
+            _onChange:function() {
+                var oldVal = this.get('value'), newVal = this.getField().get('value');
+                Y.log(this + '._onChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
+                this.fire(EV_CHANGE, oldVal, newVal);//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _previousState:null,

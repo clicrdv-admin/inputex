@@ -90,11 +90,6 @@
                  field.focus();
                  }}).enable()
                  }*/
-
-
-                field.on('change', this._onChange, null, this.get('value')) // null for workaround
-                field.on('keypress', Y.bind(this._onKeyPress, this));
-                field.on('keyup', Y.bind(this._onKeyUp, this));
             },
 
             validate:function() {
@@ -136,9 +131,6 @@
              },
              */
 
-            _onChange:function(evt, oldVal) {
-                Y.log(this + '._onChange() - StringField - from ' + oldVal + ' to ' + this.get('value'), 'debug', 'inputEx')
-            },
             _onKeyPress:function() {
                 // override me
             },
