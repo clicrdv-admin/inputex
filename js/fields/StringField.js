@@ -92,20 +92,6 @@
                  }*/
             },
 
-            validate:function() {
-                // Check regex matching and minLength (both used in password field...)
-                var result = true;
-
-                // if we are using a regular expression
-                if (this.get('regexp')) {
-                    result = result && this.get('value').match(this.get('regexp'));
-                }
-                if (this.get('minLength')) {
-                    result = result && this.get('value').length >= this.get('minLength');
-                }
-                return result;
-            },
-
             _updateTypeInvite: function() {
                 if (!this.get('el').hasClass('inputEx-focused')) {
                     if (this.isEmpty()) {// show type invite if field is empty

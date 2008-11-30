@@ -57,7 +57,16 @@
              * @bubbles TODO DUMMY, REMOVE THIS
              * @type Event.Custom
              */
-                EV_CHANGE = 'field:change'
+                EV_CHANGE = 'field:change',
+            /**
+             * @event field:invalid
+             * @description failed in validation
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} node
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_INVALID = 'field:invalid'
         /**
          * @class Field
          * @extends Base
@@ -70,6 +79,7 @@
             this.publish(EV_FOCUS);
             this.publish(EV_BLUR);
             this.publish(EV_CHANGE);
+            this.publish(EV_INVALID);
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this);
         };
         Y.augment(Field, Y.Event.Target);
@@ -218,6 +228,15 @@
              */
             showMsg:{
                 value:false
+            },
+
+            /**
+             * @attribute validator
+             * @description new in 0.3, see http://code.google.com/p/inputex/wiki/Validation ;
+             * @type object
+             */
+            validator:{
+                value:{}
             }
         };
 
@@ -246,7 +265,10 @@
         }
 
         Y.extend(Field, Y.Base, {
+            _field:null, //reference to the Field node
             initializer : function(cfg) {
+                this.on(EV_CHANGE, this.validate, this)
+                this.on(EV_INVALID, this.displayMessage, this)
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
@@ -268,6 +290,7 @@
                     var fieldDiv = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
                     this.renderComponent(fieldDiv);
+                    this._field = this.getField();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
@@ -311,6 +334,15 @@
             },
 
             displayMessage:function(msg) {
+                if (!msg) {
+                    msg = '';
+                    if (this._violations) {
+                        Y.each(this._violations, function(v) {
+                            msg += v.message
+                        })
+                    }
+
+                }
                 var el = this.get('el')
                 var fieldDiv = el.query('div.inputEx-Field');
                 if (!fieldDiv) {
@@ -336,10 +368,12 @@
              * Remarks: New API
              */
             getField:function() {
+                if (this._field) return this._field;
+
                 var fieldEl;
                 var el = this.get('el')
                 if (el) { fieldEl = el.query('#' + this.get('el').get('id') + '-field'); }
-                if (!fieldEl) { Y.log(this + '.getField() - Field - return undefined', 'warn', 'inputEx'); }
+                //if (!fieldEl) { Y.log(this + '.getField() - Field - return undefined', 'warn', 'inputEx'); }
                 return fieldEl;
             },
 
@@ -403,7 +437,8 @@
             getState: function() {
                 // if the field is empty :
                 if (this.isEmpty()) { return this.get('required') ? Y.inputEx.stateRequired : Y.inputEx.stateEmpty; }
-                return this.validate() ? Y.inputEx.stateValid : Y.inputEx.stateInvalid;
+                return Y.inputEx.stateValid;
+                return this._violations.length ? Y.inputEx.stateInvalid : Y.inputEx.stateValid
             },
 
             /**
@@ -441,7 +476,42 @@
                 return this;
             },
 
-            validate: function() { return true; },
+            _violations:[],
+            /**
+             * validate only on 'field:change'
+             */
+            validate: function() {
+                if (!this.getField()) return; //no validation before the field is rendered
+                var value = this.getField().get('value'), result = true, violations = [];
+
+                if (this.get('validator')) {
+                    Y.each(this.get('validator'), function(rule) {
+                        var rulePassed = true;
+                        if (!Y.Lang.isUndefined(rule.required) && rule.required) {
+                            rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
+                        } else if (rule.regex || rule.regexp) {
+                            var regex = rule.regex ? rule.regex : rule.regexp;
+                            rulePassed = value.match(regex);
+                        } else if (!Y.Lang.isUndefined(rule.minLength)) {
+                            rulePassed = (value.length >= rule.minLength)
+                        } else {
+                            Y.log(this + '.validate() - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
+                        }
+                        if (!rulePassed) {
+                            violations.push(rule)
+                            Y.log(this + '.validate() - failed validation rule: ' + Y.JSON.stringify(rule), 'info', 'inputEx');
+                        }
+                        result = result && rulePassed;
+                    })
+                }
+
+                this._violations = violations;
+                if (!this._violations.length) {
+                    this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
+                }
+                Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((violations.length == 0) ? 'passed all validation rule(s)' : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
+                return result;
+            },
 
             /**
              * Clear the field by setting the field value to this.options.value
@@ -454,10 +524,10 @@
             },
 
             /**
-             * This method is provided for backward compatiability. Please use get('el') instead
+             * This method is provided for backward compatiability. Please use getField() instead
              * @deprecated
              */
-            getEl: function() { return this.get('el'); },
+            getEl: function() { return this.getField(); },
 
             /**
              * Should return true if empty
@@ -487,7 +557,7 @@
 
         Y.namespace('inputEx');
         Y.inputEx.Field = Field;
-    }, '3.0.0pr1', {requires:['inputex','base', 'node']});
+    }, '3.0.0pr1', {requires:['inputex','base', 'node','json']});
     //}, '3.0.0pr1', {requires:['base', 'io', 'node', 'json','queue']});
 
 

@@ -22,12 +22,16 @@
                 //value:'default',
                 parentEl:'test',
                 el:'field1',
-                required:true,
+                validator:[
+                    {required:true,message:'this is a required field'},
+                    {minLength:5,message:'input must have more than 5 characters'}
+                ],
                 label:'this is a test field',
                 typeInvite: 'please enter some data', size: 60,
                 description:'this field is for demonstration purpose only'});
+            field.validate();
             field.render();
-            //field.on('field:change', function(evt) {alert('from "' + evt.details[0] + '" to "' + evt.details[1] + '"')})
+
 
             /*field.on('updated', function(evt, newVal, oldVal) {
              alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
@@ -47,7 +51,6 @@
 
             runTabifier('result', 'result', 'HTML')
 
-            //alert( Y.get('body') instanceof Y.Node )
 
         } catch(e) {
             Y.log(e, 'error', 'inputEx');
