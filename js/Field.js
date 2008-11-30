@@ -243,7 +243,7 @@
         /**
          * Static methods
          */
-        Field.getNode = function(cfg, defaultNde) { //TODO impl defaultNode
+        Field.getNode = function(cfg, defaultNode) { //TODO impl defaultNode
             var node;
             if (Y.Lang.isString(cfg)) {
                 node = Y.Node.get(cfg.charAt(0) == '#' ? cfg : '#' + cfg);
@@ -268,7 +268,6 @@
             _field:null, //reference to the Field node
             initializer : function(cfg) {
                 this.on(EV_CHANGE, this.validate, this)
-                this.on(EV_INVALID, this.displayMessage, this)
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
@@ -334,19 +333,18 @@
             },
 
             displayMessage:function(msg) {
-                if (!msg) {
-                    msg = '';
-                    if (this._violations) {
-                        Y.each(this._violations, function(v) {
-                            msg += v.message
-                        })
-                    }
-
-                }
                 var el = this.get('el')
                 var fieldDiv = el.query('div.inputEx-Field');
                 if (!fieldDiv) {
                     return;
+                }
+
+                var htmlMsg = '';
+                if (Y.Lang.isArray(msg)) {
+                    for (var i = 0,m; m = msg[i]; i++) {
+                        if (i != 0) { htmlMsg += '<br/>'}
+                        htmlMsg += m;
+                    }
                 }
 
                 var msgDiv = el.query('div.inputEx-message');
@@ -355,8 +353,8 @@
                     el.appendChild(msgDiv);
                     el.insertBefore(msgDiv, el.query('div.inputEx-br'))
                 }
-                Y.log(this + '.displayMessage() - Field - from "' + msgDiv.get('innerHTML') + '" to "' + msg + '"', 'debug', 'inputEx')
-                msgDiv.set('innerHTML', msg)
+                Y.log(this + '.displayMessage() - Field - from "' + msgDiv.get('innerHTML') + '" to "' + htmlMsg + '"', 'debug', 'inputEx')
+                msgDiv.set('innerHTML', htmlMsg)
             },
 
             focus:function() {
@@ -506,7 +504,10 @@
                 }
 
                 this._violations = violations;
-                if (!this._violations.length) {
+                if (this._violations.length>0) {
+                    var messages = []
+                    Y.each(violations, function(v) {messages.push(v.message)})
+                    this.displayMessage(messages);
                     this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                 }
                 Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((violations.length == 0) ? 'passed all validation rule(s)' : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
