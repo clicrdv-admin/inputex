@@ -15,3 +15,4 @@ log changes to annouce to users about the update
     - most methods are now return the field instance to support chaining
     - in general, except getter, the other method are likely to support chaining
     
+4. Some public methods are made private as _xxx: function(){}

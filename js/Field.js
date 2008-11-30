@@ -250,6 +250,8 @@
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
 
+                    if (!this._eventInitialized) { this._initEvents();}
+
                     Y.log(this + '.render() - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
                     this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
                     return this;
@@ -261,6 +263,11 @@
             renderComponent:function() {
                 // override me
                 Y.log(this + '.renderComponent() - method should have been overidden!', 'warn', 'inputEx');
+            },
+
+            _eventInitialized:false,
+            _initEvents:function() {
+                this._eventInitialized = true;
             },
 
             displayMessage:function(msg) {
@@ -276,6 +283,7 @@
                     el.appendChild(msgDiv);
                     el.insertBefore(msgDiv, el.query('div.inputEx-br'))
                 }
+                Y.log(this + '.displayMessage() - from "' + msgDiv.get('innerHTML') + '" to "' + msg + '"', 'debug', 'inputEx')
                 msgDiv.set('innerHTML', msg)
             },
 
@@ -283,11 +291,11 @@
                 this.get('el').focus();
                 return this;
             },
-            _onfocus:function() {
+            _onFocus:function() {
                 this.get('el').removeClass('inputEx-empty')
                 this.get('el').addClass('inputEx-focused')
             },
-            _onblur:function() {
+            _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
                 this._setClassFromState();
             },
@@ -295,21 +303,13 @@
 
             },
             getStateString: function(state) {
-                if (state == inputEx.stateRequired) {
-                    return this.options.messages.required;
-                }
-                else if (state == inputEx.stateInvalid) {
-                    return this.options.messages.invalid;
-                }
-                else {
-                    return '';
-                }
+                if (state == inputEx.stateRequired) { return this.options.messages.required; }
+                else if (state == inputEx.stateInvalid) { return this.options.messages.invalid; }
+                else { return ''; }
             },
             getState: function() {
                 // if the field is empty :
-                if (this.isEmpty()) {
-                    return this.options.required ? inputEx.stateRequired : inputEx.stateEmpty;
-                }
+                if (this.isEmpty()) { return this.options.required ? inputEx.stateRequired : inputEx.stateEmpty; }
                 return this.validate() ? inputEx.stateValid : inputEx.stateInvalid;
             },
             show:function() {
@@ -336,9 +336,7 @@
                 return this;
             },
 
-            validate: function() {
-                return true;
-            },
+            validate: function() { return true; },
             /**
              * Clear the field by setting the field value to this.options.value
              * @param {boolean} [sendUpdatedEvt] (optional) Wether this clear should fire the updatedEvt or not (default is true, pass false to NOT send the event)
@@ -353,16 +351,12 @@
              * This method is provided for backward compatiability. Please use get('el') instead
              * @deprecated
              */
-            getEl: function() {
-                return this.get('el');
-            },
+            getEl: function() { return this.get('el'); },
 
             /**
              * Convenient method for Y.Lang.isEmpty(field.get('value'))
              */
-            isEmpty:function() {
-                return Y.Lang.isEmpty(this.get('value'));
-            },
+            isEmpty:function() { return Y.Lang.isEmpty(this.get('value')); },
 
             destructor : function() {
                 /*var el = this.getEl();

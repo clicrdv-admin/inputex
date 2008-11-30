@@ -67,6 +67,24 @@
                 }
             },
 
+            _initEvents:function() {
+                var el = this.get('el'), id = this.get('el').get('id'), field = el.query('#' + id + '-field')
+                field.on('change', this._onchange, null, this.get('value')) // null for workaround
+
+                if (Y.UA.ie) { // refer to inputEx-95
+                    new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
+                        field.blur();
+                        field.focus();
+                    }}).enable()
+                }
+/*
+                Event.addFocusListener(this.el, this.onFocus, this, true);
+                Event.addBlurListener(this.el, this.onBlur, this, true);
+
+                Event.addListener(this.el, "keypress", this.onKeyPress, this, true);
+                Event.addListener(this.el, "keyup", this.onKeyUp, this, true);*/
+            },
+
             validate:function() {
                 // Check regex matching and minLength (both used in password field...)
                 var result = true;
@@ -81,8 +99,8 @@
                 return result;
             },
 
-            _onchange:function() {
-
+            _onchange:function(evt, oldVal) {
+                alert('from ' + oldVal + ' to ' + this.get('value'))
             }
         });
 
