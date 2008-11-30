@@ -299,8 +299,8 @@
                 this.get('el').removeClass('inputEx-focused')
                 this._setClassFromState();
             },
-            __setClassFromState:function() {
-
+            _setClassFromState:function() {
+                Y.log(this + '._setClassFromState() - under dev', 'info', 'inputEx');
             },
             getStateString: function(state) {
                 if (state == inputEx.stateRequired) { return this.options.messages.required; }

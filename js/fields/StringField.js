@@ -24,7 +24,7 @@
             type:{value:'text',readOnly:true},
             size:{value:null},
             maxLength:{value:null},
-            typeInvite:{value:null},
+            typeInvite:{value:''},
             readonly:{value:false},
 
             /**
@@ -69,20 +69,19 @@
 
             _initEvents:function() {
                 var el = this.get('el'), id = this.get('el').get('id'), field = el.query('#' + id + '-field')
-                field.on('change', this._onchange, null, this.get('value')) // null for workaround
 
-                if (Y.UA.ie) { // refer to inputEx-95
-                    new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
-                        field.blur();
-                        field.focus();
-                    }}).enable()
-                }
-/*
-                Event.addFocusListener(this.el, this.onFocus, this, true);
-                Event.addBlurListener(this.el, this.onBlur, this, true);
+                /*if (Y.UA.ie) { // refer to inputEx-95
+                 new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
+                 field.blur();
+                 field.focus();
+                 }}).enable()
+                 }*/
+                field.on('focus', Y.bind(this._onFocus, this));
+                field.on('blur', Y.bind(this._onBlur, this));
 
-                Event.addListener(this.el, "keypress", this.onKeyPress, this, true);
-                Event.addListener(this.el, "keyup", this.onKeyUp, this, true);*/
+                field.on('change', this._onChange, null, this.get('value')) // null for workaround
+                field.on('keypress', Y.bind(this._onKeyPress, this));
+                field.on('keyup', Y.bind(this._onKeyUp, this));
             },
 
             validate:function() {
@@ -99,8 +98,56 @@
                 return result;
             },
 
-            _onchange:function(evt, oldVal) {
+            updateTypeInvite: function() {
+                // field not focused
+                /*if (!Dom.hasClass(this.divEl, "inputEx-focused")) {
+
+                    // show type invite if field is empty
+                    if (this.isEmpty()) {
+                        Dom.addClass(this.divEl, "inputEx-typeInvite");
+                        this.el.value = this.options.typeInvite;
+
+                        // important for setValue to work with typeInvite
+                    } else {
+                        Dom.removeClass(this.divEl, "inputEx-typeInvite");
+                    }
+
+                    // field focused : remove type invite
+                } else {
+                    if (Dom.hasClass(this.divEl, "inputEx-typeInvite")) {
+                        // remove text
+                        this.el.value = "";
+
+                        // remove the "empty" state and class
+                        this.previousState = null;
+                        Dom.removeClass(this.divEl, "inputEx-typeInvite");
+                    }
+                }*/
+            },
+
+            _onFocus:function() {
+                StringField.superclass._onFocus.apply(this, arguments);
+
+                if (this.get('typeInvite')) {
+                    this.updateTypeInvite();
+                }
+            },
+
+            _onChange:function(evt, oldVal) {
                 alert('from ' + oldVal + ' to ' + this.get('value'))
+            },
+            _onKeyPress:function() {
+                // override me
+            },
+            _onKeyUp:function() {
+                // override me
+                //
+                //   example :
+                //
+                //   lang.later(0, this, this.setClassFromState);
+                //
+                //     -> Set style immediatly when typing in the field
+                //     -> Call setClassFromState escaping the stack (after the event has been fully treated, because the value has to be updated)
             }
         });
 
@@ -118,30 +165,7 @@
  if(this.options.typeInvite) {
  this.updateTypeInvite();
 
- initEvents: function() {
- Event.addListener(this.el, "change", this.onChange, this, true);
-
- if (YAHOO.env.ua.ie){ // refer to inputEx-95
- var field = this.el;
- new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function(){
- field.blur();
- field.focus();
- }}).enable()
- }
-
- Event.addFocusListener(this.el, this.onFocus, this, true);
- Event.addBlurListener(this.el, this.onBlur, this, true);
-
- Event.addListener(this.el, "keypress", this.onKeyPress, this, true);
- Event.addListener(this.el, "keyup", this.onKeyUp, this, true);
- },
-
- */
-/**
- * Return the string value
- * @param {String} The string value
- */
-/*
+ /*
  getValue: function() {
  return (this.options.typeInvite && this.el.value == this.options.typeInvite) ? '' : this.el.value;
  },
@@ -232,73 +256,6 @@
  }
  },
 
- updateTypeInvite: function() {
-
- // field not focused
- if (!Dom.hasClass(this.divEl, "inputEx-focused")) {
-
- // show type invite if field is empty
- if(this.isEmpty()) {
- Dom.addClass(this.divEl, "inputEx-typeInvite");
- this.el.value = this.options.typeInvite;
-
- // important for setValue to work with typeInvite
- } else {
- Dom.removeClass(this.divEl, "inputEx-typeInvite");
- }
-
- // field focused : remove type invite
- } else {
- if(Dom.hasClass(this.divEl,"inputEx-typeInvite")) {
- // remove text
- this.el.value = "";
-
- // remove the "empty" state and class
- this.previousState = null;
- Dom.removeClass(this.divEl,"inputEx-typeInvite");
- }
- }
- },
-
- */
-/**
- * Clear the typeInvite when the field gains focus
- */
-/*
- onFocus: function(e) {
- inputEx.StringField.superclass.onFocus.call(this,e);
-
- if(this.options.typeInvite) {
- this.updateTypeInvite();
- }
- },
-
- onKeyPress: function(e) {
- // override me
- },
-
- onKeyUp: function(e) {
- // override me
- //
- //   example :
- //
- //   lang.later(0, this, this.setClassFromState);
- //
- //     -> Set style immediatly when typing in the field
- //     -> Call setClassFromState escaping the stack (after the event has been fully treated, because the value has to be updated)
- }
-
- });
-
-
  inputEx.messages.stringTooShort = ["This field should contain at least "," numbers or characters"];
 
- */
-/**
- * Register this class as "string" type
- */
-/*
- inputEx.registerType("string", inputEx.StringField);
-
- })();
  */
