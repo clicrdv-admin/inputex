@@ -122,9 +122,9 @@
              * @type String
              */
             value:{
-                set:function(v, disableUpdateEvent) {
+                set:function(v) {
                     if (!Y.Lang.isUndefined(this.get('value'))) { // skip the inital set value
-                        Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '", disableUpdateEvent: ' + disableUpdateEvent, 'debug', 'inputEx')
+                        Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     }
                     this._setClassFromState()
                     this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
@@ -342,6 +342,7 @@
             _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
                 this._setClassFromState();
+                if (this.get('value') !== this.getField().get('value')) { this.set('value', this.getField().get('value'))}
                 this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
                 Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
             },
