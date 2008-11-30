@@ -24,7 +24,7 @@
                 el:'field1',
                 validator:[
                     {required:true,message:'this is a required field'},
-                    {minLength:5,message:'input must have more than 5 characters'}
+                    {minLength:5,maxLength:10,message:'input length must be between {minLength} and {maxLength} characters'}
                 ],
                 label:'this is a test field',
                 typeInvite: 'please enter some data', size: 60,
@@ -50,7 +50,6 @@
             field.set('description', 'this is a new description')
 
             runTabifier('result', 'result', 'HTML')
-
 
         } catch(e) {
             Y.log(e, 'error', 'inputEx');

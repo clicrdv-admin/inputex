@@ -212,23 +212,20 @@
             },
 
             /**
+             * @deprecated use validator:{required:true}
              * @attribute required
              * @description for validation, true if the field is mandatory and cannot be null or empty string. It will
              * be replaced with a validator implementation in future version
              * @type Boolean
              */
-            required:{
-                value:false
-            },
+            required:{value:false},
 
             /**
              * @attribute showMsg
              * @description ???
              * @type Boolean
              */
-            showMsg:{
-                value:false
-            },
+            showMsg:{value:false},
 
             /**
              * @attribute validator
@@ -490,8 +487,10 @@
                         } else if (rule.regex || rule.regexp) {
                             var regex = rule.regex ? rule.regex : rule.regexp;
                             rulePassed = value.match(regex);
-                        } else if (!Y.Lang.isUndefined(rule.minLength)) {
-                            rulePassed = (value.length >= rule.minLength)
+                        } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
+                            if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = (value.length >= rule.minLength)
+                            if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = (value.length <= rule.maxLength)
+
                         } else {
                             Y.log(this + '.validate() - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
                         }
@@ -504,9 +503,13 @@
                 }
 
                 this._violations = violations;
-                if (this._violations.length>0) {
+                if (this._violations.length > 0) {
                     var messages = []
-                    Y.each(violations, function(v) {messages.push(v.message)})
+                    Y.each(violations, function(v, k, obj) {
+                        var violation = obj[0]
+                        var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
+                        messages.push(message)
+                    })
                     this.displayMessage(messages);
                     this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                 }
