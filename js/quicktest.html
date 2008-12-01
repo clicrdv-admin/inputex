@@ -13,11 +13,12 @@
 <div id="test"></div>
 <textarea id="result" rows="30" cols="120"></textarea>
 <script type="text/javascript">
+    var field;
     inputEx.YUI().use('inputex', 'stringfield', 'json', function(Y) { // 'json' is required for the stringify on this method
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
             //            var global = new Y.inputEx.Global()
-            var field = new Y.inputEx.StringField({
+            field = new Y.inputEx.StringField({
                 name:'hello',
                 //value:'default',
                 parentEl:'test',
@@ -56,7 +57,9 @@
         }
     });
 </script>
-
+<div style="position:absolute; right:0; top:0; margin:10px">
+<a href="javascript:alert(field.get('value'));">getValue()</a>
+    </div>
 <!--
 <p><a href="javascript:
     var w=window.d=document,l=d.location;

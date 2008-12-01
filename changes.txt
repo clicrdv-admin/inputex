@@ -52,3 +52,6 @@ To developer
             - we may display the value differently, e.g. a date is stored as 2008-11-30 but display as Nov 30, 2008
         con:
             - upon submit, it needs to update the field, otherwise, typeInvite value may be sent to the server (if there is no validation requirement)
+
+2. getState()
+    - it doesn't perform validation now, but return a state base on the last validation result

@@ -422,14 +422,26 @@
             },
 
             /**
-             * Returns the current state (given its value)
+             * Returns the current state base on the last validation results.
+             *
              * @return {String} One of the following states: 'empty', 'required', 'valid' or 'invalid'
              */
             getState: function() {
-                // if the field is empty :
-                if (this.isEmpty()) { return this.get('required') ? Y.inputEx.stateRequired : Y.inputEx.stateEmpty; }
-                return Y.inputEx.stateValid;
-                return this._violations.length ? Y.inputEx.stateInvalid : Y.inputEx.stateValid
+                var state;
+
+                if (this.isEmpty()) { //TODO MF: better to set the state upon validation
+                    var required = false;
+                    if (this._violations) {
+                        Y.each(this._violations, function(violation) {
+                            if (Y.Lang.isUndefined(violation.required) && violation.required) { required = true}
+                        })
+                    }
+                    state = required ? Y.inputEx.stateRequired : Y.inputEx.stateEmpty;
+                } else {
+                    state = this._violations.length == 0 ? Y.inputEx.stateValid : Y.inputEx.stateInvalid;
+                }
+                Y.log(this + '.getState() - Field - state: ' + state, 'debug', 'inputEx');
+                return state;
             },
 
             /**
@@ -471,7 +483,11 @@
              * _state.validated - indicate the field has been validated. it doesn't mean it is valid.
              */
             _state:{validated:false},
+            /**
+             * store a full copy of any violated validation rule(s). Before validate() is called, it's an empty array.
+             */
             _violations:[],
+
             /**
              * validate only on 'field:change'
              */
