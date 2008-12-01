@@ -181,7 +181,7 @@ if (typeof(inputEx) === 'undefined') {
         }
 
 
-    }, '3.0.0pr1', {use:['field','stringfield'],skinnable:true}); //TODO don't know what the 'use' exactly do
+    }, '3.0.0pr1', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
 })());
 
 /*

@@ -477,8 +477,10 @@
                         var messages = [];
                         Y.each(this._violations, function(v, k, obj) {
                             var violation = obj[0]
-                            var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
-                            messages.push(message)
+                            if (v.message) {
+                                var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
+                                messages.push(message)
+                            }
                         })
                         result = messages
                         break;
