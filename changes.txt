@@ -43,7 +43,10 @@ log changes to annouce to users about the update
         there is validation error'}. User may choose to define a global message without message for individual rules.
     - validator supports per validation rule message, e.g. {required:true,'this field is required'}
     - validator supports using variable in invalid message, e.g. {minLength:6,maxLength:10,message:'length of password
-      must be between {minLength} and {maxLength} characters}, only variable in the same rule is acceptable 
+      must be between {minLength} and {maxLength} characters}, only variable in the same rule is acceptable
+
+    - the invalid concept is changed. there could be more than one violations at a time. The 'required' state is unused
+      and the state and css may be removed soon. TODO remove 'required'
 
 
 To developer

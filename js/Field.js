@@ -136,10 +136,9 @@
              */
             value:{
                 set:function(v) {
-                    if (!Y.Lang.isUndefined(this.get('value'))) { // skip the inital set value
+                    if (!Y.Lang.isUndefined(this.get('value'))) {
                         Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     }
-                    this._setClassFromState()
                     this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
                 },
@@ -200,7 +199,7 @@
              * @type String
              *
              * //TODO: comment: it seems to be more useful to define the class for the wrapping-div, e.g.
-             * user may set a margin for a field, or position it specially.  
+             * user may set a margin for a field, or position it specially.
              */
             className:{
                 value:'inputEx-Field',
@@ -218,8 +217,9 @@
 
             /**
              * @attribute showMsg
-             * @description ???
+             * @description
              * @type Boolean
+             * //TODO: should it be default to true?
              */
             showMsg:{value:false},
 
@@ -259,8 +259,14 @@
 
         Y.extend(Field, Y.Base, {
             _field:null, //reference to the Field node
+
             initializer : function(cfg) {
-                this.on(EV_CHANGE, this.validate, this)
+                /**
+                 * If an event handling function return false, the next event will not fire. So validate() is wrapped
+                 * and not to return false in invalid case to avoid skipping the next event.
+                 */
+                this.on(EV_CHANGE, Y.bind(function() { this.validate(); }, this), this);
+                this.on(EV_CHANGE, this._setClassFromState, this);
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
@@ -327,7 +333,7 @@
 
             displayMessage:function(msg) {
                 var el = this.get('el')
-                var fieldDiv = el.query('div.'+this.get('className'));
+                var fieldDiv = el.query('div.' + this.get('className'));
                 if (!fieldDiv) {
                     return;
                 }
@@ -379,8 +385,11 @@
 
             _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
-                if (!this._state.validated) this.validate(); // for the case that the field is focused then blurred without onchange
-                this._setClassFromState();
+                if (!this._state.validated) {// for the case that the field is focused then blurred without onchange
+                    this.validate();
+                    this._setClassFromState();
+                }
+
                 if (this.get('value') !== this.getField().get('value')) { this.set('value', this.getField().get('value'))}
                 Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
                 this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
@@ -389,7 +398,8 @@
             _onChange:function() {
                 var oldVal = this.get('value'), newVal = this.getField().get('value');
                 Y.log(this + '._onChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
-                this.fire(EV_CHANGE, oldVal, newVal);//workarounded this.fire(EV_UPDATE, this.get('value'));
+                if (oldVal !== newVal) { this.set('value', newVal)}
+                //this.fire(EV_CHANGE, oldVal, newVal);//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _previousState:null,
@@ -401,6 +411,7 @@
              *
              */
             _setClassFromState:function() {
+                Y.log(this + '._setClassFromState() - Field - begin', 'debug', 'inputEx');
                 // remove previous class
                 if (this.previousState) {
                     // remove invalid className for both required and invalid fields
@@ -428,36 +439,74 @@
              * Returns the current state base on the last validation results.
              *
              * @return {String} One of the following states: 'empty', 'required', 'valid' or 'invalid'
+             * Remarks: it won't return 'required' now. TODO: update docs
              */
             getState: function() {
                 var state;
 
-                if (this.isEmpty()) { //TODO MF: better to set the state upon validation
-                    var required = false;
-                    if (this._violations) {
-                        Y.each(this._violations, function(violation) {
-                            if (Y.Lang.isUndefined(violation.required) && violation.required) { required = true}
-                        })
-                    }
-                    state = required ? Y.inputEx.stateRequired : Y.inputEx.stateEmpty;
+                if (this._violations && this._violations.length > 0) {
+                    state = Y.inputEx.stateInvalid;
+                } else if (this.isEmpty()) {
+                    state = Y.inputEx.stateEmpty;
                 } else {
-                    state = this._violations.length == 0 ? Y.inputEx.stateValid : Y.inputEx.stateInvalid;
+                    state = Y.inputEx.stateValid;
                 }
                 Y.log(this + '.getState() - Field - state: ' + state, 'debug', 'inputEx');
                 return state;
+                /*if (this.isEmpty()) { //TODO MF: better to set the state upon validation
+                 Y.log(this + '.getState() -isEmpty=true, violations: ' + Y.JSON.stringify(this._violations), 'debug', 'inputEx');
+                 var required = false;
+                 if (this._violations) {
+                 Y.each(this._violations, function(violation) {
+                 if (!Y.Lang.isUndefined(violation.required) && violation.required) { required = true}
+                 })
+                 }
+                 state = required ? Y.inputEx.stateRequired : Y.inputEx.stateEmpty;
+                 } else {
+                 state = this._violations.length == 0 ? Y.inputEx.stateValid : Y.inputEx.stateInvalid;
+                 }*/
             },
 
             /**
              * Get the string for the given state
              */
             getStateString: function(state) {
-                if (state == Y.inputEx.stateRequired) {
-                    return this.get('messages').required;
-                } else if (state == Y.inputEx.stateInvalid) {
-                    return this.get('messages').invalid;
-                } else {
-                    return '';
+                var result;
+                switch (state) {
+                    case Y.inputEx.stateInvalid:
+                        var messages = [];
+                        Y.each(this._violations, function(v, k, obj) {
+                            var violation = obj[0]
+                            var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
+                            messages.push(message)
+                        })
+                        result = messages
+                        break;
+                    default:
+                        result = state;
                 }
+                Y.log(this + '.getStateString() - Field - result: ' + Y.JSON.stringify(result), 'debug', 'inputEx');
+                return result;
+                /* if (state == Y.inputEx.stateRequired) {
+                 return this.get('messages').required;
+                 } else if (state == Y.inputEx.stateInvalid) {
+                 var messages = ''
+                 if (this._violations.length > 0) {
+                 messages = [];
+                 Y.each(this._violations, function(v, k, obj) {
+                 var violation = obj[0]
+                 var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
+                 messages.push(message)
+                 })
+                 this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
+                 } else {
+                 Y.log(this + '.getStateString() - invalid state but cannot find any invalid message', 'warn', 'inputEx');
+                 }
+                 return messages;
+                 //return this.get('messages').invalid;
+                 } else {
+                 return '';
+                 }*/
             },
 
             show:function() {
@@ -526,24 +575,10 @@
                             }
                             result = result && rulePassed;
                         }, this))
+
+                        if (meta) { this._violations.unshift(meta) }
                     }
 
-                    /**
-                     *
-                     */
-                    if (!result && this._violations.length > 0) {
-                        var messages = []
-                        if (meta && !Y.Lang.isUndefined(meta.message)) { messages.push(meta.message) }
-                        Y.each(this._violations, function(v, k, obj) {
-                            var violation = obj[0]
-                            var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
-                            messages.push(message)
-                        })
-                        this.displayMessage(messages);
-                        this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
-                    } else {
-                        this.displayMessage(''); //clear message
-                    }
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
                     this._state.validated = true;
                     return result;
@@ -572,7 +607,7 @@
              * Should return true if empty
              */
             isEmpty: function() {
-                var result = this.get('value') === '';
+                var result = this.getField().get('value') === '';
                 //Y.log(this + '.isEmpty() - ' + result, 'debug', 'inputEx')
                 return result;
             },
