@@ -103,7 +103,8 @@
         <textarea name="code" class="js" cols="60" rows="1">
             //new YAHOO.inputEx.StringField({value: '0123456789', showMsg: true, minLength: 3, maxLength: 10, parentEl:
             'container4'});
-            new Y.inputEx.StringField({value: '0123456789', showMsg: true, validator:[{minLength: 3, maxLength: 10, message:'length must be between {minLength} and {maxLength}'}], parentEl:
+            new Y.inputEx.StringField({value: '0123456789', showMsg: true, validator:[{minLength: 3, maxLength: 10,
+            message:'length must be between {minLength} and {maxLength}'}], parentEl:
             'container4'}).render();
         </textarea>
     </div>
@@ -124,7 +125,8 @@
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
             //new YAHOO.inputEx.StringField({required: true, showMsg: true, parentEl: 'container5'});
-            new Y.inputEx.StringField({validator:[{type:'meta',message:'field is required'},{required: true}], showMsg: true, parentEl: 'container5'}).render();
+            new Y.inputEx.StringField({validator:[{type:'meta',message:'field is required'},{required: true}], showMsg:
+            true, parentEl: 'container5'}).render();
         </textarea>
     </div>
 
@@ -143,7 +145,8 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-            new YAHOO.inputEx.StringField({label: 'Enter your age', regexp: /^[0-9]*$/, parentEl: 'container6'});
+            //new YAHOO.inputEx.StringField({label: 'Enter your age', regexp: /^[0-9]*$/, parentEl: 'container6'});
+            new Y.inputEx.StringField({label: 'Enter your age', validator:[{regexp: /^[0-9]*$/, message:'invalid age'}], parentEl: 'container6'}).render();
         </textarea>
     </div>
 
@@ -162,8 +165,9 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-            new YAHOO.inputEx.StringField({showMsg: true,regexp: inputEx.regexps.email, value: 'wrong@email', parentEl:
-            'container7'});
+            //new YAHOO.inputEx.StringField({showMsg: true,regexp: inputEx.regexps.email, value: 'wrong@email', parentEl:
+            //'container7'});
+            new Y.inputEx.StringField({showMsg: true,validator:[{regex: Y.inputEx.regexps.email, message:'invalid email'}], value: 'wrong@email', parentEl: 'container7'}).render();
         </textarea>
     </div>
 
@@ -181,7 +185,10 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-            var field = new YAHOO.inputEx.StringField({value: 'This field is disabled', parentEl: 'container8'});
+            //var field = new YAHOO.inputEx.StringField({value: 'This field is disabled', parentEl: 'container8'});
+            //field.disable();
+            var field = new Y.inputEx.StringField({value: 'This field is disabled', parentEl: 'container8'});
+            field.render();
             field.disable();
         </textarea>
     </div>
@@ -290,7 +297,7 @@
 </div>
 
 <script>
-    inputEx.YUI().use('stringfield','json', function(Y) {
+    inputEx.YUI().use('stringfield', 'json', function(Y) {
         //Y.on('event:ready', function() {
         // Example 1
         new Y.inputEx.StringField({parentEl:'container1'}).render();
@@ -303,25 +310,27 @@
 
         // Example 4
         new Y.inputEx.StringField({value: '0123456789', showMsg: true, validator:[{minLength: 3, maxLength: 10, message:'length must be between {minLength} and {maxLength}'}], parentEl:
-            'container4'}).render();
+                'container4'}).render();
 
         // Example 5
         new Y.inputEx.StringField({validator:[{type:'meta',message:'field is required'},{required: true}], showMsg: true, parentEl: 'container5'}).render();
 
+        // Example 6
+        new Y.inputEx.StringField({label: 'Enter your age', validator:[{regexp: /^[0-9]*$/, message:'invalid age'}], parentEl: 'container6'}).render();
+
+        // Example 7
+        new Y.inputEx.StringField({showMsg: true,validator:[{regex: Y.inputEx.regexps.email, message:'invalid email'}], value: 'wrong@email', parentEl: 'container7'}).render();
+
+        // Example 8
+        var field = new Y.inputEx.StringField({value: 'This field is disabled', parentEl: 'container8'});
+        field.render();
+        field.disable();
         //});
     })
 
         /*
 
-         // Example 6
-         new YAHOO.inputEx.StringField({label: 'Enter your age', regexp: /^[0-9]*$/, parentEl: 'container6'});
 
-         // Example 7
-         new YAHOO.inputEx.StringField({showMsg: true,regexp: YAHOO.inputEx.regexps.email, value: 'wrong@email', parentEl: 'container7'});
-
-         // Example 8
-         var field = new YAHOO.inputEx.StringField({value: 'This field is disabled', parentEl: 'container8'});
-         field.disable();
 
          // Example 9
          var el = YAHOO.util.Dom.get('container9');
