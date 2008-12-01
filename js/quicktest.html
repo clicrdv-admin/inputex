@@ -24,6 +24,7 @@
                 parentEl:'test',
                 el:'field1',
                 validator:[
+                    {type:'meta',message:'there is at least one error in this field'},
                     {required:true,message:'this is a required field'},
                     {minLength:5,maxLength:10,message:'input length must be between {minLength} and {maxLength} characters'}
                 ],

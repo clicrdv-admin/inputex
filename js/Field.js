@@ -264,7 +264,7 @@
             render:function() {
                 try {
                     var el = this.get('el'), id = el.get('id');
-                    el.addClass('inputEx-fieldWrapper')
+                    el.addClass(this.get('className'))
 
                     if (this.get('required')) el.addClass('inputEx-required')
 
@@ -495,6 +495,7 @@
                 try {
                     if (!this.getField()) return; //no validation before the field is rendered
                     var value = this.getField().get('value'), result = true;
+                    var meta;
                     this._violations = [];
 
                     if (this.get('validator')) {
@@ -503,7 +504,9 @@
                          */
                         Y.each(this.get('validator'), Y.bind(function(rule) {
                             var rulePassed = true;
-                            if (!Y.Lang.isUndefined(rule.required) && rule.required) {
+                            if (rule.type === 'meta') { // type='meta' is for setting global validator configurations
+                                meta = rule;
+                            } else if (!Y.Lang.isUndefined(rule.required) && rule.required) {
                                 rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
                             } else if (rule.regex || rule.regexp) {
                                 var regex = rule.regex ? rule.regex : rule.regexp;
@@ -527,6 +530,7 @@
                      */
                     if (!result && this._violations.length > 0) {
                         var messages = []
+                        if (meta && !Y.Lang.isUndefined(meta.message)) { messages.push(meta.message) }
                         Y.each(this._violations, function(v, k, obj) {
                             var violation = obj[0]
                             var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })

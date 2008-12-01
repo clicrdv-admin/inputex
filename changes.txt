@@ -28,7 +28,6 @@ log changes to annouce to users about the update
 
      - a getField() method is provided to get the Field node if available.
 
-
 7. inputEx.cn and sn are removed for Y.Node.create()
     - sn is perhaps still needed
 
@@ -37,6 +36,14 @@ log changes to annouce to users about the update
     - it is fired not when the field has changed, but when the 'value' attribute is changed
     - TODO: In IE, enter key triggers an onchange to make the behavior cross browser compatible
 
+9. all validation are changed to use 'validator'
+    - 'regexp', 'required' are obsoleted; they are replaced by the validator:[{required:true},{regexp://}]
+    - both 'regexp' and 'regex' are supported
+    - validator supports using global message at {type:'meta', message:'this message is shown as the first message when
+        there is validation error'}. User may choose to define a global message without message for individual rules.
+    - validator supports per validation rule message, e.g. {required:true,'this field is required'}
+    - validator supports using variable in invalid message, e.g. {minLength:6,maxLength:10,message:'length of password
+      must be between {minLength} and {maxLength} characters}, only variable in the same rule is acceptable 
 
 
 To developer
