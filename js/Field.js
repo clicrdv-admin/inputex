@@ -196,8 +196,11 @@
 
             /**
              * @attribute className
-             * @description 'class' attribute of the top level HTML node for this field
+             * @description
              * @type String
+             *
+             * //TODO: comment: it seems to be more useful to define the class for the wrapping-div, e.g.
+             * user may set a margin for a field, or position it specially.  
              */
             className:{
                 value:'inputEx-Field',
@@ -264,7 +267,7 @@
             render:function() {
                 try {
                     var el = this.get('el'), id = el.get('id');
-                    el.addClass(this.get('className'))
+                    el.addClass('inputEx-fieldWrapper')
 
                     if (this.get('required')) el.addClass('inputEx-required')
 
@@ -324,7 +327,7 @@
 
             displayMessage:function(msg) {
                 var el = this.get('el')
-                var fieldDiv = el.query('div.inputEx-Field');
+                var fieldDiv = el.query('div.'+this.get('className'));
                 if (!fieldDiv) {
                     return;
                 }
