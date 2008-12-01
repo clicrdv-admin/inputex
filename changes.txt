@@ -32,6 +32,11 @@ log changes to annouce to users about the update
 7. inputEx.cn and sn are removed for Y.Node.create()
     - sn is perhaps still needed
 
+8. obsolete the updatedEvt, use the field:change custom event that is an improved version base on the JavaScript onchange,
+    with improvement on:
+    - it is fired not when the field has changed, but when the 'value' attribute is changed
+    - TODO: In IE, enter key triggers an onchange to make the behavior cross browser compatible
+
 
 
 To developer

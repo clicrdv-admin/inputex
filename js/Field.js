@@ -12,16 +12,6 @@
          */
         var FD = Y.inputEx.FD,  //TODO review this
             /**
-             * @event field:update
-             * @description
-             * @preventable TODO DUMMY, REMOVE THIS
-             * @param {Event} newVal, oldVal
-             * @bubbles TODO DUMMY, REMOVE THIS
-             * @type Event.Custom
-             * //TODO consider to pass the field as param
-             */
-                EV_UPDATE = 'field:update',
-            /**
              * @event field:render
              * @description
              * @preventable TODO DUMMY, REMOVE THIS
@@ -33,7 +23,7 @@
                 EV_RENDER = 'field:render',
             /**
              * @event field:focus
-             * @description
+             * @description An abstraction of the JavaScript event of the field, user shall use this instead of listen directly to the field
              * @preventable TODO DUMMY, REMOVE THIS
              * @param {Event} node
              * @bubbles TODO DUMMY, REMOVE THIS
@@ -42,7 +32,7 @@
                 EV_FOCUS = 'field:focus',
             /**
              * @event field:blur
-             * @description
+             * @description An abstraction of the JavaScript event of the field, user shall use this instead of listen directly to the field
              * @preventable TODO DUMMY, REMOVE THIS
              * @param {Event} node
              * @bubbles TODO DUMMY, REMOVE THIS
@@ -51,7 +41,11 @@
                 EV_BLUR = 'field:blur',
             /**
              * @event field:change
-             * @description This is similar to the JavaScript onchange event, with additional handling for the enter keypress in IE
+             * @description An abstraction of the JavaScript event of the field, user shall use this instead of listen
+             * directly to the field. In addition to the JavaScript onchange behavior, this event is fired when the
+             * abstract 'value' attribute is changed instead of the actual field value. e.g. setting typeInvite on the
+             * text field will not cause this event to fire.
+             *
              * @preventable TODO DUMMY, REMOVE THIS
              * @param {Event} node
              * @bubbles TODO DUMMY, REMOVE THIS
@@ -74,7 +68,6 @@
          */
         var Field = function(cfg) {
             Field.superclass.constructor.apply(this, arguments);
-            this.publish(EV_UPDATE);
             this.publish(EV_RENDER);
             this.publish(EV_FOCUS);
             this.publish(EV_BLUR);
@@ -147,7 +140,7 @@
                         Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     }
                     this._setClassFromState()
-                    this.fire(EV_UPDATE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
+                    this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
                 },
                 value:''
@@ -383,6 +376,7 @@
 
             _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
+                if (!this._state.validated) this.validate(); // for the case that the field is focused then blurred without onchange
                 this._setClassFromState();
                 if (this.get('value') !== this.getField().get('value')) { this.set('value', this.getField().get('value'))}
                 Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
@@ -473,6 +467,10 @@
                 return this;
             },
 
+            /**
+             * _state.validated - indicate the field has been validated. it doesn't mean it is valid.
+             */
+            _state:{validated:false},
             _violations:[],
             /**
              * validate only on 'field:change'
@@ -480,10 +478,14 @@
             validate: function() {
                 try {
                     if (!this.getField()) return; //no validation before the field is rendered
-                    var value = this.getField().get('value'), result = true, violations = [];
+                    var value = this.getField().get('value'), result = true;
+                    this._violations = [];
 
                     if (this.get('validator')) {
-                        Y.each(this.get('validator'), function(rule) {
+                        /**
+                         * Validator implementation. It checks every validator and set a boolean result, and update the _validations array
+                         */
+                        Y.each(this.get('validator'), Y.bind(function(rule) {
                             var rulePassed = true;
                             if (!Y.Lang.isUndefined(rule.required) && rule.required) {
                                 rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
@@ -497,17 +499,19 @@
                                 Y.log(this + '.validate() - Field - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
                             }
                             if (!rulePassed) {
-                                violations.push(rule)
+                                this._violations.push(rule)
                                 Y.log(this + '.validate() - Field - failed validation rule: ' + Y.JSON.stringify(rule), 'info', 'inputEx');
                             }
                             result = result && rulePassed;
-                        })
+                        }, this))
                     }
 
-                    this._violations = violations;
-                    if (this._violations.length > 0) {
+                    /**
+                     *
+                     */
+                    if (!result && this._violations.length > 0) {
                         var messages = []
-                        Y.each(violations, function(v, k, obj) {
+                        Y.each(this._violations, function(v, k, obj) {
                             var violation = obj[0]
                             var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
                             messages.push(message)
@@ -515,9 +519,10 @@
                         this.displayMessage(messages);
                         this.fire(EV_INVALID, null, this._violations);//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     } else {
-                        this.displayMessage('')
+                        this.displayMessage(''); //clear message
                     }
-                    Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
+                    Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
+                    this._state.validated = true;
                     return result;
                 } catch(e) {
                     Y.log(this + '.validate() - Field - e: ' + e, 'error', 'inputEx');
