@@ -139,6 +139,7 @@
                     if (!Y.Lang.isUndefined(this.get('value'))) {
                         Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     }
+                    if (this._rendered) this._updateInputEl(v); // ensure the inputEl is in sync
                     this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
                 },
@@ -258,7 +259,11 @@
         }
 
         Y.extend(Field, Y.Base, {
-            _field:null, //reference to the Field node
+            _inputEl:null, //reference to the Field node
+            _eventInitialized:false,
+            _rendered:false, //TODO state, review this
+            _previousState:null,
+
 
             initializer : function(cfg) {
                 /**
@@ -267,6 +272,10 @@
                  */
                 this.on(EV_CHANGE, Y.bind(function() { this.validate(); }, this), this);
                 this.on(EV_CHANGE, this._setClassFromState, this);
+                this.on(EV_RENDER, Y.bind(function(){
+                    this.validate();
+                    this._setClassFromState();
+                }, this), this)
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
@@ -288,7 +297,7 @@
                     var fieldDiv = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
                     this.renderComponent(fieldDiv);
-                    this._field = this.getField();
+                    this._inputEl = this.getField();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
@@ -306,6 +315,7 @@
 
                     Y.log(this + '.render() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
                     this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
+                    this._rendered = true;
                     return this;
                 } catch(e) {
                     Y.log(this + '.render() - Field - ' + e, 'error', 'inputEx');
@@ -317,7 +327,6 @@
                 Y.log(this + '.renderComponent() - Field - method should have been overidden!', 'warn', 'inputEx');
             },
 
-            _eventInitialized:false,
             _initEvents:function() {
                 if (this._eventInitialized) return;
                 if (this.getField()) {
@@ -358,6 +367,13 @@
                 msgDiv.set('innerHTML', htmlMsg)
             },
 
+            _updateInputEl:function(v) {
+                if (v !== this.getField().get('value')) {
+                    Y.log(this + '.set("value") - Field - inputEl is updated from "' + this.getField().get('value') + '" to "' + v + '"', 'debug', 'inputEx');
+                    this.getField().set('value', v)
+                }
+            },
+
             focus:function() {
                 this.get('el').focus();
                 return this;
@@ -365,9 +381,11 @@
 
             /**
              * Remarks: New API
+             *
+             * TODO rename to getInputEl() to better reflect the return value. 'Field' is too vague.
              */
             getField:function() {
-                if (this._field) return this._field;
+                if (this._inputEl) return this._inputEl;
 
                 var fieldEl;
                 var el = this.get('el')
@@ -401,8 +419,6 @@
                 if (oldVal !== newVal) { this.set('value', newVal)}
                 //this.fire(EV_CHANGE, oldVal, newVal);//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
-
-            _previousState:null,
 
             /**
              * Set the styles for valid/invalide state. This is called in upon the following events:
@@ -446,8 +462,6 @@
 
                 if (this._violations && this._violations.length > 0) {
                     state = Y.inputEx.stateInvalid;
-                } else if (this.isEmpty()) {
-                    state = Y.inputEx.stateEmpty;
                 } else {
                     state = Y.inputEx.stateValid;
                 }
@@ -578,7 +592,7 @@
                             result = result && rulePassed;
                         }, this))
 
-                        if (meta) { this._violations.unshift(meta) }
+                        if (!result && meta) { this._violations.unshift(meta) }
                     }
 
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
@@ -606,7 +620,11 @@
             getEl: function() { return this.getField(); },
 
             /**
-             * Should return true if empty
+             * @deprecated
+             * The YUI3 version separated 'value' attribute and 'value' of the input element. This method is unclear
+             * in telling which field it is to check.
+             *
+             * The current implementation checks the input element. but it should not be used.
              */
             isEmpty: function() {
                 var result = this.getField().get('value') === '';

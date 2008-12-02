@@ -92,22 +92,41 @@
                  }*/
             },
 
-            _updateTypeInvite: function() {
-                if (!this.get('el').hasClass('inputEx-focused')) {
-                    if (this.isEmpty()) {// show type invite if field is empty
-                        Y.log(this + '._updateTypeInvite() - StringField - value is empty, set to typeInvite, value: ' + this.get('value'), 'debug', 'inputEx');
-                        this.get('el').addClass('inputEx-typeInvite');
-                        this.getField().set('value', this.get('typeInvite')); //TODO see if we should use this.set('value') instead
-                        // important for setValue to work with typeInvite
-                    } else {
-                        this.get('el').removeClass('inputEx-typeInvite');
-                    }
-                } else {
-                    if (this.get('el').hasClass('inputEx-typeInvite')) {
-                        this.getField().set('value', ''); // remove test
-                        this.previousState = null; // remove the "empty" state and class
-                        this.get('el').removeClass('inputEx-typeInvite');
-                    }
+            _updateInputEl:function(v) {
+                StringField.superclass._updateInputEl.apply(this, arguments);
+                this._updateTypeInvite();
+            },
+
+            _updateTypeInvite: function(evt) {
+                if (!this.get('typeInvite')) return;
+
+                var eventType = evt ? evt.type : 'not_event'
+
+                switch (eventType) {
+                    case 'field:focus': //on focus
+                        if (this.get('el').hasClass('inputEx-typeInvite')) {
+                            this.getField().set('value', ''); // remove typeInvite upon focus
+                            this.get('el').removeClass('inputEx-typeInvite');
+                        }
+                        break;
+                    case 'field:blur':
+                        if (this.get('value') === '') { // if empty, show typeInvite
+                            this.get('el').addClass('inputEx-typeInvite');
+                            this.getField().set('value', this.get('typeInvite'));
+                            Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
+                        } else {
+                            this.get('el').removeClass('inputEx-typeInvite');
+                        }
+                        break;
+                    default: //probably called indirectly by this.set('value')
+                        if (this.getField().get('value') === '') { //if empty   
+                            this.get('el').addClass('inputEx-typeInvite');
+                            this.getField().set('value', this.get('typeInvite'));
+                            Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
+                        } else {
+                            this.get('el').removeClass('inputEx-typeInvite');
+                        }
+                        break;
                 }
             },
 
@@ -147,7 +166,7 @@
  this.updateTypeInvite();
 
  /*
-/**
+ /**
  * Add the minLength string message handling
  */
 /*
