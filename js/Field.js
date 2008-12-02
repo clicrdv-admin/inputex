@@ -375,7 +375,7 @@
             },
 
             focus:function() {
-                this.get('el').focus();
+                this.getField().focus();
                 return this;
             },
 
