@@ -59,3 +59,23 @@ To report to YUI3 team:
   - [docs]  YUI.add() doc missed the required argument.
      YUI add ( name , namespace , fn , version ) 
 
+
+Naming conventions
+
+ - *Div
+    - refer to div element
+    - all wrapper div are *Div (but not all *Div are wrapper div)
+ - *Field, *Group, *Form
+    - field, group, or form instance (i.e. xxx instanceof Y.inputEx.Field)
+ - el
+    - refer to a YUI Node
+    - 'el' without any prefix or suffix refers to the top level node of the current type
+ - inputEl
+    - the node of the input element
+ - fieldEl, groupEl, and formEl
+    - depends on whether a div wrapper is used, the elements may refer to:
+    - formEl - refer to the YUI Node of the wrapper or the <form>
+    - groupEl - refer to the YUI Node of the wrapper div of the fieldset of the group element (TBC)
+    - fieldEl - refer to the wrapper of the inputEl ?! TBC
+
+
