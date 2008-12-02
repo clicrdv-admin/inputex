@@ -100,6 +100,16 @@
             },
 
             /**
+             * @attribute elClass
+             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
+             * @type String
+             */
+            elClass:{
+                value:'inputEx-fieldWrapper',
+                writeOnce:true
+            },
+
+            /**
              * el could be defined in a number of ways:
              * - if cfg is a String, we look up for a node with and without a '#' prefix. If no node is found, we create
              * one with the cfg as id.
@@ -116,7 +126,7 @@
                     if (!el) { //create a new el under parent
                         var id = Y.Lang.isString(cfg) ? cfg.charAt(0) == '#' ? cfg.substring(1, cfg.length) : cfg : null
                         id = (id) ? id : Y.Lang.isUndefined(this.get('name')) ? Y.guid('div') : this.get('name')
-                        el = Y.Node.create('<div id="' + id + '"></div>');
+                        el = Y.Node.create('<div id="' + id + '" class="' + this.get('elClass') + '"></div>');
                         if (this.get('parentEl')) {
                             this.get('parentEl').appendChild(el);
                         } else {
@@ -129,6 +139,7 @@
                 },
                 value:null,
                 writeOnce:true},
+
 
             /**
              * @attribute value
@@ -272,7 +283,7 @@
                  */
                 this.on(EV_CHANGE, Y.bind(function() { this.validate(); }, this), this);
                 this.on(EV_CHANGE, this._setClassFromState, this);
-                this.on(EV_RENDER, Y.bind(function(){
+                this.on(EV_RENDER, Y.bind(function() {
                     this.validate();
                     this._setClassFromState();
                 }, this), this)
@@ -282,7 +293,7 @@
             render:function() {
                 try {
                     var el = this.get('el'), id = el.get('id');
-                    el.addClass('inputEx-fieldWrapper')
+                    el.addClass(this.get('elClass'))
 
                     if (this.get('required')) el.addClass('inputEx-required')
 
@@ -499,7 +510,7 @@
                         result = messages
                         break;
                     default:
-                        //result = state;
+                    //result = state;
                         result = '';
                 }
                 Y.log(this + '.getStateString() - Field - result: ' + Y.JSON.stringify(result), 'debug', 'inputEx');

@@ -12,15 +12,17 @@
 <body class="yui-skin-sam">
 <div id="test"></div>
 <textarea id="result" rows="30" cols="120"></textarea>
+
 <script type="text/javascript">
     var field;
-    inputEx.YUI().use('stringfield', 'json', function(Y) { // 'json' is required for the stringify on this method
+    inputEx.YUI().use('stringfield', 'group', 'json', function(Y) { // 'json' is required for the stringify on this method
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
             //            var global = new Y.inputEx.Global()
             field = new Y.inputEx.StringField({
                 name:'hello',
                 //value:'default',
+                elClass:'inputEx-fieldWrapper',
                 parentEl:'test',
                 el:'field1',
                 showMsg:true,
