@@ -70,6 +70,8 @@ Naming conventions
  - el
     - refer to a YUI Node
     - 'el' without any prefix or suffix refers to the top level node of the current type
+    - global id is associated to the el.
+    - elClass attribute is attached to the el.
  - inputEl
     - the node of the input element
  - fieldEl, groupEl, and formEl
