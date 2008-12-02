@@ -14,7 +14,17 @@
              * @bubbles TODO DUMMY, REMOVE THIS
              * @type Event.Custom
              */
-                EV_RENDER = 'group:render'
+                EV_RENDER = 'group:render',
+            /**
+             * @event field:change
+             * @description
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} node
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_CHANGE = 'group:change'
+
 
         /**
          * @class Group
@@ -27,8 +37,9 @@
 
         Group.NAME = "group";
         Group.ATTRS = {
-            fields :{value:'text',readOnly:true},
-            id :{value:null},
+            fields :{
+                value:[],
+                writeOnce:true},
             name :{value:null},
             value:{value:null},
             flatten:{value:false},
@@ -41,14 +52,14 @@
             /**
              * Remarks: removed inputConfigs, TODO is it still needed?
              */
- /**
+
+            /**
              * @attribute elClass
              * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
              * @type String
              */
             elClass:{
-                value:'inputEx-Group',
-                writeOnce:true
+                value:'inputEx-Group' //,writeOnce:true cannot use writeOnce 
             }
 
         };
@@ -59,6 +70,7 @@
              * An Array of inputEx Fields. The inputs are constructed upon the first render()
              */
             _inputs:[],
+            _inputsNames:{},
             _toggleEl:null,
             initializer : function(cfg) {
                 if (this.get('collapsible')) {
@@ -69,22 +81,12 @@
             },
             render:function() {
                 try {
-                    // Create the div wrapper for this group
-                    if (this.get('el')) {
-                    } else {
-                        Y.log(this + '.render() - Group - this.el does not exist', 'error', 'inputEx');
-                    }
-                    /* this.divEl = inputEx.cn('div', {className: 'inputEx-Group'});
-                     if(this.options.id) {
-                     this.divEl.id = this.options.id;
-                     }
+                    var el = this.get('el'), id = el.get('id');
+                    el.addClass(this.get('elClass'))
 
-                     this.renderFields(this.divEl);
+                    this._renderFields(el);
 
-                     if(this.options.disabled) {
-                     this.disable();
-                     }
-                     */
+                    if (this.get('disabled')) this.disable();
 
                     Y.log(this + '.render() - Group - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
                     this.fire(EV_RENDER, null, this.get('el'));
@@ -94,41 +96,70 @@
                     Y.log(this + '.render() Group -  - e: ' + e, 'error', 'inputEx');
                 }
             },
+
             _renderFields: function(parentEl, inputFields) {
-                var fields = (!lang.isUndefined(inputFields)) ? inputFields : this.options.fields;
+                var fieldset = Y.Node.create('<fieldset id="' + this.getID() + '-fieldset"></fieldset>')
 
-                this.fieldset = inputEx.cn('fieldset', {id:this.divEl.id ? this.divEl.id + '-fieldset' : YAHOO.util.Dom.generateId()});
-                this.legend = inputEx.cn('legend', {className: 'inputEx-Group-legend'});
-
-                // Option Collapsible
-                if (this.options.collapsible) {
-                    var collapseImg = inputEx.cn('div', {className: 'inputEx-Group-collapseImg'}, null, ' ');
-                    this.legend.appendChild(collapseImg);
-                    inputEx.sn(this.fieldset, {className:'inputEx-Expanded'});
+                if (this.get('collapsible')) {// Option Collapsible
+                    var collapseImg = Y.Node.create('<div class="inputEx-Group-collapseImg"></div>')
+                    legend.appendChild(collapseImg)
+                    fieldset.addClass('inputEx-Expanded')
                 }
 
-                if (!lang.isUndefined(this.options.legend) && this.options.legend !== '') {
-                    this.legend.appendChild(document.createTextNode(" " + this.options.legend));
+                if (this.get('legend') && this.get('legend') !== '') {
+                    var legend = Y.Node.create('<legend class="inputEx-Group-legend"></legend>')
+                    if (this.get('legend')) legend.set('innerHTML', this.get('legend'))
+                    fieldset.appendChild(legend)
                 }
 
-                if (this.options.collapsible || (!lang.isUndefined(this.options.legend) && this.options.legend !== '')) {
-                    this.fieldset.appendChild(this.legend);
+                var fieldsCfg = (inputFields) ? inputFields : this.get('fields');
+                if (fieldsCfg && fieldsCfg.length > 0) {
+                    // Iterate this.createInput on input fields
+                    for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
+                        var field = this._renderField(fieldCfg); // Render the field
+                        if (field && field.get('el')) fieldset.appendChild(field.get('el'))
+                    }
                 }
 
-                // Iterate this.createInput on input fields
-                for (var i = 0; i < fields.length; i++) {
-                    var input = fields[i];
+                parentEl.appendChild(fieldset); // Append the fieldset
 
-                    // Render the field
-                    var field = this.renderField(input);
-                    this.fieldset.appendChild(field.getEl());
-                }
-
-                // Append the fieldset
-                parentEl.appendChild(this.fieldset);
+                Y.log(this + '._renderFields() - Group - rendered - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'debug', 'inputEx')
             },
-            _onchange:function() {
 
+            /**
+             * Instanciate one field given its parameters, type or fieldClass
+             * @param {Object} fieldOptions The field properties as required bu inputEx.buildField
+             */
+            _renderField: function(fieldOptions) {
+                // Instanciate the field
+                var field = new Y.inputEx(fieldOptions);
+
+                if (!field || !field.get) {
+                    //Y.log(this + '._renderField() - Group - invalid field, field: ' + Y.JSON.stringify(field) + ', fieldOptions: ' + Y.JSON.stringify(fieldOptions), 'warn', 'inputEx')
+                    return;
+                }
+
+                field.render();
+                this._inputs.push(field);
+
+                // Create an index to access fields by their name
+                if (field.get('name')) {
+                    this._inputsNames[field.get('name')] = field;
+                }
+
+                // Create the this.hasInteractions to run interactions at startup
+                if (!this.hasInteractions && this.get('interactions')) {
+                    this.hasInteractions = true;
+                }
+
+                // Subscribe to the "field:change" event to send the "group:change" event
+                field.on('change', Y.bind(this._onChange, this, field))  //TODO double check the argument
+                return field;
+            },
+
+            _onChange:function(field) {
+                Y.log(this + '._onChange() - field: ' + field + ', to fire group:change event', 'debug', 'inputEx');
+                this.fire(EV_CHANGE, null, field); //pass in the field that is changed
             },
 
             enable: function() {
@@ -172,37 +203,7 @@
  }
 
 
- */
-/**
- * Instanciate one field given its parameters, type or fieldClass
- * @param {Object} fieldOptions The field properties as required bu inputEx.buildField
- */
-/*
- renderField: function(fieldOptions) {
-
- // Instanciate the field
- var fieldInstance = inputEx.buildField(fieldOptions);
-
- this.inputs.push(fieldInstance);
-
- // Create an index to access fields by their name
- if(fieldInstance.options.name) {
- this.inputsNames[fieldInstance.options.name] = fieldInstance;
- }
-
- // Create the this.hasInteractions to run interactions at startup
- if(!this.hasInteractions && fieldOptions.interactions) {
- this.hasInteractions = true;
- }
-
- // Subscribe to the field "updated" event to send the group "updated" event
- fieldInstance.updatedEvt.subscribe(this.onChange, this, true);
-
- return fieldInstance;
- },
-
- */
-/**
+ /**
  * Toggle the collapse state
  */
 /*

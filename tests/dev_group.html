@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Quick Test</title>
+    <script type="text/javascript" src="../lib/yui3/yui/yui-min.js"></script>
+    <script type="text/javascript" src="../js/inputex.js"></script>
+    <script type="text/javascript" src="../lib/tabifier/tabifier.js"></script>
+
+</head>
+<body class="yui-skin-sam">
+<div id="parent">
+    <div id="test"></div>
+</div>
+<textarea id="result" rows="30" cols="120"></textarea>
+
+<script type="text/javascript">
+    var group;
+    inputEx.YUI().use('group', 'stringfield',function(Y) { // 'json' is required for the stringify on this method
+        try {
+            Y.log('quick test begin')
+            //Y.inputEx.spacerUrl = "../images/space.gif";
+
+            group = new Y.inputEx.Group({el: 'test', fields: [
+                {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
+                {type: 'string', inputParams: {label: 'Firstname', name: 'firstname', validator:[{required: true, message:'please fill in a value'}] } },
+                {type: 'string', inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
+                {type:'email', inputParams: {label: 'Email', name: 'email', required: true, showMsg: true}},
+                {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy'}},
+                {type:'url', inputParams: {label: 'Website', name:'website'}}]        });
+            group.render();
+
+            var testHTML = Y.Node.get('#parent').get('innerHTML')
+            Y.Node.get('#result').set('innerHTML', Y.inputEx.escapeHTML(testHTML))
+            runTabifier('result', 'result', 'HTML')
+            Y.log('quick test end')
+        } catch(e) {
+            Y.log(e, 'error', 'inputEx');
+        }
+    });
+</script>
+</body>
+</html>

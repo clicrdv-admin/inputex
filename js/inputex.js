@@ -38,7 +38,55 @@ if (typeof(inputEx) === 'undefined') {
 
 
     YUI.add('inputex', function(Y) {
-        Y.inputEx = Y.inputEx || {};
+        //Y.inputEx = Y.inputEx || {};
+
+        /*
+         * Build a field from an object like: { type: 'color' or fieldClass: inputEx.ColorField, inputParams: {} }<br />
+         * The inputParams property is the object that will be passed as the <code>options</code> parameter to the field class constructor.<br />
+         * If the neither type or fieldClass are found, it uses inputEx.StringField
+         * @name inputEx
+         * @namespace The inputEx global namespace object.
+         * @static
+         * @param {Object} fieldOptions
+         * @return {inputEx.Field} Created field instance
+         */
+        Y.inputEx = function(fieldOptions) {
+            var fieldClass = null;
+            if (fieldOptions.type) {
+                fieldClass = Y.inputEx.getFieldClass(fieldOptions.type);
+                if (fieldClass === null) fieldClass = Y.inputEx.StringField;
+            }
+            else {
+                fieldClass = fieldOptions.fieldClass ? fieldOptions.fieldClass : Y.inputEx.StringField;
+            }
+
+            // yui3: new mechanism, try to guess a class
+            if (Y.Lang.isUndefined(fieldClass) && fieldOptions.type) {
+                try {
+                    var type = fieldOptions.type
+                    var guessedClassName = 'Y.inputEx.' + type.substring(0, 1).toUpperCase() + type.substring(1, type.length) + 'Field' //capitalize
+                    eval('fieldClass = guessedClassName')
+                } catch(e) {}
+                if (!Y.Lang.isUndefined(fieldClass)) Y.log('Y.inputEx() - guessed class: ' + fieldClass, 'debug', 'inputEx');
+            }
+
+
+            // Instanciate the field
+            var inputInstance
+            if (fieldClass && Y.Lang.isFunction(fieldClass)) {
+                inputInstance = new fieldClass(fieldOptions.inputParams);
+            } else {
+                Y.log('Y.inputEx() - invalid fieldClass, fieldClass: ' + fieldClass + ', fieldOptions: ' + Y.JSON.stringify(fieldOptions), 'warn', 'inputEx')
+            }
+
+            // Add the flatten attribute if present in the params
+            /*if(fieldOptions.flatten) {
+             inputInstance._flatten = true;
+             }*/
+
+            return inputInstance;
+        };
+
 
         //TODO: review this, attributes and methods are made static
         Y.inputEx.VERSION = "0.3.0";
@@ -126,7 +174,7 @@ if (typeof(inputEx) === 'undefined') {
          * @param {String} type String type of the field
          */
         Y.inputEx.getFieldClass = function(type) {
-            return lang.isFunction(this.typeClasses[type]) ? this.typeClasses[type] : null;
+            return Y.Lang.isFunction(this.typeClasses[type]) ? this.typeClasses[type] : null;
         };
 
         /**
@@ -182,47 +230,12 @@ if (typeof(inputEx) === 'undefined') {
             var escaped = unescaped.replace(/</g, '&lt;')
             escaped = escaped.replace(/>/g, '&gt;')
             return escaped;
-        }
+        };
 
 
     }, '3.0.0pr1', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
 })());
 
-/*
- * Build a field from an object like: { type: 'color' or fieldClass: inputEx.ColorField, inputParams: {} }<br />
- * The inputParams property is the object that will be passed as the <code>options</code> parameter to the field class constructor.<br />
- * If the neither type or fieldClass are found, it uses inputEx.StringField
- * @name inputEx
- * @namespace The inputEx global namespace object.
- * @static
- * @param {Object} fieldOptions
- * @return {inputEx.Field} Created field instance
- */
-/*
- YAHOO.inputEx = function(fieldOptions) {
- var fieldClass = null;
- if (fieldOptions.type) {
- fieldClass = YAHOO.inputEx.getFieldClass(fieldOptions.type);
- if (fieldClass === null) fieldClass = YAHOO.inputEx.StringField;
- }
- else {
- fieldClass = fieldOptions.fieldClass ? fieldOptions.fieldClass : inputEx.StringField;
- }
-
- // Instanciate the field
- var inputInstance = new fieldClass(fieldOptions.inputParams);
-
- // Add the flatten attribute if present in the params
- */
-/*if(fieldOptions.flatten) {
- inputInstance._flatten = true;
- }*/
-/*
-
- return inputInstance;
- };
-
- */
 /**
  * Test de documentation inputEx
  */
