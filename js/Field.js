@@ -499,7 +499,8 @@
                         result = messages
                         break;
                     default:
-                        result = state;
+                        //result = state;
+                        result = '';
                 }
                 Y.log(this + '.getStateString() - Field - result: ' + Y.JSON.stringify(result), 'debug', 'inputEx');
                 return result;
