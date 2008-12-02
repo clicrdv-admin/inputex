@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>inputEx-YUI3 - StringField Usage</title>
+    <title>inputEx-yui3 - StringField Usage</title>
 
     <!--[if IE 6]>
     <link type='text/css' rel='stylesheet' href='../css/inputEx-IE6.css' />
@@ -301,7 +301,7 @@
 </div>
 
 <script>
-    inputEx.YUI().use('stringfield', 'json', function(Y) {
+    inputEx.YUI().use('stringfield', function(Y) {
         //Y.on('event:ready', function() {
         // Example 1
         new Y.inputEx.StringField({parentEl:'container1'}).render();
@@ -366,21 +366,8 @@
         exampleDiv.appendChild(button3);
         button3.on('click', function() { field12.focus(); })
         //});
-
-
     })
 
-        /*
-
-
-
-
-
-
-
-
-         });
-         */;
 </script>
 
 <script src="js/dpSyntaxHighlighter.js"></script>

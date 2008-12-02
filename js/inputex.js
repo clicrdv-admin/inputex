@@ -15,10 +15,14 @@ if (typeof(inputEx) === 'undefined') {
                     },
                     'field': {
                         fullpath: "../js/Field.js",type:'js',
-                        requires:['inputex-css','base','node']
+                        requires:['inputex-css','base','node','json']
                     },
                     'stringfield': {
                         fullpath: "../js/fields/StringField.js",type:'js',
+                        requires:['field']
+                    },
+                    'group':{
+                        fullpath: '../js/Group.js',type:'js',
                         requires:['field']
                     }
                 }};
