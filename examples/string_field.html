@@ -2,16 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <title>inputEx - StringField Usage</title>
-
-    <!-- YUI CSS -->
-    <link rel="stylesheet" type="text/css" href="../lib/yui/reset/reset-min.css">
-    <link rel="stylesheet" type="text/css" href="../lib/yui/fonts/fonts-min.css">
-    <link rel="stylesheet" type="text/css" href="../lib/yui/container/assets/container.css">
-    <link rel="stylesheet" type="text/css" href="../lib/yui/assets/skins/sam/skin.css">
-
-    <!-- InputEx CSS -->
-    <link type='text/css' rel='stylesheet' href='../css/inputEx.css'/>
+    <title>inputEx-YUI3 - StringField Usage</title>
 
     <!--[if IE 6]>
     <link type='text/css' rel='stylesheet' href='../css/inputEx-IE6.css' />
@@ -29,7 +20,6 @@
 <body>
 
 <p class='demoTitle'>inputEx - StringField Usage</p>
-
 
 <!-- Example 1 -->
 <div class='exampleDiv'>
@@ -125,7 +115,8 @@
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
             //new YAHOO.inputEx.StringField({required: true, showMsg: true, parentEl: 'container5'});
-            new Y.inputEx.StringField({validator:[{type:'meta',message:'This field is required'},{required: true}], showMsg:
+            new Y.inputEx.StringField({validator:[{type:'meta',message:'This field is required'},{required: true}],
+            showMsg:
             true, parentEl: 'container5'}).render();
         </textarea>
     </div>
@@ -213,10 +204,13 @@
             var el = Y.Node.get('#container9');
             var field = new Y.inputEx.StringField({parentEl: el });
             field.render();
-            var logDiv = Y.Node.create('<div>Log:<br/></div>')
+            var logDiv = Y.Node.create('
+            <div>Log:<br/></div>
+            ')
             el.appendChild(logDiv);
             field.on('field:change', function() {
-                logDiv.set('innerHTML', logDiv.get('innerHTML') + 'Updated at ' + (new Date()) + ' with value: ' + arguments[1] + '<br/>')
+            logDiv.set('innerHTML', logDiv.get('innerHTML') + 'Updated at ' + (new Date()) + ' with value: ' +
+            arguments[1] + '<br/>')
             })
         </textarea>
     </div>
@@ -237,7 +231,8 @@
         <textarea name="code" class="js" cols="60" rows="1">
             //new YAHOO.inputEx.StringField({parentEl: 'container10', typeInvite: 'lastname', description: 'Enter your
             //lastname'});
-            new Y.inputEx.StringField({parentEl: 'container10', typeInvite: 'lastname', description: 'Enter your lastname'}).render();
+            new Y.inputEx.StringField({parentEl: 'container10', typeInvite: 'lastname', description: 'Enter your
+            lastname'}).render();
 
         </textarea>
     </div>
@@ -257,16 +252,21 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-            var field1 = new Y.inputEx.StringField({parentEl: 'container11', typeInvite: 'lastname', description: 'Enter your lastname', minLength:10, required:true, showMsg:true});
+            var field1 = new Y.inputEx.StringField({parentEl: 'container11', typeInvite: 'lastname', description: 'Enter
+            your lastname', minLength:10, required:true, showMsg:true});
             field1.render();
 
             var exampleDiv = Y.Node.get('#container11');
 
-            var button1 = Y.Node.create('<button>setValue()</button>');
+            var button1 = Y.Node.create('
+            <button>setValue()</button>
+            ');
             exampleDiv.appendChild(button1);
             button1.on('click', function() { field1.set("value", "I've been set by setValue"); })
 
-            var button2 = Y.Node.create('<button>getValue()</button>');
+            var button2 = Y.Node.create('
+            <button>getValue()</button>
+            ');
             exampleDiv.appendChild(button2);
             button2.on('click', function() { field1.set("value", "I've been set by getValue"); })
         </textarea>
@@ -286,13 +286,15 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-        var field12 = new Y.inputEx.StringField({parentEl: 'container12'});
-        field12.render();
-            
-        var exampleDiv = Y.Node.get('container12');
-        var button3 = Y.Node.create('<button>focus</button>')
-        exampleDiv.appendChild(button3);
-        button3.on('click', function() { field12.focus(); })
+            var field12 = new Y.inputEx.StringField({parentEl: 'container12'});
+            field12.render();
+
+            var exampleDiv = Y.Node.get('container12');
+            var button3 = Y.Node.create('
+            <button>focus</button>
+            ')
+            exampleDiv.appendChild(button3);
+            button3.on('click', function() { field12.focus(); })
         </textarea>
     </div>
 
