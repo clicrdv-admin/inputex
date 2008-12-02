@@ -42,10 +42,11 @@
              * @type String
              */
             regexp:{value:null}
-
         };
 
         Y.extend(StringField, Y.inputEx.Field, {
+            _typeInviteOn:false,//type invite is being shown
+
             initializer : function(cfg) {
                 if (this.get('typeInvite')) {
                     this.on('field:render', this._updateTypeInvite, this)
@@ -59,7 +60,7 @@
 
             renderComponent:function(parentEl) {
                 try {
-                    var el = parentEl ? parentEl : this.get('el'), id = this.get('el').get('id');
+                    var el = parentEl ? parentEl : this.get('el'), id = this.getID();
                     parentEl.addClass('inputEx-StringField')
                     var fieldEl = Y.Node.create('<div class="inputEx-StringField-wrapper"></div>')
 
@@ -82,7 +83,7 @@
 
             _initEvents:function() {
                 StringField.superclass._initEvents.apply(this, arguments);
-                var el = this.get('el'), id = this.get('el').get('id'), field = el.query('#' + id + '-field')
+                var el = this.get('el'), id = this.getID(), field = el.query('#' + id + '-field')
 
                 /*if (Y.UA.ie) { // refer to inputEx-95
                  new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
@@ -93,8 +94,10 @@
             },
 
             _updateInputEl:function(v) {
-                StringField.superclass._updateInputEl.apply(this, arguments);
-                this._updateTypeInvite();
+                if (!this._typeInviteOn || this.get('value') === '') {
+                    StringField.superclass._updateInputEl.apply(this, arguments);
+                    this._updateTypeInvite();
+                }
             },
 
             _updateTypeInvite: function(evt) {
@@ -107,29 +110,38 @@
                         if (this.get('el').hasClass('inputEx-typeInvite')) {
                             this.getField().set('value', ''); // remove typeInvite upon focus
                             this.get('el').removeClass('inputEx-typeInvite');
+                            this._typeInviteOn = false;
                         }
                         break;
                     case 'field:blur':
                         if (this.get('value') === '') { // if empty, show typeInvite
                             this.get('el').addClass('inputEx-typeInvite');
                             this.getField().set('value', this.get('typeInvite'));
+                            this._typeInviteOn = true;
                             Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
                         } else {
                             this.get('el').removeClass('inputEx-typeInvite');
+                            this._typeInviteOn = false;
                         }
                         break;
                     default: //probably called indirectly by this.set('value')
                         if (this.getField().get('value') === '') { //if empty   
                             this.get('el').addClass('inputEx-typeInvite');
                             this.getField().set('value', this.get('typeInvite'));
+                            this._typeInviteOn = true;
                             Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
                         } else {
                             this.get('el').removeClass('inputEx-typeInvite');
+                            this._typeInviteOn = false;
                         }
                         break;
                 }
             },
-
+            _onChange:function() {
+                var oldVal = this.get('value'), newVal = this.getField().get('value');
+                Y.log(this + '._onChange() - StringField - from "' + oldVal + '" to "' + newVal + '", _typeInviteOn: ' + this._typeInviteOn, 'debug', 'inputEx')
+                if (oldVal !== newVal && !this._typeInviteOn) { this.set('value', newVal)}
+            },
             /*
              _onFocus:function() {
              StringField.superclass._onFocus.apply(this, arguments);

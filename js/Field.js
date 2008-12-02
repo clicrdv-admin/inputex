@@ -105,8 +105,7 @@
              * @type String
              */
             elClass:{
-                value:'inputEx-fieldWrapper',
-                writeOnce:true
+                value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
             },
 
             /**
@@ -115,6 +114,8 @@
              * one with the cfg as id.
              * - if cfg is a Node, it is used.
              * - otherwise, we try to lookup a node
+             *
+             * TODO: review if is better to use field.getEl() or field.get('el'); Should 'el' attribute be a configuration or the actual element?!
              */
             el:{
                 set:function(cfg) {
@@ -390,6 +391,8 @@
                 return this;
             },
 
+            getID:function() { return this.get('el').get('id');},
+
             /**
              * Remarks: New API
              *
@@ -400,7 +403,7 @@
 
                 var fieldEl;
                 var el = this.get('el')
-                if (el) { fieldEl = el.query('#' + this.get('el').get('id') + '-field'); }
+                if (el) { fieldEl = el.query('#' + this.getID() + '-field'); }
                 //if (!fieldEl) { Y.log(this + '.getField() - Field - return undefined', 'warn', 'inputEx'); }
                 return fieldEl;
             },
@@ -419,7 +422,9 @@
                     this._setClassFromState();
                 }
 
-                if (this.get('value') !== this.getField().get('value')) { this.set('value', this.getField().get('value'))}
+                if (this.get('value') !== this.getField().get('value') && this._inputElToValueUpdateEnabled) {
+                    this.set('value', this.getField().get('value'))
+                }
                 Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
                 this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
@@ -427,8 +432,7 @@
             _onChange:function() {
                 var oldVal = this.get('value'), newVal = this.getField().get('value');
                 Y.log(this + '._onChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
-                if (oldVal !== newVal) { this.set('value', newVal)}
-                //this.fire(EV_CHANGE, oldVal, newVal);//workarounded this.fire(EV_UPDATE, this.get('value'));
+                if (oldVal !== newVal && this._inputElToValueUpdateEnabled) { this.set('value', newVal)}
             },
 
             /**
