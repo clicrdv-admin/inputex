@@ -158,10 +158,10 @@ if (typeof(inputEx) === 'undefined') {
          * @static
          */
         Y.inputEx.registerType = function(type, field) {
-            if (!lang.isString(type)) {
+            if (!Y.Lang.isString(type)) {
                 throw new Error("inputEx.registerType: first argument must be a string");
             }
-            if (!lang.isFunction(field)) {
+            if (!Y.Lang.isFunction(field)) {
                 throw new Error("inputEx.registerType: second argument must be a function");
             }
             this.typeClasses[type] = field;
