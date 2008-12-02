@@ -98,6 +98,7 @@
             },
 
             _renderFields: function(parentEl, inputFields) {
+                parentEl = parentEl ? parentEl : this.get('el')
                 var fieldset = Y.Node.create('<fieldset id="' + this.getID() + '-fieldset"></fieldset>')
 
                 if (this.get('collapsible')) {// Option Collapsible
@@ -116,8 +117,10 @@
                 if (fieldsCfg && fieldsCfg.length > 0) {
                     // Iterate this.createInput on input fields
                     for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
+                        fieldCfg.inputParams = Y.merge({parentEl:fieldset}, fieldCfg.inputParams)
+
                         var field = this._renderField(fieldCfg); // Render the field
-                        if (field && field.get('el')) fieldset.appendChild(field.get('el'))
+                        //if (field && field.get('el')) fieldset.appendChild(field.get('el'))
                     }
                 }
 

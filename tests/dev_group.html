@@ -20,7 +20,7 @@
             Y.log('quick test begin')
             //Y.inputEx.spacerUrl = "../images/space.gif";
 
-            group = new Y.inputEx.Group({el: 'test', fields: [
+            group = new Y.inputEx.Group({el: 'test', legend:'test group', fields: [
                 {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
                 {type: 'string', inputParams: {label: 'Firstname', name: 'firstname', validator:[{required: true, message:'please fill in a value'}] } },
                 {type: 'string', inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },

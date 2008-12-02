@@ -93,10 +93,10 @@
              */
             parentEl:{
                 set:function(cfg) {
-                    return Field.getNode(cfg);
-                },
+                    return Y.inputEx.findNode(cfg);
+                }//,
                 //value: Y.Node.get('body'),
-                writeOnce:true
+                //writeOnce:true
             },
 
             /**
@@ -121,7 +121,7 @@
                 set:function(cfg) {
                     var el;
                     if (!Y.Lang.isNull(cfg)) {
-                        el = Field.getNode(cfg)
+                        el = Y.inputEx.findNode(cfg)
                     }
 
                     if (!el) { //create a new el under parent
@@ -131,7 +131,7 @@
                         if (this.get('parentEl')) {
                             this.get('parentEl').appendChild(el);
                         } else {
-                            Y.log(this + '.set("el") - Field - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el, 'warn', 'inputEx');
+                            Y.log(this + '.set("el") - Field - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el + ', parentEl: ' + this.get('parentEl'), 'warn', 'inputEx');
                         }
 
                     }
@@ -245,30 +245,6 @@
                 value:{}
             }
         };
-
-        /**
-         * Static methods
-         */
-        Field.getNode = function(cfg, defaultNode) { //TODO impl defaultNode
-            var node;
-            if (Y.Lang.isString(cfg)) {
-                node = Y.Node.get(cfg.charAt(0) == '#' ? cfg : '#' + cfg);
-            }
-            else if (cfg instanceof Y.Node) {
-                node = cfg
-            }
-            else {
-                try {
-                    node = Y.Node.get(cfg)
-                } catch(e) {
-                }
-            }
-            /*if (Y.Lang.isUndefined(parentNode)) {
-             Y.log(this + ' parentEl cannot be identified, parentNode is set to BODY, cfg: ' + cfg, 'warn', 'inputEx');
-             parentNode = Y.Node.get('body');
-             }*/
-            return node;
-        }
 
         Y.extend(Field, Y.Base, {
             _inputEl:null, //reference to the Field node

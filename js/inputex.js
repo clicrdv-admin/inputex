@@ -233,6 +233,30 @@ if (typeof(inputEx) === 'undefined') {
         };
 
 
+        /**
+         * Static methods
+         */
+        Y.inputEx.findNode = function(cfg, defaultNode) { //TODO impl defaultNode
+            var node;
+            if (Y.Lang.isString(cfg)) {
+                node = Y.Node.get(cfg.charAt(0) == '#' ? cfg : '#' + cfg);
+            }
+            else if (cfg instanceof Y.Node) {
+                node = cfg
+            }
+            else {
+                try {
+                    node = Y.Node.get(cfg)
+                } catch(e) {
+                }
+            }
+            /*if (Y.Lang.isUndefined(parentNode)) {
+             Y.log(this + ' parentEl cannot be identified, parentNode is set to BODY, cfg: ' + cfg, 'warn', 'inputEx');
+             parentNode = Y.Node.get('body');
+             }*/
+            return node;
+        }
+
     }, '3.0.0pr1', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
 })());
 

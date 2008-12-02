@@ -73,9 +73,11 @@
                     if (this.get('maxLength')) field.set('maxLength', this.get('maxLength'))
                     if (this.get('value')) field.set('value', this.get('value'))
 
+                    this._inputEl = field;
                     fieldEl.appendChild(field);
                     el.appendChild(fieldEl);
-                    Y.log(this + '.renderComponent() - StringField - done', 'debug', 'inputEx');
+
+                    Y.log(this + '.renderComponent() - StringField - done, _inputEl: ' + this._inputEl, 'debug', 'inputEx');
                 } catch(e) {
                     Y.log(this + '.renderComponent() - StringField - e: ' + e, 'error', 'inputEx');
                 }
