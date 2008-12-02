@@ -168,43 +168,9 @@
         Y.namespace('inputEx');
         Y.inputEx.StringField = StringField;
 
+        Y.inputEx.registerType("string", StringField);
+
     }, '3.0.0pr1', {requires:['field']});
 
-    //    YUI.add('inputex', function(Y) {
-    //    }, '3.0.0pr1', {use:['inputex','field'],skinnable:true})
+    // YUI.add('inputex', function(Y) {}, '3.0.0pr1', {use:['inputex','field'],skinnable:true})
 })();
-
-
-/*
- if(this.options.typeInvite) {
- this.updateTypeInvite();
-
- /*
- /**
- * Add the minLength string message handling
- */
-/*
- getStateString: function(state) {
- if(state == inputEx.stateInvalid && this.options.minLength && this.el.value.length < this.options.minLength) {
- return inputEx.messages.stringTooShort[0]+this.options.minLength+inputEx.messages.stringTooShort[1];
- }
- return inputEx.StringField.superclass.getStateString.call(this, state);
- },
-
- */
-/**
- * Display the type invite after setting the class
- */
-/*
- setClassFromState: function() {
- inputEx.StringField.superclass.setClassFromState.call(this);
-
- // display/mask typeInvite
- if(this.options.typeInvite) {
- this.updateTypeInvite();
- }
- },
-
- inputEx.messages.stringTooShort = ["This field should contain at least "," numbers or characters"];
-
- */
