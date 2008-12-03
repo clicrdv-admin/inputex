@@ -53,6 +53,15 @@
              */
                 EV_CHANGE = 'field:change',
             /**
+             * @event field:validated
+             * @description successfully validated
+             * @preventable TODO DUMMY, REMOVE THIS
+             * @param {Event} node
+             * @bubbles TODO DUMMY, REMOVE THIS
+             * @type Event.Custom
+             */
+                EV_VALIDATED = 'field:validated',
+            /**
              * @event field:invalid
              * @description failed in validation
              * @preventable TODO DUMMY, REMOVE THIS
@@ -72,6 +81,7 @@
             this.publish(EV_FOCUS);
             this.publish(EV_BLUR);
             this.publish(EV_CHANGE);
+            this.publish(EV_VALIDATED);
             this.publish(EV_INVALID);
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this);
         };
@@ -588,6 +598,7 @@
 
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
                     this._validated = true;
+                    this.fire(EV_VALIDATED, null, this.get('value'));
                     return result;
                 } catch(e) {
                     Y.log(this + '.validate() - Field - e: ' + e, 'error', 'inputEx');

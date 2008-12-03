@@ -1,6 +1,7 @@
 status
 ======
- - Field and StringField are implemented. All examples in StringField are fully working.
+ - inputEx and inputEx.Field are implemented.
+ - StringField and UrlField are implemented. All examples in StringField are fully working.
 
 
 

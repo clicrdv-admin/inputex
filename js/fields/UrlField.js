@@ -1,105 +1,124 @@
-(function() {
+(function () {
+    if (typeof(YUI) === 'undefined') {
+        alert('Error! YUI3 library is not available')
+    }
 
-   var inputEx = YAHOO.inputEx, lang = YAHOO.lang;
+    YUI.add('urlfield', function(Y) {
+        Y.inputEx = Y.inputEx || {};
 
-/**
- * @class Adds an url regexp, and display the favicon at this url
- * @extends inputEx.StringField
- * @constructor
- * @param {Object} options inputEx.Field options object
- * <ul>
- *   <li>favicon: boolean whether the domain favicon.ico should be displayed or not (default is true, except for https)</li>
- * </ul>
- */
-inputEx.UrlField = function(options) {
-   inputEx.UrlField.superclass.constructor.call(this,options);
-};
+        /**
+         * @module inputEx
+         */
+        /**
+         * @class Adds an url regexp, and display the favicon at this url
+         * @extends StringField
+         * @constructor
+         * @param {Object} options inputEx.Field options object
+         * <ul>
+         *   <li>favicon: boolean whether the domain favicon.ico should be displayed or not (default is true, except for https)</li>
+         * </ul>
+         */
+        var UrlField = function(cfg) {
+            UrlField.superclass.constructor.apply(this, arguments);
+        };
 
-lang.extend(inputEx.UrlField, inputEx.StringField, 
-/**
- * @scope inputEx.UrlField.prototype   
- */   
-{
+        UrlField.NAME = "urlfield";
+        UrlField.ATTRS = {
+            favicon:{
+                /* set:function(v) {
+                 return Y.Lang.isUndefined(v) ? (("https:" == document.location.protocol) ? false : true) : v;
+                 },*/
+                value:true
+            },
+            className:{
+                value:'inputEx-Field inputEx-UrlField'//,writeOnce:true
+            },
+            validator:{
+                value:[{regexp:Y.inputEx.regexps.url}]//TODO add message ?
+            },
+            messages:{
+                value:{invalid:'invalid URL'}
+            }
 
-   /**
-    * Adds the invalid Url message
-    * @param {Object} options Options object (inputEx inputParams) as passed to the constructor
-    */
-   setOptions: function(options) {
-      inputEx.UrlField.superclass.setOptions.call(this, options);
-      
-      this.options.className = options.className ? options.className : "inputEx-Field inputEx-UrlField";
-      this.options.messages.invalid = inputEx.messages.invalidUrl;
-      this.options.favicon = lang.isUndefined(options.favicon) ? (("https:" == document.location.protocol) ? false : true) : options.favicon;
-      
-      // validate with url regexp
-      this.options.regexp = inputEx.regexps.url;
-   },
-   
-   /**
-    * Adds a img tag before the field to display the favicon
-    */
-   render: function() {
-      inputEx.UrlField.superclass.render.call(this);
-      this.el.size = 27;
-      
-      if(!this.options.favicon) {
-         YAHOO.util.Dom.addClass(this.el, 'nofavicon');
-      }
+        };
 
-      // Create the favicon image tag
-      if(this.options.favicon) {
-         this.favicon = inputEx.cn('img', {src: inputEx.spacerUrl});         
-         this.fieldContainer.insertBefore(this.favicon,this.fieldContainer.childNodes[0]);
-         
-         // focus field when clicking on favicon
-         YAHOO.util.Event.addListener(this.favicon,"click",function(){this.focus();},this,true);
-      }
-   },
-   
-   setClassFromState: function() {
-      inputEx.UrlField.superclass.setClassFromState.call(this);
-      
-      if(this.options.favicon) {
-         // try to update with url only if valid url (else pass null to display inputEx.spacerUrl)
-         this.updateFavicon((this.previousState == inputEx.stateValid) ? this.getValue() : null);
-      }
-   },
-   
+        Y.extend(UrlField, Y.inputEx.StringField, {
+            _faviconEl:null,//favicon img el
+            _faviconTimer:null,
 
-   updateFavicon: function(url) {
-      var newSrc = url ? (url+"/favicon.ico") : inputEx.spacerUrl;
-      if(newSrc != this.favicon.src) {
-      
-         // Hide the favicon
-         inputEx.sn(this.favicon, null, {visibility: 'hidden'});
-   
-         // Change the src
-         this.favicon.src = newSrc;
-   
-         // Set the timer to launch displayFavicon in 1s
-         if(this.timer) { clearTimeout(this.timer); }
-         var that = this;
-         this.timer = setTimeout(function(){that.displayFavicon();}, 1000);
-      }
-   },
+            initializer : function(cfg) {
+                this.on('field:change', this.updateFavicon, this)
+                Y.log(this + '.initializer() - UrlField - initialized', 'debug', 'inputEx');
+            },
 
-   /**
-    * Display the favicon if the icon was found (use of the naturalWidth property)
-    */
-   displayFavicon: function() {
-      inputEx.sn(this.favicon, null, {visibility: (this.favicon.naturalWidth!=0) ? 'visible' : 'hidden'});
-   }
+            /**
+             * Adds a img tag before the field to display the favicon
+             */
+            render:function() {
+                UrlField.superclass.render.call(this, arguments);
 
+                if (this.get('el').get('size') < 27)
+                    this.get('el').set('size', 27); //TODO why set to 27
 
-});
+                if (this.get('favicon')) {
+                    this._faviconEl = Y.Node.create('<img src="' + Y.inputEx.spacerUrl + '" width="16" height="16"/>')
 
-inputEx.messages.invalidUrl = "Invalid URL, ex: http://www.test.com";
+                    // focus field when clicking on favicon
+                    this._faviconEl.on('click', this.focus, this)
 
+                    // Create the favicon image tag
+                    this._fieldEl.insertBefore(this._faviconEl, this._fieldEl.get('firstChild'));
 
-/**
- * Register this class as "url" type
- */
-inputEx.registerType("url", inputEx.UrlField);
+                    this.get('el').removeClass('nofavicon'); //for use when favicon attribute is dynamically changed
+
+                    this.updateFavicon();
+                } else {
+                    this._inputEl.addClass('nofavicon');
+                }
+            },
+
+            updateFavicon: function() {
+                if (!this.get('favicon') || !this._faviconEl) { return; }
+
+                var url = this.getField().get('value')
+                var faviconUrl = (this._validated)? url.match(/https?:\/\/[^\/]*/)+'/favicon.ico' : Y.inputEx.spacerUrl
+
+                //Y.log(this + '.updateFavicon() - UrlField - _validated: ' + this._validated + ', url: ' + url + ', ', 'debug', 'inputEx')
+                if (this._validated && faviconUrl != this._faviconEl.get('src')) {
+
+                    // Hide the favicon
+                    this._faviconEl.setStyle('visibility', 'hidden')
+
+                    // Change the src
+                    this._faviconEl.set('src', faviconUrl);
+
+                    // Set the timer to launch displayFavicon in 1s
+                    if (this._faviconTimer) { clearTimeout(this._faviconTimer); }
+                    this._faviconTimer = Y.later(1000, this, this.displayFavicon)
+                    Y.log(this + '.updateFavicon() - updated favicon', 'debug', 'inputEx');
+                }
+            },
+
+            /**
+             * Display the favicon if the icon was found (use of the naturalWidth property)
+             */
+            displayFavicon: function() {
+                Y.log(this + '.displayFavicon() - UrlField', 'debug', 'inputEx')
+                this._faviconEl.setStyle('visibility', (this._faviconEl.get('naturalWidth') != 0) ? 'visible' : 'hidden');
+            }
+
+        });
+
+        Y.namespace('inputEx');
+        Y.inputEx.UrlField = UrlField;
+
+        Y.inputEx.registerType("url", UrlField);
+
+    }, '3.0.0pr1', {requires:['stringfield']});
 
 })();
+
+
+/*
+ inputEx.messages.invalidUrl = "Invalid URL, ex: http://www.test.com";
+ */
