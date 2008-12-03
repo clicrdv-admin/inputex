@@ -252,21 +252,16 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="js" cols="60" rows="1">
-            var field1 = new Y.inputEx.StringField({parentEl: 'container11', typeInvite: 'lastname', description: 'Enter
-            your lastname', minLength:10, required:true, showMsg:true});
+            var field1 = new Y.inputEx.StringField({parentEl: 'container11', typeInvite: 'lastname', description: 'Enter your lastname', validator:[{type:'meta', message:'required and min 10 characters'},{minLength:10}, {required:true}], showMsg:true});
             field1.render();
 
             var exampleDiv = Y.Node.get('#container11');
 
-            var button1 = Y.Node.create('
-            <button>setValue()</button>
-            ');
+            var button1 = Y.Node.create('<button>setValue()</button>');
             exampleDiv.appendChild(button1);
             button1.on('click', function() { field1.set("value", "I've been set by setValue"); })
 
-            var button2 = Y.Node.create('
-            <button>getValue()</button>
-            ');
+            var button2 = Y.Node.create('<button>getValue()</button>');
             exampleDiv.appendChild(button2);
             button2.on('click', function() { field1.set("value", "I've been set by getValue"); })
         </textarea>
