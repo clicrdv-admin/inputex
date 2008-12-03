@@ -54,7 +54,7 @@
                     this.on('field:blur', this._updateTypeInvite, this)
                     Y.log(this + '.initializer() - StringField - initialized - subscribed _updateTypeInvite to render,focus & blur', 'debug', 'inputEx');
                 } else {
-                    Y.log(this + '.initializer() - StringField - initialized', 'debug', 'inputEx');
+                    //Y.log(this + '.initializer() - StringField - initialized', 'debug', 'inputEx');
                 }
             },
 
@@ -93,6 +93,14 @@
                  field.focus();
                  }}).enable()
                  }*/
+            },
+
+            validate:function() {
+                if (this._typeInviteOn) {
+                    StringField.superclass.validate.call(this, '');
+                } else {
+                    StringField.superclass.validate.apply(this, arguments);
+                }
             },
 
             _updateInputEl:function(v) {

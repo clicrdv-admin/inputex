@@ -160,7 +160,7 @@
             //new YAHOO.inputEx.StringField({showMsg: true,regexp: inputEx.regexps.email, value: 'wrong@email',
             parentEl:
             //'container7'});
-            new Y.inputEx.StringField({showMsg: true,validator:[{regex: Y.inputEx.regexps.email, message:'invalid
+            new Y.inputEx.StringField({showMsg: true,validator:[{regexp: Y.inputEx.regexps.email, message:'invalid
             email'}], value: 'wrong@email', parentEl: 'container7'}).render();
         </textarea>
     </div>
@@ -323,7 +323,7 @@
         new Y.inputEx.StringField({label: 'Enter your age', validator:[{regexp: /^[0-9]*$/, message:'invalid age'}], parentEl: 'container6'}).render();
 
         // Example 7
-        new Y.inputEx.StringField({showMsg: true,validator:[{regex: Y.inputEx.regexps.email, message:'invalid email'}], value: 'wrong@email', parentEl: 'container7'}).render();
+        new Y.inputEx.StringField({showMsg: true,validator:[{regexp: Y.inputEx.regexps.email, message:'invalid email'}], value: 'wrong@email', parentEl: 'container7'}).render();
 
         // Example 8
         var field = new Y.inputEx.StringField({value: 'This field is disabled', parentEl: 'container8'});

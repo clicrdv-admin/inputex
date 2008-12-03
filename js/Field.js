@@ -1,8 +1,5 @@
 (function () {
-    if (typeof(YUI) === 'undefined') {
-        alert('Error! YUI3 library is not available')
-    } //TODO load yui3 base dynamically like a Bookmarklet
-
+    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') }
 
     YUI.add('field', function(Y) {
         Y.inputEx = Y.inputEx || {};
@@ -150,7 +147,6 @@
                 },
                 value:null,
                 writeOnce:true},
-
 
             /**
              * @attribute value
@@ -405,7 +401,7 @@
             _onFocus:function() {
                 this.get('el').removeClass('inputEx-empty')
                 this.get('el').addClass('inputEx-focused')
-                Y.log(this + '._onFocus() - Field', 'debug', 'inputEx');
+                Y.log(this + '._onFocus() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
                 this.fire(EV_FOCUS, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
@@ -419,7 +415,7 @@
                 if (this.get('value') !== this.getField().get('value') && this._inputElToValueUpdateEnabled) {
                     this.set('value', this.getField().get('value'))
                 }
-                Y.log(this + '._onBlur() - Field', 'debug', 'inputEx');
+                Y.log(this + '._onBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
                 this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
@@ -499,7 +495,7 @@
                     case Y.inputEx.stateInvalid:
                         var messages = [];
                         Y.each(this._violations, function(v, k, obj) {
-                            var violation = obj[0]
+                            var violation = obj[k]
                             if (v.message) {
                                 var message = v.message.replace(/\{([\w\s\-]+)\}/g, function (x, key) { return (key in violation) ? violation[key] : ''; })
                                 messages.push(message)
@@ -511,7 +507,7 @@
                     //result = state;
                         result = '';
                 }
-                Y.log(this + '.getStateString() - Field - result: ' + Y.JSON.stringify(result), 'debug', 'inputEx');
+                Y.log(this + '.getStateString() - Field - result: ' + Y.JSON.stringify(result) + ', _violations: ' + Y.JSON.stringify(this._violations), 'debug', 'inputEx');
                 return result;
                 /* if (state == Y.inputEx.stateRequired) {
                  return this.get('messages').required;
@@ -560,40 +556,52 @@
             /**
              * validate only on 'field:change'
              */
-            validate: function() {
+            validate: function(value) {
                 try {
                     if (!this.getField()) return; //no validation before the field is rendered
-                    var value = this.getField().get('value'), result = true;
-                    var meta;
+                    value = Y.Lang.isUndefined(value) ? this.getField().get('value') : value; //validate() is called before set('value')
+                    var meta, result = true,validator = this.get('validator');
                     this._violations = [];
 
-                    if (this.get('validator')) {
-                        /**
-                         * Validator implementation. It checks every validator and set a boolean result, and update the _validations array
-                         */
-                        Y.each(this.get('validator'), Y.bind(function(rule) {
-                            var rulePassed = true;
-                            if (rule.type === 'meta') { // type='meta' is for setting global validator configurations
-                                meta = rule;
-                            } else if (!Y.Lang.isUndefined(rule.required) && rule.required) {
-                                rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
-                            } else if (rule.regex || rule.regexp) {
-                                var regexp = rule.regex ? rule.regex : rule.regexp;
-                                rulePassed = new RegExp(regexp).test(value);
-                            } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
-                                if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = rulePassed && (value.length >= rule.minLength)
-                                if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = rulePassed && (value.length <= rule.maxLength)
-                            } else {
-                                Y.log(this + '.validate() - Field - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
-                            }
-                            if (!rulePassed) {
-                                this._violations.push(rule)
-                                Y.log(this + '.validate() - Field - failed validation rule: ' + Y.JSON.stringify(rule), 'info', 'inputEx');
-                            }
-                            result = result && rulePassed;
-                        }, this))
+                    if (validator) {
+                        //Y.log(this + '.validate() - has validator - value: ' + value + ', isUndefined? ' + Y.Lang.isUndefined(value) + ', isNull? ' + Y.Lang.isNull(value) + ', isEmpty? ' + (Y.Lang.trim(value) === ''), 'warn', 'inputEx');
+                        if (Y.Lang.trim(value) !== '') {
+                            //Y.log(this + '.validate() - value is NOT empty', 'warn', 'inputEx');
+                            /**
+                             * Validator implementation. It checks every validator and set a boolean result, and update the _validations array
+                             */
+                            Y.each(validator, Y.bind(function(rule) {
+                                var rulePassed = true;
+                                if (rule.type === 'meta') { // type='meta' is for setting global validator configurations
+                                    meta = rule;
+                                } else if (!Y.Lang.isUndefined(rule.required) && rule.required) {
+                                    rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
+                                } else if (rule.regexp) {
+                                    rulePassed = new RegExp(rule.regexp).test(value);
+                                } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
+                                    if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = rulePassed && (value.length >= rule.minLength)
+                                    if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = rulePassed && (value.length <= rule.maxLength)
+                                } else {
+                                    Y.log(this + '.validate() - Field - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
+                                }
+                                if (!rulePassed) {
+                                    this._violations.push(rule)
+                                    Y.log(this + '.validate() - Field - failed validation rule: ' + Y.JSON.stringify(rule), 'info', 'inputEx');
+                                }
+                                result = result && rulePassed;
+                            }, this))
 
-                        if (!result && meta) { this._violations.unshift(meta) }
+                            if (!result && meta) { this._violations.unshift(meta) }
+                        } else { //if the field is null
+                            meta = Y.inputEx.find(validator, function(v) {if (v.type && v.type == 'meta') return v})
+                            //Y.log(this + '.validate() - value is empty, meta: ' + Y.JSON.stringify(meta), 'warn', 'inputEx');
+
+                            if (Y.inputEx.any(validator, function(v) {return v.required})) {
+                                result = false;
+                                this._violations.push(Y.inputEx.find(validator, function(v) { if (v.required) return v}))
+                            }
+                            if (!result && meta) { this._violations.unshift(meta) }
+                        }
                     }
 
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')

@@ -1,7 +1,5 @@
 (function () {
-    if (typeof(YUI) === 'undefined') {
-        alert('Error! YUI3 library is not available')
-    }
+    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') }
 
     YUI.add('urlfield', function(Y) {
         Y.inputEx = Y.inputEx || {};

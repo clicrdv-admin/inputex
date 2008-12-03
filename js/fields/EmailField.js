@@ -1,49 +1,55 @@
-(function() {
+(function () {
+    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') }
 
-   var inputEx = YAHOO.inputEx;
+    YUI.add('emailfield', function(Y) {
+        Y.inputEx = Y.inputEx || {};
 
-/**
- * @class Field that adds the email regexp for validation. Result is always lower case.
- * @extends inputEx.StringField
- * @constructor
- * @param {Object} options inputEx.Field options object
- */
-inputEx.EmailField = function(options) {
-   inputEx.EmailField.superclass.constructor.call(this,options);
-};
-YAHOO.lang.extend(inputEx.EmailField, inputEx.StringField, 
-/**
- * @scope inputEx.EmailField.prototype   
- */   
-{
-   
-   /**
-    * Set the email regexp and invalid message
-    * @param {Object} options Options object (inputEx inputParams) as passed to the constructor
-    */
-   setOptions: function(options) {
-      inputEx.EmailField.superclass.setOptions.call(this, options);
-      // Overwrite options
-      this.options.messages.invalid = inputEx.messages.invalidEmail;
-      this.options.regexp = inputEx.regexps.email;
-   },
-   
-   /**
-    * Set the value to lower case since email have no case
-    * @return {String} The email string
-    */
-   getValue: function() {
-      return this.el.value.toLowerCase();
-   }
+        /**
+         * @module inputEx
+         */
+        /**
+         * @class Adds an url regexp, and display the favicon at this url
+         * @extends StringField
+         * @constructor
+         * @param {Object} options inputEx.Field options object
+         * <ul>
+         *   <li>favicon: boolean whether the domain favicon.ico should be displayed or not (default is true, except for https)</li>
+         * </ul>
+         */
+        var EmailField = function(cfg) {
+            EmailField.superclass.constructor.apply(this, arguments);
+        };
 
-});
-   
-// Specific message for the email field
-inputEx.messages.invalidEmail = "Invalid email, ex: sample@test.com";
+        EmailField.NAME = "emailfield";
+        EmailField.ATTRS = {
+            /**
+             * @attribute value
+             * @type String
+             */
+            value:{
+                set:function(v) {
+                    var lowercase = (Y.Lang.isUndefined(v)) ? '' : v.toLowerCase();
+                    EmailField.superclass.set.call(this, lowercase)
+                    return lowercase;
+                },
+                value:''
+            } ,
+            validator:{
+                value:[{regexp:Y.inputEx.regexps.email}]//TODO add message ?
+            },
+            messages:{
+                value:{invalid:'invalid URL'}
+            }
+        };
 
-/**
- * Register this class as "email" type
- */
-inputEx.registerType("email", inputEx.EmailField);
+        Y.extend(EmailField, Y.inputEx.StringField, {
+        });
 
+        Y.namespace('inputEx');
+        Y.inputEx.EmailField = EmailField;
+        Y.inputEx.registerType("email", EmailField);
+
+    }, '3.0.0pr1', {requires:['stringfield']});
+
+    //inputEx.messages.invalidEmail = "Invalid email, ex: sample@test.com";
 })();

@@ -33,6 +33,8 @@
          */
         var Group = function(cfg) {
             Group.superclass.constructor.apply(this, arguments);
+            this.publish(EV_RENDER);
+            this.publish(EV_CHANGE);
         };
 
         Group.NAME = "group";
@@ -156,7 +158,7 @@
                 }
 
                 // Subscribe to the "field:change" event to send the "group:change" event
-                field.on('change', Y.bind(this._onChange, this, field))  //TODO double check the argument
+                //field.on('field:change', this._onChange, this)  //TODO double check the argument
                 return field;
             },
 

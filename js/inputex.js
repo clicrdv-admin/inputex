@@ -21,6 +21,9 @@ if (typeof(inputEx) === 'undefined') {
                     'urlfield': {
                         fullpath: "../js/fields/UrlField.js", type:'js', requires:['stringfield']
                     },
+                    'emailfield': {
+                        fullpath: "../js/fields/EmailField.js", type:'js', requires:['stringfield']
+                    },
                     'group':{
                         fullpath: '../js/Group.js', type:'js', requires:['field']
                     }
@@ -31,10 +34,7 @@ if (typeof(inputEx) === 'undefined') {
 }
 
 ((function() {
-    if (typeof(YUI) === 'undefined') {
-        alert('Error! YUI3 library is not available')
-    } //TODO load yui3 base dynamically like a Bookmarklet
-
+    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') } //TODO load yui3 base dynamically like a Bookmarklet
 
     YUI.add('inputex', function(Y) {
         //Y.inputEx = Y.inputEx || {};
@@ -254,7 +254,42 @@ if (typeof(inputEx) === 'undefined') {
              parentNode = Y.Node.get('body');
              }*/
             return node;
-        }
+        },
+
+                Y.inputEx.any = function(items, fn) {
+                    if (Y.Lang.isArray(items)) {
+                        for (var k = 0,v; v = items[k]; k++) {
+                            if (fn(v, k, items)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    } else if (Y.Lang.isObject(items)) {
+                        for (var k in items) {
+                            if (fn(items[k], k, items)) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        throw new Error('only array or object are supported')
+                    }
+                },
+                Y.inputEx.find = function(items, fn) {
+                    if (Y.Lang.isArray(items)) {
+                        for (var k = 0,v; v = items[k]; k++) {
+                            var result = fn(v, k, items)
+                            if (!Y.Lang.isUndefined(result)) { return result; }
+                        }
+                        return false;
+                    } else if (Y.Lang.isObject(items)) {
+                        for (var k in items) {
+                               var result = fn(items[k], k, items)
+                            if (!Y.Lang.isUndefined(result)) { return result; }
+                        }
+                    } else {
+                        throw new Error('only array or object are supported')
+                    }
+                }
 
     }, '3.0.0pr1', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
 })());
