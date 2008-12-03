@@ -24,6 +24,10 @@ if (typeof(inputEx) === 'undefined') {
                     'emailfield': {
                         fullpath: "../js/fields/EmailField.js", type:'js', requires:['stringfield']
                     },
+                    'checkbox': {
+                        fullpath: "../js/fields/CheckBox.js", type:'js', requires:['field']
+                    },
+
                     'group':{
                         fullpath: '../js/Group.js', type:'js', requires:['field']
                     }

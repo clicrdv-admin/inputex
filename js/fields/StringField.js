@@ -1,10 +1,7 @@
 (function () {
-    if (typeof(YUI) === 'undefined') {
-        alert('Error! YUI3 library is not available')
-    }
+    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') }
 
     YUI.add('stringfield', function(Y) {
-        //        if (!Y.inputEx){alert('Y.inputEx is not available')}
         Y.inputEx = Y.inputEx || {};
 
         /**
@@ -85,7 +82,7 @@
 
             _initEvents:function() {
                 StringField.superclass._initEvents.apply(this, arguments);
-                var el = this.get('el'), id = this.getID(), field = el.query('#' + id + '-field')
+                //var el = this.get('el'), id = this.getID(), field = el.query('#' + id + '-field')
 
                 /*if (Y.UA.ie) { // refer to inputEx-95
                  new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
