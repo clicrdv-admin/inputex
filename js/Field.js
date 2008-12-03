@@ -566,9 +566,9 @@
                     this._violations = [];
 
                     if (validator) {
-                        Y.log(this + '.validate() - has validator - value: ' + value + ', isUndefined? ' + Y.Lang.isUndefined(value) + ', isNull? ' + Y.Lang.isNull(value) + ', isEmpty? ' + (Y.Lang.trim(value) === ''), 'warn', 'inputEx');
+                        //Y.log(this + '.validate() - has validator - value: ' + value + ', isUndefined? ' + Y.Lang.isUndefined(value) + ', isNull? ' + Y.Lang.isNull(value) + ', isEmpty? ' + (Y.Lang.trim(value) === ''), 'warn', 'inputEx');
                         if (Y.Lang.trim(value) !== '' || Y.inputEx.any(validator, function(v) {return v.required})) {
-                            Y.log(this + '.validate() - not empty or is required', 'warn', 'inputEx');
+                            //Y.log(this + '.validate() - not empty or is required', 'warn', 'inputEx');
                             /**
                              * Validator implementation. It checks every validator and set a boolean result, and update the _validations array
                              */
@@ -596,7 +596,7 @@
                             if (!result && meta) { this._violations.unshift(meta) }
                         } else { //if the field is null and required
                             meta = Y.inputEx.find(validator, function(v) {if (v.type && v.type == 'meta') return v})
-                            Y.log(this + '.validate() - value is empty, meta: ' + Y.JSON.stringify(meta), 'warn', 'inputEx');
+                            //Y.log(this + '.validate() - value is empty, meta: ' + Y.JSON.stringify(meta), 'warn', 'inputEx');
                             result = false;
                             this._violations.push(Y.inputEx.find(validator, function(v) { if (v.required) return v}))
                             if (!result && meta) { this._violations.unshift(meta) }
