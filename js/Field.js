@@ -213,10 +213,10 @@
              *
              * //TODO: comment: it seems to be more useful to define the class for the wrapping-div, e.g.
              * user may set a margin for a field, or position it specially.
+             * //TODO: rename to fieldElClass?
              */
             className:{
-                value:'inputEx-Field',
-                writeOnce:true
+                value:'inputEx-Field'//,writeOnce:true
             },
 
             /**
@@ -247,11 +247,19 @@
         };
 
         Y.extend(Field, Y.Base, {
+            _fieldEl:null,
             _inputEl:null, //reference to the Field node
             _eventInitialized:false,
             _rendered:false, //TODO state, review this
             _previousState:null,
-
+            /**
+             * _state.validated - indicate the field has been validated. it doesn't mean it is valid.
+             */
+            _validated:false,
+            /**
+             * store a full copy of any violated validation rule(s). Before validate() is called, it's an empty array.
+             */
+            _violations:[],
 
             initializer : function(cfg) {
                 /**
@@ -282,19 +290,19 @@
                         //TODO the trunk has error. backport the label for
                     }
 
-                    var fieldDiv = Y.Node.create('<div class="' + this.get('className') + '"></div>');
+                    this._fieldEl = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
-                    this.renderComponent(fieldDiv);
+                    this.renderComponent(this._fieldEl);
                     this._inputEl = this.getField();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
                         desc.set('innerHTML', this.get('description'))
-                        fieldDiv.appendChild(desc)
+                        this._fieldEl.appendChild(desc)
                         //TODO update docs: use description instead of 'desc', unless we change them all globally, always be consistent in naming
                     }
 
-                    el.appendChild(fieldDiv);
+                    el.appendChild(this._fieldEl);
 
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
@@ -393,7 +401,7 @@
 
             _onBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
-                if (!this._state.validated) {// for the case that the field is focused then blurred without onchange
+                if (!this._validated) {// for the case that the field is focused then blurred without onchange
                     this.validate();
                     this._setClassFromState();
                 }
@@ -540,15 +548,6 @@
             },
 
             /**
-             * _state.validated - indicate the field has been validated. it doesn't mean it is valid.
-             */
-            _state:{validated:false},
-            /**
-             * store a full copy of any violated validation rule(s). Before validate() is called, it's an empty array.
-             */
-            _violations:[],
-
-            /**
              * validate only on 'field:change'
              */
             validate: function() {
@@ -569,8 +568,8 @@
                             } else if (!Y.Lang.isUndefined(rule.required) && rule.required) {
                                 rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && value !== '';
                             } else if (rule.regex || rule.regexp) {
-                                var regex = rule.regex ? rule.regex : rule.regexp;
-                                rulePassed = value.match(regex);
+                                var regexp = rule.regex ? rule.regex : rule.regexp;
+                                rulePassed = new RegExp(regexp).test(value);
                             } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
                                 if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = rulePassed && (value.length >= rule.minLength)
                                 if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = rulePassed && (value.length <= rule.maxLength)
@@ -588,7 +587,7 @@
                     }
 
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
-                    this._state.validated = true;
+                    this._validated = true;
                     return result;
                 } catch(e) {
                     Y.log(this + '.validate() - Field - e: ' + e, 'error', 'inputEx');

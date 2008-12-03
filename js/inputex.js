@@ -7,23 +7,22 @@ if (typeof(inputEx) === 'undefined') {
             var yuiCfg = {base:"../lib/yui3/", timeout: 10000,
                 modules: {
                     'inputex-css':{
-                        fullpath:"../css/inputEx.css",type:'css'
+                        fullpath:"../css/inputEx.css", type:'css'
                     },
                     'inputex':{
-                        fullpath:'../js/inputex.js',type:'js',
-                        requires:['inputex-css']
+                        fullpath:'../js/inputex.js', type:'js', requires:['inputex-css']
                     },
                     'field': {
-                        fullpath: "../js/Field.js",type:'js',
-                        requires:['inputex-css','base','node','json']
+                        fullpath: "../js/Field.js", type:'js', requires:['inputex-css','base','node','json']
                     },
                     'stringfield': {
-                        fullpath: "../js/fields/StringField.js",type:'js',
-                        requires:['field']
+                        fullpath: "../js/fields/StringField.js", type:'js', requires:['field']
+                    },
+                    'urlfield': {
+                        fullpath: "../js/fields/UrlField.js", type:'js', requires:['stringfield']
                     },
                     'group':{
-                        fullpath: '../js/Group.js',type:'js',
-                        requires:['field']
+                        fullpath: '../js/Group.js', type:'js', requires:['field']
                     }
                 }};
             return YUI(yuiCfg);
