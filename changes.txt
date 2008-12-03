@@ -1,5 +1,12 @@
-log changes to annouce to users about the update
+status
+======
+ - Field and StringField are implemented. All examples in StringField are fully working.
 
+
+
+change logs
+===========
+log changes to annouce to users about the update
 
 1. need to call .render() now
 
