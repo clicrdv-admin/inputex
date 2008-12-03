@@ -344,7 +344,7 @@
         new Y.inputEx.StringField({parentEl: 'container10', typeInvite: 'lastname', description: 'Enter your lastname'}).render();
 
         // Example 11
-        var field1 = new Y.inputEx.StringField({parentEl: 'container11', typeInvite: 'lastname', description: 'Enter your lastname', minLength:10, required:true, showMsg:true});
+        var field1 = new Y.inputEx.StringField({parentEl: 'container11', typeInvite: 'lastname', description: 'Enter your lastname', validator:[{type:'meta', message:'required and min 10 characters'},{minLength:10}, {required:true}], showMsg:true});
         field1.render();
 
         var exampleDiv = Y.Node.get('#container11');

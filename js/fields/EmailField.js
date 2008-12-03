@@ -29,13 +29,27 @@
             value:{
                 set:function(v) {
                     var lowercase = (Y.Lang.isUndefined(v)) ? '' : v.toLowerCase();
-                    EmailField.superclass.set.call(this, lowercase)
+                    if (!Y.Lang.isUndefined(this.get('value'))) {
+                        Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + lowercase + '"', 'debug', 'inputEx')
+                    }
+                    if (this._rendered) this._updateInputEl(lowercase); // ensure the inputEl is in sync
+                    this.fire('field:change', null, lowercase, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return lowercase;
+
+                    // cannot call parent setter: https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
+                    //return EmailField.superclass.set.call(this, lowercase).get('value');
+
                 },
                 value:''
             } ,
             validator:{
-                value:[{regexp:Y.inputEx.regexps.email}]//TODO add message ?
+                set:function(v) {
+                    if (!Y.inputEx.any(v, function(v) {return !Y.Lang.isUndefined(v.regexp)})) {
+                        v.push({regexp:Y.inputEx.regexps.email, message:'Invalid email, ex: sample@test.com'})
+                    }
+                    return v;
+                },
+                value:[]//set default at set()
             },
             messages:{
                 value:{invalid:'invalid URL'}
@@ -43,6 +57,9 @@
         };
 
         Y.extend(EmailField, Y.inputEx.StringField, {
+            initializer : function(cfg) {
+                Y.log(this + '.initializer() - EmailField - initialized - validator: ' + Y.inputEx.find(this.get('validator'), function(v) {if (!Y.Lang.isUndefined(v.regexp)) return v}).regexp, 'debug', 'inputEx');
+            }
         });
 
         Y.namespace('inputEx');
@@ -51,5 +68,4 @@
 
     }, '3.0.0pr1', {requires:['stringfield']});
 
-    //inputEx.messages.invalidEmail = "Invalid email, ex: sample@test.com";
 })();

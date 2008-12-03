@@ -149,8 +149,9 @@
             },
             _onChange:function() {
                 var oldVal = this.get('value'), newVal = this.getField().get('value');
-                Y.log(this + '._onChange() - StringField - from "' + oldVal + '" to "' + newVal + '", _typeInviteOn: ' + this._typeInviteOn, 'debug', 'inputEx')
-                if (oldVal !== newVal && !this._typeInviteOn) { this.set('value', newVal)}
+                var isChanged = oldVal !== newVal
+                Y.log(this + '._onChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
+                if (isChanged && !this._typeInviteOn) { this.set('value', newVal) }
             },
             /*
              _onFocus:function() {
