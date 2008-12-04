@@ -98,7 +98,7 @@
              * it could be set as 'elementId', '#elementId', HTMLElement, or Y.Node, store as Y.Node, nullable, writeOnce
              * parentEl is used only during construction to define a el
              * @attribute target
-             * @type Y.Node
+             * @type Node
              */
             parentEl:{
                 set:function(cfg) {
@@ -108,23 +108,44 @@
                 //writeOnce:true
             },
 
-            /**
-             * @attribute elClass
-             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
-             * @type String
-             */
-            elClass:{
-                value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
-            },
 
             /**
-             * el could be defined in a number of ways:
-             * - if cfg is a String, we look up for a node with and without a '#' prefix. If no node is found, we create
-             * one with the cfg as id.
-             * - if cfg is a Node, it is used.
-             * - otherwise, we try to lookup a node
+             * id is optional. When it is defined, it will be used as the id of the top level element of the field.
+             * (but not the id of the <input> element)
              *
-             * TODO: review if is better to use field.getEl() or field.get('el'); Should 'el' attribute be a configuration or the actual element?!
+             * @attribute id
+             * @type String
+             *
+             * //TODO implement this
+             */
+            /*   id:{
+             set:function(v) { this._},
+             get:function() {},
+             value:'',
+             writeOnce:true
+             },
+             */
+
+
+            /**
+             * TODO: the following is written as a specification, and the spec is NOT implemented yet
+             * It takes any of the following values:
+             * - null/undefined
+             * - a String
+             * - a HTMLElement
+             * - a Node
+             *
+             * If it is a Node,
+             *      the node shall be a compatiable input element
+             *      if id attribute is specified, it is used to override any existed id on the Node.
+             *      if id attribute is not used, any id from the input element is taken as id for this field.
+             *
+             * If it is a String, and
+             *      if the string prefix with #, it is looked up as an id, or
+             *      if the string is not started with #, '#' is appended as prefix to do a lookup
+             *
+             * If a node cannot be found in any of the above ways, a new one is created, optionally under the parentEl
+             * (if specified)
              */
             el:{
                 set:function(cfg) {
@@ -149,6 +170,15 @@
                 },
                 value:null,
                 writeOnce:true},
+
+            /**
+             * @attribute elClass
+             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
+             * @type String
+             */
+            elClass:{
+                value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
+            },
 
             /**
              * @attribute value
