@@ -21,9 +21,9 @@
             className:{
                 value:'inputEx-Field inputEx-CheckBox'
             },
-            value:{
-                value:false
-            },
+            /* value:{ //TODO: would defeault override the Field.set()?
+             value:false
+             },*/
             rightLabel:{
                 value:''
             },
@@ -70,6 +70,15 @@
 
             _initEvent:function() {
                 CheckBox.superclass._initEvents.apply(this, arguments);
+            },
+            /**
+             * Method for synchronizing 'value' attribute to the inputEl
+             * @param v
+             */
+            _updateInputEl:function(v) {
+                this._inputEl.set('checked', v == this._checkedValue ? true : false);
+                this._hiddenInputEl.set('value', v);
+                Y.log(this + '._updateInputEl() - CheckBox - after update -  _inputEl.checked: ' + this._inputEl.get('checked'), 'debug', 'inputEx');
             }
 
 

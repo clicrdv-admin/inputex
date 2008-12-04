@@ -126,7 +126,6 @@
              },
              */
 
-
             /**
              * TODO: the following is written as a specification, and the spec is NOT implemented yet
              * It takes any of the following values:
@@ -157,7 +156,7 @@
                     if (!el) { //create a new el under parent
                         var id = Y.Lang.isString(cfg) ? cfg.charAt(0) == '#' ? cfg.substring(1, cfg.length) : cfg : null
                         id = (id) ? id : Y.Lang.isUndefined(this.get('name')) ? Y.guid('div') : this.get('name')
-                        el = Y.Node.create('<div id="' + id + '" class="' + this.get('elClass') + '"></div>');
+                        el = Y.Node.create('<div id="' + id + '"></div>');
                         if (this.get('parentEl')) {
                             this.get('parentEl').appendChild(el);
                         } else {
@@ -170,15 +169,6 @@
                 },
                 value:null,
                 writeOnce:true},
-
-            /**
-             * @attribute elClass
-             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
-             * @type String
-             */
-            elClass:{
-                value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
-            },
 
             /**
              * @attribute value
@@ -242,6 +232,15 @@
              */
             messages:{
                 value:{}
+            },
+
+            /**
+             * @attribute elClass
+             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
+             * @type String
+             */
+            elClass:{
+                value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
             },
 
             /**
@@ -427,6 +426,10 @@
                 msgDiv.set('innerHTML', htmlMsg)
             },
 
+            /**
+             * Method for synchronizing 'value' attribute to the inputEl
+             * @param v
+             */
             _updateInputEl:function(v) {
                 if (v !== this._getInputEl().get('value')) {
                     Y.log(this + '.set("value") - Field - inputEl is updated from "' + this._getInputEl().get('value') + '" to "' + v + '"', 'debug', 'inputEx');
@@ -475,7 +478,7 @@
             _onChange:function() {
                 var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
                 Y.log(this + '._onChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
-                if (oldVal !== newVal && this._inputElToValueUpdateEnabled) { this.set('value', newVal)}
+                if (oldVal !== newVal) { this.set('value', newVal)}
             },
 
             /**

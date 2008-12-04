@@ -181,6 +181,20 @@
                 return values;
             },
 
+            /**
+             *
+             * @param name if starts with #, the name is an node id, otherwise, it's assumed to be the field name
+             * //TODO fully implement this
+             */
+            getField:function(name) {
+                if (name && name.charAt(0) !== '#') { // name
+                    return Y.inputEx.find(this._inputs, function(v) { if (v.get('name') === name) return v;})
+                } else {
+                    throw new Error(this + '.getField() - get field by id is not implemented')
+                }
+            },
+
+
             enable: function() {
                 for (var i = 0; i < this.get('inputs').length; i++) {
                     this.get('inputs')[i].enable();
