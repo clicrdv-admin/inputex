@@ -115,7 +115,7 @@
                 switch (eventType) {
                     case 'field:focus': //on focus
                         if (this.get('el').hasClass('inputEx-typeInvite')) {
-                            this.getField().set('value', ''); // remove typeInvite upon focus
+                            this._getInputEl().set('value', ''); // remove typeInvite upon focus
                             this.get('el').removeClass('inputEx-typeInvite');
                             this._typeInviteOn = false;
                         }
@@ -123,7 +123,7 @@
                     case 'field:blur':
                         if (this.get('value') === '') { // if empty, show typeInvite
                             this.get('el').addClass('inputEx-typeInvite');
-                            this.getField().set('value', this.get('typeInvite'));
+                            this._getInputEl().set('value', this.get('typeInvite'));
                             this._typeInviteOn = true;
                             Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
                         } else {
@@ -132,9 +132,9 @@
                         }
                         break;
                     default: //probably called indirectly by this.set('value')
-                        if (this.getField().get('value') === '') { //if empty   
+                        if (this._getInputEl().get('value') === '') { //if empty
                             this.get('el').addClass('inputEx-typeInvite');
-                            this.getField().set('value', this.get('typeInvite'));
+                            this._getInputEl().set('value', this.get('typeInvite'));
                             this._typeInviteOn = true;
                             Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
                         } else {
@@ -146,7 +146,7 @@
             },
             
             _onChange:function() {
-                var oldVal = this.get('value'), newVal = this.getField().get('value');
+                var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
                 var isChanged = oldVal !== newVal
                 Y.log(this + '._onChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
                 if (isChanged && !this._typeInviteOn) { this.set('value', newVal) }

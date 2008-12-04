@@ -78,7 +78,7 @@
             updateFavicon: function() {
                 if (!this.get('favicon') || !this._faviconEl) { return; }
 
-                var url = this.getField().get('value')
+                var url = this._getInputEl().get('value')
                 var faviconUrl = (this._validated)? url.match(/https?:\/\/[^\/]*/)+'/favicon.ico' : Y.inputEx.spacerUrl
 
                 //Y.log(this + '.updateFavicon() - UrlField - _validated: ' + this._validated + ', url: ' + url + ', ', 'debug', 'inputEx')

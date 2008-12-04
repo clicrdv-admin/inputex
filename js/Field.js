@@ -271,7 +271,8 @@
             /**
              * The Node of the Input Wrapper. by default, it's a <div>. Notice that an inputElement may have more than
              * one wrapper. e.g. for StringField, it has two wrappers. This el reference to the outer wrapper. The
-             * inner wrapper is not accessible by Field
+             * inner wrapper is not accessible by Field. This element is created by Field on render() and is accessible
+             * in renderComponent()
              *
              * //TODO review the name
              */
@@ -326,7 +327,7 @@
                     this._inputWrapperEl = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
                     this.renderComponent(this._inputWrapperEl);
-                    this._inputEl = this.getField();
+                    this._inputEl = this._getInputEl();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
@@ -358,10 +359,10 @@
 
             _initEvents:function() {
                 if (this._eventInitialized) return;
-                if (this.getField()) {
-                    this.getField().on('change', Y.bind(this._onChange, this));
-                    this.getField().on('focus', Y.bind(this._onFocus, this));
-                    this.getField().on('blur', Y.bind(this._onBlur, this));
+                if (this._getInputEl()) {
+                    this._getInputEl().on('change', Y.bind(this._onChange, this));
+                    this._getInputEl().on('focus', Y.bind(this._onFocus, this));
+                    this._getInputEl().on('blur', Y.bind(this._onBlur, this));
                     Y.log(this + '.initEvent() - Field - subscribed to change, focus & blur', 'debug', 'inputEx');
                 } else {
                     Y.log(this + '.initEvent() - Field - no available field', 'warn', 'inputEx');
@@ -397,32 +398,27 @@
             },
 
             _updateInputEl:function(v) {
-                if (v !== this.getField().get('value')) {
-                    Y.log(this + '.set("value") - Field - inputEl is updated from "' + this.getField().get('value') + '" to "' + v + '"', 'debug', 'inputEx');
-                    this.getField().set('value', v)
+                if (v !== this._getInputEl().get('value')) {
+                    Y.log(this + '.set("value") - Field - inputEl is updated from "' + this._getInputEl().get('value') + '" to "' + v + '"', 'debug', 'inputEx');
+                    this._getInputEl().set('value', v)
                 }
             },
 
             focus:function() {
-                this.getField().focus();
+                this._getInputEl().focus();
                 return this;
             },
 
             getID:function() { return this.get('el').get('id');},
 
             /**
-             * Remarks: New API
-             *
-             * TODO rename to getInputEl() to better reflect the return value. 'Field' is too vague.
+             * Return this._inputEl if existed. Otherwise, it tries to look for the inputEl by naming convention.
              */
-            getField:function() {
+            _getInputEl:function() {
                 if (this._inputEl) return this._inputEl;
 
-                var fieldEl;
-                var el = this.get('el')
-                if (el) { fieldEl = el.query('#' + this.getID() + '-field'); }
-                //if (!fieldEl) { Y.log(this + '.getField() - Field - return undefined', 'warn', 'inputEx'); }
-                return fieldEl;
+                if (this.get('el')) { this._inputEl = this.get('el').query('#' + this.getID() + '-field'); }
+                return this._inputEl;
             },
 
             _onFocus:function() {
@@ -439,15 +435,15 @@
                     this._setClassFromState();
                 }
 
-                if (this.get('value') !== this.getField().get('value') && this._inputElToValueUpdateEnabled) {
-                    this.set('value', this.getField().get('value'))
+                if (this.get('value') !== this._getInputEl().get('value') && this._inputElToValueUpdateEnabled) {
+                    this.set('value', this._getInputEl().get('value'))
                 }
                 Y.log(this + '._onBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
                 this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _onChange:function() {
-                var oldVal = this.get('value'), newVal = this.getField().get('value');
+                var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
                 Y.log(this + '._onChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
                 if (oldVal !== newVal && this._inputElToValueUpdateEnabled) { this.set('value', newVal)}
             },
@@ -569,13 +565,13 @@
             },
 
             enable:function() {
-                var field = this.getField();
+                var field = this._getInputEl();
                 if (field) field.set('disabled', false);
                 return this;
             },
 
             disable:function() {
-                var field = this.getField();
+                var field = this._getInputEl();
                 if (field) field.set('disabled', true);
                 return this;
             },
@@ -585,8 +581,8 @@
              */
             validate: function(value) {
                 try {
-                    if (!this.getField()) return; //no validation before the field is rendered
-                    value = Y.Lang.isUndefined(value) ? this.getField().get('value') : value; //validate() is called before set('value')
+                    if (!this._getInputEl()) return; //no validation before the field is rendered
+                    value = Y.Lang.isUndefined(value) ? this._getInputEl().get('value') : value; //validate() is called before set('value')
                     var meta, result = true,validator = this.get('validator');
                     this._violations = [];
 
@@ -651,7 +647,7 @@
              * This method is provided for backward compatiability. Please use getField() instead
              * @deprecated
              */
-            getEl: function() { return this.getField(); },
+            getEl: function() { return this._getInputEl(); },
 
             /**
              * @deprecated
@@ -661,7 +657,7 @@
              * The current implementation checks the input element. but it should not be used.
              */
             isEmpty: function() {
-                var result = this.getField().get('value') === '';
+                var result = this._getInputEl().get('value') === '';
                 //Y.log(this + '.isEmpty() - ' + result, 'debug', 'inputEx')
                 return result;
             },
