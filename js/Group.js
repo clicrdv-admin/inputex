@@ -167,6 +167,20 @@
                 this.fire(EV_CHANGE, null, field); //pass in the field that is changed
             },
 
+            /**
+             * Convenient method for getting a Object of name and value pairs of every field in the group.
+             *
+             * Remarks: this method is used for unit testing
+             */
+            getValues:function() {
+                var values = {};
+                Y.each(this._inputs, function(v) {
+                    values[v.get('name')] = v.get('value')
+                })
+                Y.log(this + '.getValues() - return: ' + Y.JSON.stringify(values), 'debug', 'inputEx');
+                return values;
+            },
+
             enable: function() {
                 for (var i = 0; i < this.get('inputs').length; i++) {
                     this.get('inputs')[i].enable();
@@ -195,8 +209,6 @@
 
     }, '3.0.0pr1', {requires:['field']});
 
-    //    YUI.add('inputex', function(Y) {
-    //    }, '3.0.0pr1', {use:['inputex','field'],skinnable:true})
 })();
 
 /*

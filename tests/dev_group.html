@@ -13,6 +13,7 @@
 </div>
 <textarea id="result" rows="30" cols="120"></textarea>
 
+
 <script type="text/javascript">
     var group;
     inputEx.YUI().use('group', 'stringfield', 'urlfield', 'emailfield', 'checkbox', function(Y) { // 'json' is required for the stringify on this method
@@ -21,12 +22,12 @@
             //Y.inputEx.spacerUrl = "../images/space.gif";
 
             group = new Y.inputEx.Group({el: 'test', legend:'test group', fields: [
-               {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
-                 {type: 'string', inputParams: {label: 'Firstname', name: 'firstname',showMsg: true,validator:[{required: true, message:'first name is required'}] } },
-                 {type: 'string', inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
-                 {type:'email', inputParams: {label: 'Email', name: 'email', value:'Demo@email.com',required: true, showMsg: true}},
-                 {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy'}},
-                 {type:'url', inputParams: {label: 'Website', name:'website', value:'http://www.yahoo.com', favicon:true}}
+                {type:'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
+                {type:'string', inputParams: {label: 'Firstname', name: 'firstname',showMsg: true,validator:[{required: true, message:'first name is required'}] } },
+                {type:'string', inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
+                {type:'email', inputParams: {label: 'Email', name: 'email', value:'Demo@email.com',required: true, showMsg: true}},
+                {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy'}},
+                {type:'url', inputParams: {label: 'Website', name:'website', value:'http://www.yahoo.com', favicon:true}}
             ]});
             group.render();
 
@@ -40,5 +41,9 @@
         }
     });
 </script>
+
+<div style="position:absolute; right:0; top:0; margin:10px">
+    <a href="javascript:alert(group.getValues());">getValues()</a>
+</div>
 </body>
 </html>

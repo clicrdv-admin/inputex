@@ -251,12 +251,37 @@
              */
             validator:{
                 value:{}
+            },
+
+            /**
+             * @attribute inputEl
+             * @description readOnly field for getting the <input> element. value of the inputEl may not be the same as the value of
+             * the field. e.g. when typeInvite is being shown.
+             * @type Node
+             */
+            inputEl:{
+                get:function() {return this._inputEl},
+                readOnly:true
             }
+
+
         };
 
         Y.extend(Field, Y.Base, {
-            _fieldEl:null,
+            /**
+             * The Node of the Input Wrapper. by default, it's a <div>. Notice that an inputElement may have more than
+             * one wrapper. e.g. for StringField, it has two wrappers. This el reference to the outer wrapper. The
+             * inner wrapper is not accessible by Field
+             *
+             * //TODO review the name
+             */
+            _inputWrapperEl:null,
+
+            /**
+             * The Node of the Input element, e.g. <input ... />
+             */
             _inputEl:null, //reference to the Field node
+
             _eventInitialized:false,
             _rendered:false, //TODO state, review this
             _previousState:null,
@@ -298,19 +323,19 @@
                         //TODO the trunk has error. backport the label for
                     }
 
-                    this._fieldEl = Y.Node.create('<div class="' + this.get('className') + '"></div>');
+                    this._inputWrapperEl = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
-                    this.renderComponent(this._fieldEl);
+                    this.renderComponent(this._inputWrapperEl);
                     this._inputEl = this.getField();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
                         desc.set('innerHTML', this.get('description'))
-                        this._fieldEl.appendChild(desc)
+                        this._inputWrapperEl.appendChild(desc)
                         //TODO update docs: use description instead of 'desc', unless we change them all globally, always be consistent in naming
                     }
 
-                    el.appendChild(this._fieldEl);
+                    el.appendChild(this._inputWrapperEl);
 
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
@@ -577,7 +602,7 @@
                                 if (rule.type === 'meta') { // type='meta' is for setting global validator configurations
                                     meta = rule;
                                 } else if (!Y.Lang.isUndefined(rule.required) && rule.required) {
-                                    rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && Y.Lang.trim(value) !== '' ;
+                                    rulePassed = !Y.Lang.isUndefined(value) && !Y.Lang.isNull(value) && Y.Lang.trim(value) !== '';
                                 } else if (rule.regexp) {
                                     rulePassed = new RegExp(rule.regexp).test(value);
                                 } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {

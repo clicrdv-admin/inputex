@@ -37,7 +37,6 @@
             //field.validate();
             field.render();
 
-            alert('rendered')
             /*field.on('updated', function(evt, newVal, oldVal) {
              alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
              });*/
@@ -54,6 +53,8 @@
             field.set('description', 'this is a new description')
 
             runTabifier('result', 'result', 'HTML')
+
+            alert(field.get('inputEl'))
 
         } catch(e) {
             Y.log(e, 'error', 'inputEx');

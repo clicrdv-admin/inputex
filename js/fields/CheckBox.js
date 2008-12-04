@@ -27,33 +27,24 @@
             rightLabel:{
                 value:''
             },
-            sendValues:{
+
+            /**
+             * 2D vector of values for checked/unchecked states (default is [true, false])
+             */
+            sentValues:{
+                set:function(v) {
+                    if (!Y.Lang.isArray(v) && v.length != 2) { throw new Error('sendValue must be an array with 2 values')}
+                    this._checkedValue = v[0];
+                    this._uncheckedValue = v[1];
+                },
                 value:[true,false]
-            },
-            checkValue:{
-                set:function(v) {
-                    if (Y.Lang.isUndefined(v)) {
-                        return this.get('sendValues')[0]
-                    } else {
-                        return v;
-                    }
-                },
-                value:null
-            },
-            uncheckValue:{
-                set:function(v) {
-                    if (Y.Lang.isUndefined(v)) {
-                        return this.get('sendValues')[1]
-                    } else {
-                        return v;
-                    }
-                },
-                value:null
             }
         }
 
 
         Y.extend(CheckBox, Y.inputEx.Field, {
+            _checkedValue:null,
+            _uncheckedValue:null,
             _hiddenInputEl:null,
             initializer : function(cfg) {
                 Y.log(this + '.initializer() - CheckBox - initialized - checkValue: ' + this.get('checkValue') + ', uncheckValue: ' + this.get('uncheckValue'), 'debug', 'inputEx');
@@ -66,32 +57,22 @@
 
                 var checkBoxId = this.getID() + 'field'
                 this._inputEl = Y.Node.create('<input id="' + checkBoxId + '" type="checkbox" checked="' + this.get('value') + '"/>');
-                this._fieldEl.appendChild(this._inputEl);
+                this._inputWrapperEl.appendChild(this._inputEl);
 
                 var rightLabelEl = Y.Node.create('<label for="' + checkBoxId + '" class="inputEx-CheckBox-rightLabel">' + this.get('rightLabel') + '</label>');
-                this._fieldEl.appendChild(rightLabelEl);
+                this._inputWrapperEl.appendChild(rightLabelEl);
 
                 // Keep state of checkbox in a hidden field (format : this.checkedValue or this.uncheckedValue)
                 this._hiddenInputEl = Y.Node.create('<input type="hidden" name="' + (this.get('name') || '') + '" value="' + (this.get('value') ? this.get('checkedValue') : this.get('uncheckedValue')) + '"/>')
 
-                this._fieldEl.appendChild(this._hiddenInputEl);
+                this._inputWrapperEl.appendChild(this._hiddenInputEl);
             },
 
             _initEvent:function() {
                 CheckBox.superclass._initEvents.apply(this, arguments);
-            },
-
-            _onFocus:function(e) {
-
-            },
-
-            _onChange:function(e) {
-
-            },
-
-            _onBlur:function(e) {
-
             }
+
+
         });
 
         Y.namespace('inputEx');

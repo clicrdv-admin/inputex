@@ -144,6 +144,7 @@
                         break;
                 }
             },
+            
             _onChange:function() {
                 var oldVal = this.get('value'), newVal = this.getField().get('value');
                 var isChanged = oldVal !== newVal
@@ -173,7 +174,6 @@
 
         Y.namespace('inputEx');
         Y.inputEx.StringField = StringField;
-
         Y.inputEx.registerType("string", StringField);
 
     }, '3.0.0pr1', {requires:['field']});
