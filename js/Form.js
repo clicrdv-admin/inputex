@@ -1,6 +1,8 @@
+/*
 (function () {
    var util = YAHOO.util, lang = YAHOO.lang, Event = YAHOO.util.Event, inputEx = YAHOO.inputEx, Dom = util.Dom;
 
+*/
 /**
  * @class Create a group of fields within a FORM tag and adds buttons
  * @extends inputEx.Group
@@ -12,20 +14,25 @@
  *   <li>showMask: adds a mask over the form while the request is running (default is false)</li>
  * </ul>
  */
+/*
 inputEx.Form = function(options) {
    inputEx.Form.superclass.constructor.call(this, options);
 };
 
 lang.extend(inputEx.Form, inputEx.Group,
+*/
 /**
  * @scope inputEx.Form.prototype
  */
+/*
 {
 
-   /**
+   */
+/**
     * Adds buttons and set ajax default parameters
     * @param {Object} options Options object (inputEx inputParams) as passed to the constructor
     */
+/*
    setOptions: function(options) {
       inputEx.Form.superclass.setOptions.call(this, options);
 
@@ -47,9 +54,11 @@ lang.extend(inputEx.Form, inputEx.Group,
    },
 
 
-   /**
+   */
+/**
     * Render the group
     */
+/*
    render: function() {
       // Create the div wrapper for this group
   	   this.divEl = inputEx.cn('div', {className: 'inputEx-Group'});
@@ -77,9 +86,11 @@ lang.extend(inputEx.Form, inputEx.Group,
    },
 
 
-   /**
+   */
+/**
     * Render the buttons
     */
+/*
    renderButtons: function() {
 
       this.buttonDiv = inputEx.cn('div', {className: 'inputEx-Form-buttonBar'});
@@ -97,9 +108,11 @@ lang.extend(inputEx.Form, inputEx.Group,
    },
 
 
-   /**
+   */
+/**
     * Init the events
     */
+/*
    initEvents: function() {
       inputEx.Form.superclass.initEvents.call(this);
 
@@ -107,11 +120,13 @@ lang.extend(inputEx.Form, inputEx.Group,
       Event.addListener(this.form, 'submit', this.options.onSubmit || this.onSubmit,this,true);
    },
 
-   /**
+   */
+/**
     * Intercept the 'onsubmit' event and stop it if !validate
     * If the ajax option object is set, use YUI async Request to send the form
     * @param {Event} e The original onSubmit event
     */
+/*
    onSubmit: function(e) {
 
       // do nothing if does not validate
@@ -126,9 +141,11 @@ lang.extend(inputEx.Form, inputEx.Group,
 	   }
    },
 
-   /**
+   */
+/**
     * Send the form value in JSON through an ajax request
     */
+/*
    asyncRequest: function() {
 
       if(this.options.ajax.showMask) { this.showMask(); }
@@ -152,9 +169,11 @@ lang.extend(inputEx.Form, inputEx.Group,
       }, postData);
    },
 
-   /**
+   */
+/**
     * Create a Mask over the form
     */
+/*
    renderMask: function() {
       if(this.maskRendered) return;
 
@@ -178,9 +197,11 @@ lang.extend(inputEx.Form, inputEx.Group,
       this.maskRendered = true;
    },
 
-   /**
+   */
+/**
     * Show the form mask
     */
+/*
    showMask: function() {
       this.renderMask();
 
@@ -190,9 +211,11 @@ lang.extend(inputEx.Form, inputEx.Group,
       this.formMask.style.display = '';
    },
 
-   /**
+   */
+/**
     * Hide the form mask
     */
+/*
    hideMask: function() {
 
       // Show selects back in IE 6
@@ -201,9 +224,11 @@ lang.extend(inputEx.Form, inputEx.Group,
       this.formMask.style.display = 'none';
    },
 
-   /*
+   */
+/*
    * Method to hide selects in IE 6 when masking the form (else they would appear over the mask)
    */
+/*
    toggleSelectsInIE: function(show) {
       // IE 6 only
       if (!!YAHOO.env.ua.ie && YAHOO.env.ua.ie < 7) {
@@ -219,9 +244,11 @@ lang.extend(inputEx.Form, inputEx.Group,
    },
 
 
-   /**
+   */
+/**
     * Enable all fields and buttons in the form
     */
+/*
    enable: function() {
       inputEx.Form.superclass.enable.call(this);
       for (var i = 0 ; i < this.buttons.length ; i++) {
@@ -229,9 +256,11 @@ lang.extend(inputEx.Form, inputEx.Group,
       }
    },
 
-   /**
+   */
+/**
     * Disable all fields and buttons in the form
     */
+/*
    disable: function() {
       inputEx.Form.superclass.disable.call(this);
       for (var i = 0 ; i < this.buttons.length ; i++) {
@@ -245,10 +274,13 @@ lang.extend(inputEx.Form, inputEx.Group,
 // Specific waiting message in ajax submit
 inputEx.messages.ajaxWait = "Please wait...";;
 
+*/
 /**
 * Register this class as "form" type
 */
+/*
 inputEx.registerType("form", inputEx.Form);
 
 
 })();
+*/

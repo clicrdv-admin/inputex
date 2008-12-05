@@ -5,7 +5,7 @@
         /**
          * @module inputEx
          */
-        var G = Y.inputEx.G,  //TODO review this
+        var GP = Y.inputEx.GP,  //TODO review this
             /**
              * @event field:render
              * @description
@@ -66,13 +66,16 @@
 
         };
 
+        /**
+         * TODO:
+         *  - port interactions
+         *  - port collapse/expand
+         */
         Y.extend(Group, Y.inputEx.Field, {
-            _state:{rendered:false},
             /**
              * An Array of inputEx Fields. The inputs are constructed upon the first render()
              */
             _inputs:[],
-            _inputsNames:{},
             _toggleEl:null,
             initializer : function(cfg) {
                 if (this.get('collapsible')) {
@@ -92,7 +95,7 @@
 
                     Y.log(this + '.render() - Group - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
                     this.fire(EV_RENDER, null, this.get('el'));
-                    this._state.rendered = true;
+                    this._rendered = true;
 
                 } catch(e) {
                     Y.log(this + '.render() Group -  - e: ' + e, 'error', 'inputEx');
@@ -147,11 +150,6 @@
                 field.render();
                 this._inputs.push(field);
 
-                // Create an index to access fields by their name
-                if (field.get('name')) {
-                    this._inputsNames[field.get('name')] = field;
-                }
-
                 // Create the this.hasInteractions to run interactions at startup
                 if (!this.hasInteractions && this.get('interactions')) {
                     this.hasInteractions = true;
@@ -170,16 +168,23 @@
             /**
              * Convenient method for getting a Object of name and value pairs of every field in the group.
              *
-             * Remarks: this method is used for unit testing
+             * Remarks: renamed from the previous getValue() method
              */
             getValues:function() {
                 var values = {};
                 Y.each(this._inputs, function(v) {
+                    /* TODO from previous version, port it
+                     if(this.inputs[i].options.flatten && lang.isObject(v) ) {
+                     lang.augmentObject( o, v);
+                     }*/
+
                     values[v.get('name')] = v.get('value')
                 })
                 Y.log(this + '.getValues() - return: ' + Y.JSON.stringify(values), 'debug', 'inputEx');
                 return values;
             },
+
+            //TODO add a setValues method
 
             /**
              * Get a field from the group
@@ -187,6 +192,8 @@
              * Notice that:
              * 1. when arg is a node id, it still will return the field instance rather than the node
              * 2. when arg is a node id, it refers to the id of the field's el but not id of the field's inputEl
+             *
+             * Remarks: it replaced getFieldByName in the previous version
              *
              * @param arg if starts with '#', lookup by field's el id, otherwise, lookup by field name
              */
@@ -220,7 +227,6 @@
                 }
             },
 
-
             enable: function() {
                 for (var i = 0; i < this.get('inputs').length; i++) {
                     this.get('inputs')[i].enable();
@@ -246,6 +252,7 @@
 
         Y.namespace('inputEx');
         Y.inputEx.Group = Group;
+        Y.inputEx.registerType("group", Group);
 
     }, '3.0.0pr1', {requires:['field']});
 
@@ -296,11 +303,6 @@
 
  */
 /**
- * Enable all fields in the group
- */
-
-
-/**
  * Set the values of each field from a key/value hash object
  * @param {Any} value The group value
  * @param {boolean} [sendUpdatedEvt] (optional) Wether this setValue should fire the updatedEvt or not (default is true, pass false to NOT send the event)
@@ -329,27 +331,6 @@
 
  */
 /**
- * Return an object with all the values of the fields
- */
-/*
- getValue: function() {
- var o = {};
- for (var i = 0 ; i < this.inputs.length ; i++) {
- var v = this.inputs[i].getValue();
- if(this.inputs[i].options.name) {
- if(this.inputs[i].options.flatten && lang.isObject(v) ) {
- lang.augmentObject( o, v);
- }
- else {
- o[this.inputs[i].options.name] = v;
- }
- }
- }
- return o;
- },
-
- */
-/**
  * Close the group (recursively calls "close" on each field, does NOT hide the group )
  * Call this function before hidding the group to close any field popup
  */
@@ -361,20 +342,7 @@
  },
 
  */
-/**
- * Return the sub-field instance by its name property
- * @param {String} fieldName The name property
- */
-/*
- getFieldByName: function(fieldName) {
- if( !this.inputsNames.hasOwnProperty(fieldName) ) {
- return null;
- }
- return this.inputsNames[fieldName];
- },
 
-
- */
 /**
  * Called when one of the group subfields is updated.
  * @param {String} eventName Event name
@@ -457,14 +425,4 @@
 
 
  });
-
-
  */
-/**
- * Register this class as "group" type
- */
-/*
- inputEx.registerType("group", inputEx.Group);
-
-
- })();*/

@@ -32,6 +32,9 @@ if (typeof(inputEx) === 'undefined') {
                     },
                     'group':{
                         fullpath: '../js/Group.js', type:'js', requires:['field']
+                    },
+                    'form':{
+                        fullpath: '../js/Form.js', type:'js', requires:['group']
                     }
                 }};
             return YUI(yuiCfg);
