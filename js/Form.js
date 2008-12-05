@@ -39,15 +39,66 @@
 
         Form.NAME = "form";
         Form.ATTRS = {
+            /**
+             * @attribute elClass
+             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
+             * @type String
+             */
+            elClass:{
+                value:'inputEx-Form' //,writeOnce:true cannot use writeOnce 
+            },
+
+            /**
+             * @attribute formEl
+             * @description readOnly field for getting the <form> element. by default, 'el' is a div wrapper and 'formEl' is its direct child
+             * @type Node
+             */
+            inputEl:{
+                get:function() {return this._formEl},
+                readOnly:true
+            }
         };
 
         Y.extend(Form, Y.inputEx.Group, {
+            _formEl:null,
             initializer : function(cfg) {
                 Y.log(this + '.initializer() - Form -  initialized', 'debug', 'inputEx');
             },
+
             render:function() {
-                Form.superclass.render.apply(this, arguments);
-                Y.log(this + '.render() - Form -  rendered', 'debug', 'inputEx');
+                try {
+                    var el = this.get('el'), id = el.get('id');
+                    el.addClass(this.get('elClass'))
+
+                    this._formEl = Y.Node.create('<form id="' + id + '-form"></form>')
+                    if (this.get('name')) this._formEl.set('name', this.get('name'))
+                    el.appendChild(this._formEl);
+
+                    this._renderFields(this._formEl);
+
+                    if (this.get('disabled')) this.disable();
+
+                    Y.log(this + '.render() - Form - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
+                    this.fire(EV_RENDER, null, this.get('el'));
+                    this._rendered = true;
+
+                } catch(e) {
+                    Y.log(this + '.render() Form -  - e: ' + e, 'error', 'inputEx');
+                }
+            }     ,
+            _renderFields: function(parentEl, inputFields) {
+                parentEl = parentEl ? parentEl : this.get('el')
+
+                var fieldsCfg = (inputFields) ? inputFields : this.get('fields');
+                if (fieldsCfg && fieldsCfg.length > 0) {
+                    // Iterate this.createInput on input fields
+                    for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
+                        fieldCfg.inputParams = Y.merge({parentEl:parentEl}, fieldCfg.inputParams)
+                        var field = this._renderField(fieldCfg); // Render the field
+                    }
+                }
+
+                Y.log(this + '._renderFields() - Form - rendered - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'debug', 'inputEx')
             }
 
         });
