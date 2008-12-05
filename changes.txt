@@ -1,7 +1,7 @@
 status
 ======
  - inputEx and inputEx.Field are implemented.
- - StringField, UrlField, EmailField and CheckBox are implemented. All examples of these fields are fully working.
+ - StringField, UrlField, EmailField, CheckBox and SelectField are implemented. All examples of these fields are fully working.
 
 
 

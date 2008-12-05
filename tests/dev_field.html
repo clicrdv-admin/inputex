@@ -18,7 +18,7 @@
 
 <script type="text/javascript">
     var field;
-    inputEx.YUI().use('stringfield', 'group', 'json', 'checkbox', function(Y) { // 'json' is required for the stringify on this method
+    inputEx.YUI().use('stringfield', 'group', 'json', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
             //            var global = new Y.inputEx.Global()
@@ -32,7 +32,7 @@
              label:'this is a test field',
              typeInvite: 'please enter some data', size: 60,
              description:'this field is for demonstration purpose only'});*/
-            field = new Y.inputEx.CheckBox({parentEl:'test',name:'happy', checked:false, checkedValue:'on', uncheckedValue:'off'})
+            field = new Y.inputEx.SelectField({name: 'country', selectValues: ['US', 'FR'], selectOptions:['United States of America','France'], size:1, value:'US', parentEl: 'test'});
             //field.validate();
             field.render();
 

@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
     var group;
-    inputEx.YUI().use('group', 'stringfield', 'urlfield', 'emailfield', 'checkbox', function(Y) { // 'json' is required for the stringify on this method
+    inputEx.YUI().use('group', 'stringfield', 'urlfield', 'emailfield', 'checkbox','selectfield',function(Y) { // 'json' is required for the stringify on this method
         try {
             Y.log('quick test begin')
             //Y.inputEx.spacerUrl = "../images/space.gif";
@@ -26,7 +26,7 @@
                 {type:'string', inputParams: {label: 'Firstname', name: 'firstname',showMsg: true,validator:[{required: true, message:'first name is required'}] } },
                 {type:'string', inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
                 {type:'email', inputParams: {label: 'Email', name: 'email', value:'Demo@email.com',required: true, showMsg: true}},
-                {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy'}},
+                {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy', checkedValue:'happy', uncheckedValue:'not_happy'}},
                 {type:'url', inputParams: {label: 'Website', name:'website', value:'http://www.yahoo.com', favicon:true}}
             ]});
             group.render();

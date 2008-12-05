@@ -27,7 +27,9 @@ if (typeof(inputEx) === 'undefined') {
                     'checkbox': {
                         fullpath: "../js/fields/CheckBox.js", type:'js', requires:['field']
                     },
-
+                    'selectfield': {
+                        fullpath: "../js/fields/SelectField.js", type:'js', requires:['field']
+                    },
                     'group':{
                         fullpath: '../js/Group.js', type:'js', requires:['field']
                     }

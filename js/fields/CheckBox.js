@@ -32,10 +32,20 @@
 
         CheckBox.NAME = "checkbox";
         CheckBox.ATTRS = {
+            /**
+             * @attribute className
+             * @type String
+             * @default 'inputEx-Field inputEx-CheckBox'
+             */
             className:{
                 value:'inputEx-Field inputEx-CheckBox'
             },
 
+            /**
+             * @attribute rightLabel
+             * @type String
+             * @default ''
+             */
             rightLabel:{
                 value:''
             },
@@ -43,6 +53,7 @@
             /**
              * @attribute checked
              * @description default as checked or not
+             * @type Boolean
              * @default false, i.e. unchecked
              */
             checked:{
@@ -68,7 +79,6 @@
              *  - 'checkedValue' and 'uncheckedValue' are default to be true and false
              *  - 'value' is default as the 'uncheckedValue'
              *  - if 'value' is specified, it must be either
-             *
              */
             checkedValue:{
             },
@@ -76,6 +86,7 @@
             /**
              * @attribute uncheckedValue
              * @see checkedValue
+             * @type any type
              * @default undefined
              */
             uncheckedValue:{
@@ -84,6 +95,7 @@
             /**
              * @attribute hiddenField
              * @description allow disabling of hiddenField. This is not recommended
+             * @type Boolean
              * @default true
              */
             hiddenField:{
@@ -159,7 +171,7 @@
                     this._inputWrapperEl.appendChild(this._hiddenInputEl);
                 }
             },
-            
+
             /**
              * @description If IE, add a dirty patch
              */

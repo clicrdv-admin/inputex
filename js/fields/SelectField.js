@@ -1,111 +1,123 @@
-(function() {
+(function () {
+    if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') }
 
-   var inputEx = YAHOO.inputEx, Event = YAHOO.util.Event, lang = YAHOO.lang;
+    YUI.add('selectfield', function(Y) {
+        Y.inputEx = Y.inputEx || {};
 
-/**
- * @class Create a select field
- * @extends inputEx.Field
- * @constructor
- * @param {Object} options Added options:
- * <ul>
- *	   <li>selectValues: contains the list of options values</li>
- *	   <li>selectOptions: list of option element texts</li>
- *    <li>multiple: boolean to allow multiple selections</li>
- * </ul>
- */
-inputEx.SelectField = function(options) {
-	inputEx.SelectField.superclass.constructor.call(this,options);
- };
-lang.extend(inputEx.SelectField, inputEx.Field, 
-/**
- * @scope inputEx.SelectField.prototype   
- */   
-{
-   /**
-    * Set the default values of the options
-    * @param {Object} options Options object (inputEx inputParams) as passed to the constructor
-    */
-	setOptions: function(options) {
-	   inputEx.SelectField.superclass.setOptions.call(this,options);
-	   
-	   this.options.multiple = lang.isUndefined(options.multiple) ? false : options.multiple;
-	   this.options.selectValues = options.selectValues;
-	   this.options.selectOptions = options.selectOptions;
-   },
-   
-   /**
-    * Build a select tag with options
-    */
-   renderComponent: function() {
+        /**
+         * @module inputEx
+         */
+        /**
+         * @class SelectField
+         * @extends Field
+         * @constructor
+         */
+        var SelectField = function(cfg) {
+            SelectField.superclass.constructor.apply(this, arguments);
+        };
 
-      this.el = inputEx.cn('select', {id: this.divEl.id?this.divEl.id+'-field':YAHOO.util.Dom.generateId(), name: this.options.name || ''});
-      
-      if (this.options.multiple) {this.el.multiple = true; this.el.size = this.options.selectValues.length;}
-      
-      this.optionEls = [];
-      for( var i = 0 ; i < this.options.selectValues.length ; i++) {
-         // ""+  hack to convert into text (values may be 0 for example)
-         this.optionEls[i] = inputEx.cn('option', {value: this.options.selectValues[i]}, null, ""+((this.options.selectOptions && !lang.isUndefined(this.options.selectOptions[i])) ? this.options.selectOptions[i] : this.options.selectValues[i]));
-         this.el.appendChild(this.optionEls[i]);
-      }
-      this.fieldContainer.appendChild(this.el);
-   },  
-   
-   /**
-    * Register the "change" event
-    */
-   initEvents: function() {
-      Event.addListener(this.el,"change", this.onChange, this, true);
-	   Event.addFocusListener(this.el, this.onFocus, this, true);
-	   Event.addBlurListener(this.el, this.onBlur, this, true);
-   },
-   
-   /**
-    * Set the value
-    * @param {String} value The value to set
-    * @param {boolean} [sendUpdatedEvt] (optional) Wether this setValue should fire the updatedEvt or not (default is true, pass false to NOT send the event)
-    */
-   setValue: function(value, sendUpdatedEvt) {
-      var index = 0;
-      var option;
-      for(var i = 0 ; i < this.options.selectValues.length ; i++) {
-         if(value === this.options.selectValues[i]) {
-            option = this.el.childNodes[i];
-		      option.selected = "selected";
-         }
-      }
-      
-		// Call Field.setValue to set class and fire updated event
-		inputEx.SelectField.superclass.setValue.call(this,value, sendUpdatedEvt);
-   },
-   
-   /**
-    * Return the value
-    * @return {Any} the selected value from the selectValues array
-    */
-   getValue: function() {
-      return this.options.selectValues[this.el.selectedIndex];
-   },
-   
-   /**
-    * Disable the field
-    */
-   disable: function() {
-      this.el.disabled = true;
-   },
+        SelectField.NAME = "selectfield";
+        SelectField.ATTRS = {
+            className:{
+                value:'inputEx-Field inputEx-SelectField'
+            },
 
-   /**
-    * Enable the field
-    */
-   enable: function() {
-      this.el.disabled = false;
-   }
-   
-});
+            /**
+             * @attribute selectValues
+             * @description contains the list of options values
+             * @type Array
+             * @default selectOptions
+             */
+            selectValues:{
+            },
 
-/**
- * Register this class as "select" type
- */
-inputEx.registerType("select", inputEx.SelectField);
+            /**
+             * @attribute selectOptions
+             * @description list of option element texts, if no selectOptions is defined, the select box will be shown as empty
+             * @type Array
+             * @default []
+             */
+            selectOptions:{
+            },
 
+            /**
+             * @attribute multiple
+             * @description  boolean to allow multiple selections
+             * @default false
+             */
+            multiple:{
+                value:false
+            },
+
+            /**
+             * @attribute size
+             * @description  number of 'row'
+             * @type Integer
+             * @default 1
+             */
+            size:{
+                value:1
+            },
+
+            /**
+             * @attribute selectedIndex
+             */
+            selectedIndex:{
+                value:null
+            }
+        }
+
+        Y.extend(SelectField, Y.inputEx.Field, {
+            initializer : function(cfg) {
+                if (this.get('selectValues').length <= 0)
+                    Y.log(this + '.initializer() - no selectValues, select box will be empty - selectValues.length: ' + this.get('selectValues').length, 'warn', 'inputEx')
+
+                if (this.get('selectedIndex') && this.get('selectedIndex') + 1 > this.get('selectValues').length)
+                    throw new Error('selectedIndex is invalid, selectedIndex: ' + this.get('selectedIndex') + ', selectValues.length: ' + this.get('selectValues').length)
+
+
+                if (!this.get('selectedIndex') && !this.get('value')) {
+                    //if neither selectedIndex or value are defined, set selectIndex to 0
+                    this.set('selectedIndex', 0)
+                } else if (this.get('value')) {
+                    var selectedIndex = Y.Array.indexOf(this.get('selectValues'), this.get('value'))
+                    if (selectedIndex == -1) {
+                        Y.log(this + '.initializer() - selectedIndex is -1, use 0 as default - value: ' + this.get('value') + ', selectValues: ' + this.get('selectValues'), 'warn', 'inputEx')
+                        selectedIndex = 0;
+                    }
+                    this.set('selectedIndex', selectedIndex);
+                }
+
+                Y.log(this + '.initializer() - SelectField - initialized', 'debug', 'inputEx');
+            },
+
+            /**
+             * Render the checkbox and the hidden field
+             */
+            renderComponent: function() {
+                this._inputEl = Y.Node.create('<select id="' + this.getID() + '-field"')
+                if (this.get('name')) this._inputEl.set('name', this.get('name'))
+                this._inputEl.set('multiple', this.get('multiple'))
+                this._inputEl.set('size', this.get('size'))
+
+                var values = this.get('selectValues'), options = this.get('selectOptions')
+                for (var i = 0; i < values.length; i++) {
+                    var label = "" + ((options) ? options[i] : values[i])
+                    var selected = i === this.get('selectedIndex') ? ' selected="selected"' : ''; //for generating a correct HTML, it's not taking effect
+                    var option = Y.Node.create('<option value="' + values[i] + '"' + selected + '>' + label + '</option>')
+                    //if (i === this.get('selectedIndex')) option.set('selected', true) //can't use https://sourceforge.net/tracker2/?func=detail&aid=2391291&group_id=165715&atid=836476
+                    this._inputEl.appendChild(option);
+                }
+                this._inputEl.set('selectedIndex', this.get('selectedIndex'))
+
+                this.get('el').appendChild(this._inputEl);
+            }
+        }
+                );
+
+        Y.namespace('inputEx');
+        Y.inputEx.SelectField = SelectField;
+        Y.inputEx.registerType("select", SelectField);
+
+    }, '3.0.0pr1', {requires:['field']});
 })();
