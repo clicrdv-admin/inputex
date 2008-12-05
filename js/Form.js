@@ -46,97 +46,36 @@ lang.extend(inputEx.Form, inputEx.Group,
       }
    },
 
-    /**
-     * Render the group
-     */
-    render: function() {
-        var formId = this.options.id? this.options.id:YAHOO.util.Dom.generateId();
 
-        // Create the div wrapper for this group
-        this.divEl = inputEx.cn('div', {className: 'inputEx-Group'});
-        this.divEl.id = formId+'-div';
+   /**
+    * Render the group
+    */
+   render: function() {
+      // Create the div wrapper for this group
+  	   this.divEl = inputEx.cn('div', {className: 'inputEx-Group'});
+	   if(this.options.id) {
+   	   this.divEl.id = this.options.id;
+   	}
 
-        // Create the FORM element
-        this.form = inputEx.cn('form', {id: formId, method: this.options.method || 'POST', action: this.options.action || '', className: this.options.className || 'inputEx-Form'});
-        this.divEl.appendChild(this.form);
+  	   // Create the FORM element
+      this.form = inputEx.cn('form', {method: this.options.method || 'POST', action: this.options.action || '', className: this.options.className || 'inputEx-Form'});
+      this.divEl.appendChild(this.form);
 
-        // Set the autocomplete attribute to off to disable firefox autocompletion
-        this.form.setAttribute('autocomplete', 'off');
+	   // Set the autocomplete attribute to off to disable firefox autocompletion
+	   this.form.setAttribute('autocomplete','off');
 
-        // Set the name of the form
-        if (this.options.formName) { this.form.name = this.options.formName; }
+      // Set the name of the form
+      if(this.options.formName) { this.form.name = this.options.formName; }
 
-        if (YAHOO.lang.isArray(this.options.fields)) {
-            // check if there will be more than one fieldset
-            var groupCount = 0, isPrevFieldAGroup = false, hasGroup=false;
-            for (var i = 0,f; f = this.options.fields[i]; i++) {
-                if (f.type=='group') hasGroup=true;
-                if (i==0 || isPrevFieldAGroup){
-                    groupCount++;
-                }else if (isPrevFieldAGroup && f.type != 'group'){ // standalone field after a group
-                    groupCount++;
-                }
-                isPrevFieldAGroup = (f.type=='group')
-            }
+  	   this.renderFields(this.form);
 
-            if (groupCount>1||hasGroup){ // create a LI for every group
-                var groupIndex = 0;
-                var ul = inputEx.cn('ul',{id:formId+'-list'});
-                var fieldset = []
-                for (var i = 0,f; f = this.options.fields[i]; i++) {
+      this.renderButtons();
 
-                    if (f.type == 'group'){ fieldset = f.fields; }else{ fieldset.push(f); }
+      if(this.options.disabled) {
+  	      this.disable();
+  	   }
+   },
 
-                    /**
-                     * perform renderFields in the following conditions:
-                     * 1. when it's the last field
-                     * 2. when it's a group
-                     * 3. when the next field is a group
-                     */
-                    if (i==this.options.fields.length-1 || f.type=='group' || this.options.fields[i+1].type=='group'){
-                        var groupId = formId+'-group'+groupIndex;
-                        var li = inputEx.cn('li',{id:groupId+'-li'});
-
-
-                        //TODO: refactor the form and group rendering logic
-                        var groupCfg = (f.type=='group')?f:{fields:fieldset}
-                        groupCfg.parentEl = li
-                        groupCfg.id = groupId
-
-                        //for simple form, create the header as H3, or other form, such as tabView, create it differently
-                        if (groupCfg.header){
-                            var groupHeader = inputEx.cn('h3')
-                            groupHeader.innerHTML = groupCfg.header
-                            li.appendChild(groupHeader);
-                        }
-
-                        new YAHOO.inputEx.Group(groupCfg); //TODO: consider to store the references to the group in the form
-                        fieldset = [];
-                        ul.appendChild(li);
-                        groupIndex++;
-                    }
-                }
-
-                this.form.appendChild(ul);
-
-            }else{
-                var groupId = formId+'-group0';
-                var groupCfg = this.options.fields.length==1?this.options.fields[0]:this.options; //if fiels is a single group or fields without group
-                groupCfg.parentEl = this.form
-                groupCfg.id = groupId
-
-                new YAHOO.inputEx.Group(groupCfg);
-            }
-        } else { // a form with a single field
-            this.renderFields(this.form);
-        }
-
-        this.renderButtons();
-
-        if (this.options.disabled) {
-            this.disable();
-        }
-    },
 
    /**
     * Render the buttons
@@ -174,9 +113,13 @@ lang.extend(inputEx.Form, inputEx.Group,
     * @param {Event} e The original onSubmit event
     */
    onSubmit: function(e) {
+
+      // do nothing if does not validate
 	   if ( !this.validate() ) {
-		   Event.stopEvent(e);
+		   Event.stopEvent(e); // no submit
+		   return; // no ajax submit
 	   }
+
 	   if(this.options.ajax) {
 		   Event.stopEvent(e);
 	      this.asyncRequest();
@@ -270,7 +213,7 @@ lang.extend(inputEx.Form, inputEx.Group,
             function() {return true;},
             "select",
             this.divEl,
-                 function(el) {method.call(that,el,"inputEx-hidden");}
+            function(el) {method.call(that,el,"inputEx-hidden");}
          );
       }
    },
