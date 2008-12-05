@@ -183,7 +183,7 @@
                     this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
                 },
-                value:''
+                value:null
             },
 
             /**
@@ -389,9 +389,9 @@
             _initEvents:function() {
                 if (this._eventInitialized) return;
                 if (this._getInputEl()) {
-                    this._getInputEl().on('change', Y.bind(this._onChange, this));
-                    this._getInputEl().on('focus', Y.bind(this._onFocus, this));
-                    this._getInputEl().on('blur', Y.bind(this._onBlur, this));
+                    this._getInputEl().on('change', Y.bind(this._inputElOnChange, this));
+                    this._getInputEl().on('focus', Y.bind(this._inputElOnFocus, this));
+                    this._getInputEl().on('blur', Y.bind(this._inputElOnBlur, this));
                     Y.log(this + '.initEvent() - Field - subscribed to change, focus & blur', 'debug', 'inputEx');
                 } else {
                     Y.log(this + '.initEvent() - Field - no available field', 'warn', 'inputEx');
@@ -454,14 +454,14 @@
                 return this._inputEl;
             },
 
-            _onFocus:function() {
+            _inputElOnFocus:function() {
                 this.get('el').removeClass('inputEx-empty')
                 this.get('el').addClass('inputEx-focused')
-                Y.log(this + '._onFocus() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
+                Y.log(this + '._inputElOnFocus() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
                 this.fire(EV_FOCUS, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
-            _onBlur:function() {
+            _inputElOnBlur:function() {
                 this.get('el').removeClass('inputEx-focused')
                 if (!this._validated) {// for the case that the field is focused then blurred without onchange
                     this.validate();
@@ -471,13 +471,13 @@
                 if (this.get('value') !== this._getInputEl().get('value') && this._inputElToValueUpdateEnabled) {
                     this.set('value', this._getInputEl().get('value'))
                 }
-                Y.log(this + '._onBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
+                Y.log(this + '._inputElOnBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
                 this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
-            _onChange:function() {
+            _inputElOnChange:function() {
                 var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
-                Y.log(this + '._onChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
+                Y.log(this + '._inputElOnChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
                 if (oldVal !== newVal) { this.set('value', newVal)}
             },
 

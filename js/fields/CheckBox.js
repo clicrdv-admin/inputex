@@ -8,6 +8,20 @@
          * @module inputEx
          */
         /**
+         * Check a checkbox that has options to be checked, or not checked.
+         *
+         * There are several difference between a HTML checkbox and a inputEx checkbox
+         *
+         * for HTML checkbox,
+         *   - the 'value' attribute is static, and a 'checked' attribute of true/false represent the checked state
+         *   - when a checkbox is unchecked, the checkbox value will not be submitted
+         *
+         * for inputEx checkbox
+         *   - it takes a 'sentValues' attribute which is an Array with two values determine the value of the checkbox in checked and unchecked states
+         *    e.g. if 'sentValues' is ['agree','disagree'], when the checkbox is checked, the field and inputEl's value is 'agree'; otherwise, it's 'disagree'
+         *   - it creates a hidden field with the name, and the visible checkbox is for tracking the checked and unchecked
+         *     state only. when an unchecked field is submitted, the hidden value is sent.
+         *
          * @class CheckBox
          * @extends Field
          * @constructor
@@ -21,33 +35,96 @@
             className:{
                 value:'inputEx-Field inputEx-CheckBox'
             },
-            /* value:{ //TODO: would defeault override the Field.set()?
-             value:false
-             },*/
+
             rightLabel:{
                 value:''
             },
 
             /**
-             * 2D vector of values for checked/unchecked states (default is [true, false])
+             * @attribute checked
+             * @description default as checked or not
+             * @default false, i.e. unchecked
              */
-            sentValues:{
-                set:function(v) {
-                    if (!Y.Lang.isArray(v) && v.length != 2) { throw new Error('sendValue must be an array with 2 values')}
-                    this._checkedValue = v[0];
-                    this._uncheckedValue = v[1];
-                },
-                value:[true,false]
+            checked:{
+                value:false
+            },
+
+            /**
+             * @attribute checkedValue
+             * @description 'value', 'checkedValue' and 'uncheckedValue' works like the following:
+             *
+             * validation:
+             * 1. 'checkedValue', if defined, shall not be identical to 'uncheckedValue'
+             *
+             * 2. if 'value' and 'checkedValue' are set, 'value' shall either be 'checkedValue' or 'uncheckedValue'
+             *   - remarks: 'uncheckedValue' could be undefined
+             *
+             * initialization:
+             * 1. if 'value' is defined, but not 'checkedValue', 'checkedValue' is set to 'value'
+             *   - this is known as the HTML mode that behave as similar as HTML. HTML does not have 'checkedValue' and
+             *     'uncheckedValue' attributes
+             *
+             * 2. If not 1,
+             *  - 'checkedValue' and 'uncheckedValue' are default to be true and false
+             *  - 'value' is default as the 'uncheckedValue'
+             *  - if 'value' is specified, it must be either
+             *
+             */
+            checkedValue:{
+            },
+
+            /**
+             * @attribute uncheckedValue
+             * @see checkedValue
+             * @default undefined
+             */
+            uncheckedValue:{
+            },
+
+            /**
+             * @attribute hiddenField
+             * @description allow disabling of hiddenField. This is not recommended
+             * @default true
+             */
+            hiddenField:{
+                value:true
             }
+
         }
 
 
         Y.extend(CheckBox, Y.inputEx.Field, {
-            _checkedValue:null,
-            _uncheckedValue:null,
             _hiddenInputEl:null,
             initializer : function(cfg) {
-                Y.log(this + '.initializer() - CheckBox - initialized - checkValue: ' + this.get('checkValue') + ', uncheckValue: ' + this.get('uncheckValue'), 'debug', 'inputEx');
+                if (this.get('checkedValue') && this.get('checkedValue') === this.get('uncheckedValue')) {
+                    throw new Error('checkedValue and uncheckedValue shall not be identical, checkedValue: ' + this.get('checkedValue')) + ', uncheckedValue: ' + this.get('uncheckedValue')
+                }
+
+                // if 'value' and 'checkedValue' are set
+                if (this.get('value') && this.get('checkedValue')) {
+                    // 'value' shall either be 'checkedValue' or 'uncheckedValue'
+                    if (this.get('value') !== this.get('checkedValue') && this.get('value') !== this.get('uncheckedValue'))
+                        throw new Error('value attribute, if specified, shall either be checkedValue or uncheckedValue, ' +
+                                        'value: ' + this.get('value') + ', checkedValue: ' + this.get('checkedValue') +
+                                        ', uncheckedValue: ' + this.get('uncheckedValue'))
+                }
+
+                if (!this.get('checkedValue') && this.get('value')) {
+                    // if 'value' is set but not 'checkedValue', set checkedValue with 'value' to simulate default HTML behavior
+                    this.set('checkedValue', this.get('value'))
+                }
+                else if (!this.get('value') && !this.get('checkedValue') && !this.get('uncheckedValue')) {
+                    // if all 'value', 'checkedValue', and 'uncheckedValue' are not defined
+                    this.set('checkedValue', true);
+                    this.set('uncheckedValue', false);
+                }
+
+                if (!this.get('value')) {
+                    this.set('value', (this.get('checked')) ? this.get('checkedValue') : this.get('uncheckedValue'))
+                }
+
+                Y.log(this + '.initializer() - CheckBox - initialized - checkValue: ' + this.get('checkedValue') +
+                      ', uncheckValue: ' + this.get('uncheckedValue') + ', value: ' + this.get('value'), 'debug', 'inputEx');
             },
 
             /**
@@ -55,17 +132,32 @@
              */
             renderComponent: function() {
 
-                var checkBoxId = this.getID() + 'field'
-                this._inputEl = Y.Node.create('<input id="' + checkBoxId + '" type="checkbox" checked="' + this.get('value') + '"/>');
+                var value = this.get('checked') ? this.get('checkedValue') : this.get('uncheckedValue')
+
+                /**
+                 * Render the visible input checkbox. values is kept insync with the value attribute and the hidden field
+                 * so that users may use on the node attributes. However, no 'name' is set to the field as it is not
+                 * used for submission.
+                 *
+                 * Following the global Field, it is listened for onchange so user may the input element directly, and
+                 * the checkbox field handles synchronizing the value with 'value' attribute and the hidden field
+                 */
+                this._inputEl = Y.Node.create('<input id="' + this.getID() + '-field" type="checkbox"/>');
+                this._inputEl.set('checked', this.get('checked'))
+                this._inputEl.set('value', value)
                 this._inputWrapperEl.appendChild(this._inputEl);
 
-                var rightLabelEl = Y.Node.create('<label for="' + checkBoxId + '" class="inputEx-CheckBox-rightLabel">' + this.get('rightLabel') + '</label>');
+                // render right hand side label
+                var rightLabelEl = Y.Node.create('<label for="' + this.getID() + '" class="inputEx-CheckBox-rightLabel">' + this.get('rightLabel') + '</label>');
                 this._inputWrapperEl.appendChild(rightLabelEl);
 
                 // Keep state of checkbox in a hidden field (format : this.checkedValue or this.uncheckedValue)
-                this._hiddenInputEl = Y.Node.create('<input type="hidden" name="' + (this.get('name') || '') + '" value="' + (this.get('value') ? this.get('checkedValue') : this.get('uncheckedValue')) + '"/>')
-
-                this._inputWrapperEl.appendChild(this._hiddenInputEl);
+                if (this.get('hiddenField')) {
+                    this._hiddenInputEl = Y.Node.create('<input id="' + this.getID() + '-hidden" type="hidden"/>')
+                    this._hiddenInputEl.set('name', this.get('name') || '')
+                    this._hiddenInputEl.set('value', value);
+                    this._inputWrapperEl.appendChild(this._hiddenInputEl);
+                }
             },
 
             _initEvent:function() {
@@ -76,9 +168,15 @@
              * @param v
              */
             _updateInputEl:function(v) {
-                this._inputEl.set('checked', v == this._checkedValue ? true : false);
-                this._hiddenInputEl.set('value', v);
-                Y.log(this + '._updateInputEl() - CheckBox - after update -  _inputEl.checked: ' + this._inputEl.get('checked'), 'debug', 'inputEx');
+                this._inputEl.set('checked', v === this.get('checkedValue'));
+                this._inputEl.set('value', v);
+                if (this.get('hiddenField')) this._hiddenInputEl.set('value', v);
+                Y.log(this + '._updateInputEl() - CheckBox - after update -  _inputEl.checked: ' + this._inputEl.get('checked') + ', value: ' + v, 'debug', 'inputEx');
+            },
+            _inputElOnChange:function() {
+                var oldVal = this.get('value'), newVal = this._inputEl.get('checked') ? this.get('checkedValue') : this.get('uncheckedValue');
+                Y.log(this + '._inputElOnChange() - CheckBox - from "' + oldVal + '" to "' + newVal + '", checked (after change): ' + this._inputEl.get('checked'), 'debug', 'inputEx')
+                if (oldVal !== newVal) { this.set('value', newVal)}
             }
 
 

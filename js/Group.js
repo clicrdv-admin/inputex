@@ -162,7 +162,7 @@
                 return field;
             },
 
-            _onChange:function(field) {
+            _inputElOnChange:function(field) {
                 Y.log(this + '._onChange() - field: ' + field + ', to fire group:change event', 'debug', 'inputEx');
                 this.fire(EV_CHANGE, null, field); //pass in the field that is changed
             },
@@ -182,15 +182,41 @@
             },
 
             /**
+             * Get a field from the group
              *
-             * @param name if starts with #, the name is an node id, otherwise, it's assumed to be the field name
-             * //TODO fully implement this
+             * Notice that:
+             * 1. when arg is a node id, it still will return the field instance rather than the node
+             * 2. when arg is a node id, it refers to the id of the field's el but not id of the field's inputEl
+             *
+             * @param arg if starts with '#', lookup by field's el id, otherwise, lookup by field name
              */
-            getField:function(name) {
-                if (name && name.charAt(0) !== '#') { // name
-                    return Y.inputEx.find(this._inputs, function(v) { if (v.get('name') === name) return v;})
+            getField:function(arg) {
+                if (!arg) throw new Error(this + '.getField() - invalid arg - arg: ' + arg);
+                if (arg.charAt(0) === '#') { // lookup by node id
+                    var id = arg.substring(1, arg.length)
+                    return Y.inputEx.find(this._inputs, function(v) { if (v.get('el').get('id') === id) return v;})
                 } else {
-                    throw new Error(this + '.getField() - get field by id is not implemented')
+                    return Y.inputEx.find(this._inputs, function(v) { if (v.get('name') === arg) return v;})
+                }
+            },
+
+            /**
+             * Get a inputEl of a field from the group
+             *
+             * Notice that:
+             * 1. when arg is a field name, it returns the inputEl node rather than the field instance
+             * 2. when arg is a node id, it refers to the node id of the input el
+             *
+             * @param arg
+             */
+            getInputEl:function(arg) {
+                if (!arg) throw new Error(this + '.getInputEl() - invalid arg - arg: ' + arg);
+                if (arg.charAt(0) === '#') { // lookup by node id
+                    var id = arg.substring(1, arg.length)
+                    return Y.inputEx.find(this._inputs, function(v) { if (v.get('inputEl').get('id') === id) return v;})
+                } else {
+                    var field = this.getField(arg)
+                    if (field) return field.get('inputEl')
                 }
             },
 

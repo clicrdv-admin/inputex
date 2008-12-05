@@ -145,10 +145,10 @@
                 }
             },
             
-            _onChange:function() {
+            _inputElOnChange:function() {
                 var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
                 var isChanged = oldVal !== newVal
-                Y.log(this + '._onChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
+                Y.log(this + '._inputElOnChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
                 if (isChanged && !this._typeInviteOn) { this.set('value', newVal) }
             },
             /*

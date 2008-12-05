@@ -1,7 +1,7 @@
 status
 ======
  - inputEx and inputEx.Field are implemented.
- - StringField, UrlField and EmailField are implemented. All examples of these fields are fully working.
+ - StringField, UrlField, EmailField and CheckBox are implemented. All examples of these fields are fully working.
 
 
 
@@ -56,6 +56,8 @@ log changes to annouce to users about the update
     - the invalid concept is changed. there could be more than one violations at a time. The 'required' state is unused
       and the state and css may be removed soon. TODO remove 'required'
 
+
+10. behavior of checkbox is significantly changed. @see the docs
 
 To developer
 1. typeInvite
