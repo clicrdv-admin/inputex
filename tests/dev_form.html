@@ -1,41 +1,57 @@
-<div id="container2" class="demoContainer">
-    <div class="inputEx-Group">
-        <form method="post" action="" class="inputEx-Form" autocomplete="off">
-            <fieldset>
-                <div class="inputEx-Group">
-                    <fieldset>
-                        <legend class="inputEx-Group-legend"> group 1</legend>
-                        <div class="inputEx-fieldWrapper" id="yui-gen5">
-                            <div id="yui-gen5-label" class="inputEx-label" for="yui-gen5-field"><label>Title</label>
-                            </div>
-                            <div class="inputEx-Field"><select id="yui-gen5-field" name="title">
-                                <option value="Mr">Mr</option>
-                                <option value="Mrs">Mrs</option>
-                                <option value="Mme">Mme</option>
-                            </select></div>
-                            <div style="clear: both;"></div>
-                        </div>
-                    </fieldset>
-                </div>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Quick Test</title>
+    <script type="text/javascript" src="../lib/yui3/yui/yui-min.js"></script>
+    <script type="text/javascript" src="../js/inputex.js"></script>
+    <script type="text/javascript" src="../lib/tabifier/tabifier.js"></script>
 
-                <div class="inputEx-Group">
-                    <fieldset>
-                        <legend class="inputEx-Group-legend"> group 2</legend>
-                        <div class="inputEx-fieldWrapper" id="yui-gen8">
-                            <div id="yui-gen8-label" class="inputEx-label" for="yui-gen8-field">
-                                <label>Email</label>
-                            </div>
-                            <div class="inputEx-Field">
-                                <div class="inputEx-StringField-wrapper">
-                                    <input type="text" id="yui-gen8-field" name="email"/></div>
-                            </div>
-                            <div style="clear: both;"></div>
-                        </div>
-                    </fieldset>
-                </div>
-                
-            </fieldset>
-            <div class="inputEx-Form-buttonBar"><input type="submit" value="Change"/></div>
-        </form>
-    </div>
+</head>
+<body class="yui-skin-sam">
+<div id="parent">
+    <div id="test"></div>
 </div>
+<textarea id="result" rows="30" cols="120"></textarea>
+
+
+<script type="text/javascript">
+    var form;
+    inputEx.YUI().use('form', 'stringfield', 'urlfield', 'emailfield', 'checkbox', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
+        try {
+            Y.log('quick test begin')
+            //Y.inputEx.spacerUrl = "../images/space.gif";
+
+            form = new Y.inputEx.Form({
+                fields: [
+                    {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[
+                        {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
+                        {inputParams: {label: 'Firstname', name: 'firstname', required: true, value:'Jacques' } },
+                        {inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } }
+                    ]}},
+                    { type:'group',inputParams:{legend:'group 2',name:'group2',fields:[
+                        {type:'email', inputParams: {label: 'Email', name: 'email'}},
+                        {type:'url', inputParams: {label: 'Website',name:'website'}}
+                    ]}}
+                ],
+                buttons: [{type: 'submit', value: 'Change'}],
+                parentEl: 'test'
+            });
+            form.render()
+
+
+            var testHTML = Y.Node.get('#parent').get('innerHTML')
+            Y.Node.get('#result').set('innerHTML', Y.inputEx.escapeHTML(testHTML))
+            runTabifier('result', 'result', 'HTML')
+            Y.log('quick test end')
+
+        } catch(e) {
+            Y.log(e, 'error', 'inputEx');
+        }
+    });
+</script>
+
+<div style="position:absolute; right:0; top:0; margin:10px">
+    <a href="javascript:alert(form.getInputEl('email').get('value'));">email.value</a>
+</div>
+</body>
+</html>
