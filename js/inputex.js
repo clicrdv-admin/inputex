@@ -1,47 +1,3 @@
-/**
- * @fileoverview a global inputEx that provide an additional way to boostrap a YUI3 instance
- */
-if (typeof(inputEx) === 'undefined') {
-    var inputEx = {
-        YUI : function() { //TODO allow override
-            var yuiCfg = {base:"../lib/yui3/", timeout: 10000,
-                modules: {
-                    'inputex-css':{
-                        fullpath:"../css/inputEx.css", type:'css'
-                    },
-                    'inputex':{
-                        fullpath:'../js/inputex.js', type:'js', requires:['inputex-css']
-                    },
-                    'field': {
-                        fullpath: "../js/Field.js", type:'js', requires:['inputex-css','base','node','json']
-                    },
-                    'stringfield': {
-                        fullpath: "../js/fields/StringField.js", type:'js', requires:['field']
-                    },
-                    'urlfield': {
-                        fullpath: "../js/fields/UrlField.js", type:'js', requires:['stringfield']
-                    },
-                    'emailfield': {
-                        fullpath: "../js/fields/EmailField.js", type:'js', requires:['stringfield']
-                    },
-                    'checkbox': {
-                        fullpath: "../js/fields/CheckBox.js", type:'js', requires:['field']
-                    },
-                    'selectfield': {
-                        fullpath: "../js/fields/SelectField.js", type:'js', requires:['field']
-                    },
-                    'group':{
-                        fullpath: '../js/Group.js', type:'js', requires:['field']
-                    },
-                    'form':{
-                        fullpath: '../js/Form.js', type:'js', requires:['group']
-                    }
-                }};
-            return YUI(yuiCfg);
-        }
-    };
-}
-
 ((function() {
     if (typeof(YUI) === 'undefined') { alert('Error! YUI3 library is not available') } //TODO load yui3 base dynamically like a Bookmarklet
 
@@ -302,23 +258,3 @@ if (typeof(inputEx) === 'undefined') {
 
     }, '3.0.0pr1', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
 })());
-
-/**
- * Test de documentation inputEx
- */
-/*
- var inputEx = YAHOO.inputEx;
-
- lang.augmentObject(inputEx,
- */
-/**
- * @scope inputEx
- */
-/*
-
-
- })();
-
-
-
- */

@@ -738,17 +738,6 @@
  }
  },
 
- */
-
-/**
- * onChange event handler
- * @param {Event} e The original 'change' event
- */
-/*
- onChange: function(e) {
- this.fireUpdatedEvt();
- },
-
  close: function() {
  },
  */
