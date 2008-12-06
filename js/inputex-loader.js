@@ -25,7 +25,7 @@ if (typeof(inputEx) === 'undefined') {
                         function delegate() { that.use.apply(that, that.args); }
                         window.setTimeout(delegate, 500)
                     } else {
-                        var merged = inputEx.yuiProfile
+                        var merged = inputEx.getProfile(cfg.inputExBase)
                         YUI().use(function(Y) { merged = Y.merge(merged, cfg)})
                         YUI.use.apply(YUI(merged), arguments);
                     }
@@ -34,38 +34,42 @@ if (typeof(inputEx) === 'undefined') {
         },
 
         //TODO allow user to specify a variable to override the inputEx base path
-        yuiProfile :{base:"http://yui.yahooapis.com/3.0.0pr1/build/", timeout: 10000,
-            modules: {
-                'inputex-css':{
-                    fullpath:"../css/inputEx.css", type:'css'
-                },
-                'inputex':{
-                    fullpath:'../js/inputex.js', type:'js', requires:['inputex-css']
-                },
-                'field': {
-                    fullpath: "../js/Field.js", type:'js', requires:['inputex','inputex-css','base','node','json']
-                },
-                'stringfield': {
-                    fullpath: "../js/fields/StringField.js", type:'js', requires:['field']
-                },
-                'urlfield': {
-                    fullpath: "../js/fields/UrlField.js", type:'js', requires:['stringfield']
-                },
-                'emailfield': {
-                    fullpath: "../js/fields/EmailField.js", type:'js', requires:['stringfield']
-                },
-                'checkbox': {
-                    fullpath: "../js/fields/CheckBox.js", type:'js', requires:['field']
-                },
-                'selectfield': {
-                    fullpath: "../js/fields/SelectField.js", type:'js', requires:['field']
-                },
-                'group':{
-                    fullpath: '../js/Group.js', type:'js', requires:['field']
-                },
-                'form':{
-                    fullpath: '../js/Form.js', type:'js', requires:['group']
-                }
-            }}
+        getProfile:function(base) {
+            base = (base)?base:'http://inputex.googlecode.com/svn/branches/inputex-yui3/'
+            //base = (base)?base:'http://inputex.googlecode.com/svn/release/inputEx-0.yui3' //TODO change this
+            return {base:"http://yui.yahooapis.com/3.0.0pr1/build/", timeout: 10000,
+                modules: {
+                    'inputex-css':{
+                        fullpath: base + "css/inputEx.css", type:'css'
+                    },
+                    'inputex':{
+                        fullpath:base + "js/inputex.js", type:'js', requires:['inputex-css']
+                    },
+                    'field': {
+                        fullpath: base + "js/Field.js", type:'js', requires:['inputex','inputex-css','base','node','json']
+                    },
+                    'stringfield': {
+                        fullpath: base + "js/fields/StringField.js", type:'js', requires:['field']
+                    },
+                    'urlfield': {
+                        fullpath: base + "js/fields/UrlField.js", type:'js', requires:['stringfield']
+                    },
+                    'emailfield': {
+                        fullpath: base + "js/fields/EmailField.js", type:'js', requires:['stringfield']
+                    },
+                    'checkbox': {
+                        fullpath: base + "js/fields/CheckBox.js", type:'js', requires:['field']
+                    },
+                    'selectfield': {
+                        fullpath: base + "js/fields/SelectField.js", type:'js', requires:['field']
+                    },
+                    'group':{
+                        fullpath: '../js/Group.js', type:'js', requires:['field']
+                    },
+                    'form':{
+                        fullpath: '../js/Form.js', type:'js', requires:['group']
+                    }
+                }}
+        }
     };
 }
