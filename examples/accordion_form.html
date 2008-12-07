@@ -143,7 +143,7 @@
 		font-size: 1.2em;
 	}
 
-	</style> 
+	</style>
 </head>
 
 <body class="yui-skin-sam">
@@ -164,17 +164,23 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new YAHOO.inputEx.Form( {
-            fields: [
-            {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
-            {inputParams: {label: 'Firstname', name: 'firstname', required: true, value:'Jacques' } },
-            {inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
-            {type:'email', inputParams: {label: 'Email', name: 'email'}},
-            {type:'url', inputParams: {label: 'Website',name:'website'}}
-            ],
-            buttons: [{type: 'submit', value: 'Change'}],
-            parentEl: 'container1'
+            var form = new Y.inputEx.AccordionForm({
+                method:'get', action:'/test',
+                fields: [
+                    {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[
+                        {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
+                        {inputParams: {label: 'Firstname', name: 'firstname', required: true, value:'Jacques' } },
+                        {inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } }
+                    ]}},
+                    { type:'group',inputParams:{legend:'group 2',name:'group2',fields:[
+                        {type:'email', inputParams: {label: 'Email', name: 'email',showMsg:true,validator:[{type:'meta',message:'Please enter a valid email address'},{required:true}]}},
+                        {type:'url', inputParams: {label: 'Website',name:'website'}}
+                    ]}}
+                ],
+                buttons: [{type: 'submit', value: 'Change'}],
+                el: 'container1'
             });
+            form.render()
         </textarea>
     </div>
 
@@ -183,10 +189,9 @@
 <script>
     inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('accordionform', 'stringfield', 'urlfield', 'emailfield', 'checkbox', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
         try {
-            Y.log('quick test begin')
             Y.inputEx.spacerUrl = "../images/space.gif";
 
-            form = new Y.inputEx.AccordionForm({
+            var form = new Y.inputEx.AccordionForm({
                 method:'get', action:'/test',
                 fields: [
                     {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[
