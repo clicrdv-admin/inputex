@@ -192,7 +192,7 @@
             Y.inputEx.spacerUrl = "../images/space.gif";
 
             var form = new Y.inputEx.AccordionForm({
-                method:'get', action:'/test',
+                method:'get', action:'/test',accordion:{width: '800px',expandItem: 1},
                 fields: [
                     {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[
                         {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },

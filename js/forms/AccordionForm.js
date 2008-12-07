@@ -17,6 +17,13 @@
 
         AccordionForm.NAME = "accordionform";
         AccordionForm.ATTRS = {
+            accordion:{
+                set:function(v) {
+                    var result = Y.merge({collapsible: false,width: '600px',expandItem: 0,animationSpeed: '0.3',animate: true,effect: YAHOO.util.Easing.easeBothStrong}, v)
+                    return result;
+                },
+                value:{}
+            }
         };
 
         Y.extend(AccordionForm, Y.inputEx.Form, {
@@ -31,8 +38,7 @@
 
             _renderAccordionView:function() {
                 //Y.log(this + '._renderAccordionView() - AccordionForm', 'warn', 'inputEx')
-                var accordion = new YAHOO.widget.AccordionView(this.getID() + '-list',
-                {collapsible: false,width: '600px',expandItem: 0,animationSpeed: '0.3',animate: true,effect: YAHOO.util.Easing.easeBothStrong});
+                var accordion = new YAHOO.widget.AccordionView(this.getID() + '-list',this.get('accordion'));
             },
 
             _renderFields: function(parentEl, inputFields) {
