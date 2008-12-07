@@ -95,11 +95,12 @@
              * Render the checkbox and the hidden field
              */
             renderComponent: function() {
-                this._inputEl = Y.Node.create('<select id="' + this.getID() + '-field"')
+                if (!this._inputEl) this._inputEl = Y.Node.create('<select></select>')
+
                 if (this.get('name')) this._inputEl.set('name', this.get('name'))
                 this._inputEl.set('multiple', this.get('multiple'))
                 this._inputEl.set('size', this.get('size'))
-
+                
                 var values = this.get('selectValues'), options = this.get('selectOptions')
                 for (var i = 0; i < values.length; i++) {
                     var label = "" + ((options) ? options[i] : values[i])
@@ -111,6 +112,7 @@
                 this._inputEl.set('selectedIndex', this.get('selectedIndex'))
 
                 this.get('el').appendChild(this._inputEl);
+
             }
         }
                 );
