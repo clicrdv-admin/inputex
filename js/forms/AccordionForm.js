@@ -30,7 +30,7 @@
             },
 
             _renderAccordionView:function() {
-                Y.log(this + '._renderAccordionView() - AccordionForm', 'warn', 'inputEx')
+                //Y.log(this + '._renderAccordionView() - AccordionForm', 'warn', 'inputEx')
                 var accordion = new YAHOO.widget.AccordionView(this.getID() + '-list',
                 {collapsible: false,width: '600px',expandItem: 0,animationSpeed: '0.3',animate: true,effect: YAHOO.util.Easing.easeBothStrong});
             },
@@ -61,7 +61,7 @@
                     parentEl.appendChild(list)
                 }
 
-                Y.log(this + '._renderFields() - AccordionForm - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'warn', 'inputEx')
+                //Y.log(this + '._renderFields() - AccordionForm - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'warn', 'inputEx')
             },
 
             /**
@@ -75,7 +75,7 @@
                  * Some DOM transformation works are done to generate an AccordionView
                  */
                 if (field instanceof Y.inputEx.Group) {
-                    Y.log(this + '._renderField() - AccordionForm - rendered - field: ' + field, 'warn', 'inputEx');
+                    //Y.log(this + '._renderField() - AccordionForm - rendered - field: ' + field, 'warn', 'inputEx');
                     var legend = field.get('el').query('legend')
                     var legendText = legend.get('text')
                     legend.get('parentNode').removeChild(legend)
