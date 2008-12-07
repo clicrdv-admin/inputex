@@ -39,6 +39,13 @@
 
         Form.NAME = "form";
         Form.ATTRS = {
+
+            action:{
+                value:''
+            },
+            method:{
+                value:'POST'
+            },
             /**
              * @attribute elClass
              * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
@@ -72,6 +79,8 @@
 
                     this._formEl = Y.Node.create('<form id="' + id + '-form"></form>')
                     if (this.get('name')) this._formEl.set('name', this.get('name'))
+                    if (this.get('method')) this._formEl.set('method', this.get('method'))
+                    if (this.get('action')) this._formEl.set('action', this.get('action'))
                     el.appendChild(this._formEl);
 
                     this._renderFields(this._formEl);
@@ -154,8 +163,6 @@
 
  this.options.buttons = options.buttons || [];
 
- this.options.action = options.action;
- this.options.method = options.method;
 
  if(options.ajax) {
  this.options.ajax = {};

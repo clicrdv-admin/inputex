@@ -19,6 +19,7 @@
             //Y.inputEx.spacerUrl = "../images/space.gif";
 
            form = new Y.inputEx.Form({
+               method:'get', action:'/test',
                 fields: [
                     {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[
                         {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
@@ -31,7 +32,7 @@
                     ]}}
                 ],
                 buttons: [{type: 'submit', value: 'Change'}],
-                parentEl: 'test'
+                el: 'test'
             });
             form.render()
 
