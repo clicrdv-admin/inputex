@@ -25,7 +25,7 @@ if (typeof(inputEx) === 'undefined') {
                         function delegate() { that.use.apply(that, that.args); }
                         window.setTimeout(delegate, 500)
                     } else {
-                        var merged = inputEx.getProfile(cfg?cfg.inputExBase:null)
+                        var merged = inputEx.getProfile(cfg ? cfg.inputExBase : null)
                         YUI().use(function(Y) { merged = Y.merge(merged, cfg)})
                         YUI.use.apply(YUI(merged), arguments);
                     }
@@ -35,7 +35,7 @@ if (typeof(inputEx) === 'undefined') {
 
         //TODO allow user to specify a variable to override the inputEx base path
         getProfile:function(base) {
-            base = (base)?base:'http://inputex.googlecode.com/svn/branches/inputex-yui3/'
+            base = (base) ? base : 'http://inputex.googlecode.com/svn/branches/inputex-yui3/'
             //base = (base)?base:'http://inputex.googlecode.com/svn/release/inputEx-0.yui3' //TODO change this
             return {base:"http://yui.yahooapis.com/3.0.0pr1/build/", timeout: 10000,
                 modules: {
@@ -68,6 +68,24 @@ if (typeof(inputEx) === 'undefined') {
                     },
                     'form':{
                         fullpath: base + 'js/Form.js', type:'js', requires:['group']
+                    },
+                    'accordionform-yui2-css':{
+                        fullpath: 'http://yui.yahooapis.com/combo?2.6.0/build/assets/skins/sam/skin.css', type:'css'
+                    },
+                    'accordionform-yui2':{
+                        fullpath: 'http://yui.yahooapis.com/combo?2.6.0/build/utilities/utilities.js&2.6.0/build/container/container_core-min.js&2.6.0/build/menu/menu-min.js&2.6.0/build/button/button-min.js&2.6.0/build/editor/editor-min.js', type:'js', requires:['accordionform-yui2-css']
+                    },
+                    'accordionform-accordionview-css':{
+                        fullpath: 'http://www.i-marco.nl/weblog/yui-accordion/accordionview/assets/skins/sam/accordionview.css', type:'css'
+                    },
+                    'accordionform-accordionview':{
+                        fullpath: 'http://www.i-marco.nl/weblog/yui-accordion/accordionview/accordionview.js', type:'js', requires:['accordionform-accordionview-css','accordionform-yui2']
+                    },
+                    'accordionform':{
+                        fullpath: base + 'js/forms/AccordionForm.js', type:'js', requires:['form','accordionform-accordionview']
+                    },
+                    'exampleform':{
+                        fullpath: base + 'js/forms/ExampleForm.js', type:'js', requires:['form']
                     }
                 }}
         }

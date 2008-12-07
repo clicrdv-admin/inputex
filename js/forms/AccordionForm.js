@@ -17,43 +17,6 @@
 
         AccordionForm.NAME = "accordionform";
         AccordionForm.ATTRS = {
-
-            /**
-             * @attribute action
-             * @description submit action, i.e. your form submit target uri
-             * @type String
-             */
-            action:{
-                value:null
-            },
-
-            /**
-             * @attribute method
-             * @description submit method, either post or get
-             * @type String
-             */
-            method:{
-                value:'POST'
-            },
-
-            /**
-             * @attribute elClass
-             * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
-             * @type String
-             */
-            elClass:{
-                value:'inputEx-Form inputEx-Group' //,writeOnce:true cannot use writeOnce
-            },
-
-            /**
-             * @attribute formEl
-             * @description readOnly field for getting the <form> element. by default, 'el' is a div wrapper and 'formEl' is its direct child
-             * @type Node
-             */
-            inputEl:{
-                get:function() {return this._formEl},
-                readOnly:true
-            }
         };
 
         Y.extend(AccordionForm, Y.inputEx.Form, {
@@ -62,42 +25,67 @@
             },
 
             render:function() {
-                try {
-                    var el = this.get('el'), id = el.get('id');
-                    el.addClass(this.get('elClass'))
+                AccordionForm.superclass.render.apply(this, arguments);
+                this._renderAccordionView();
+            },
 
-                    this._formEl = Y.Node.create('<form id="' + id + '-form"></form>')
-                    if (this.get('name')) this._formEl.set('name', this.get('name'))
-                    if (this.get('method')) this._formEl.set('method', this.get('method'))
-                    if (this.get('action')) this._formEl.set('action', this.get('action'))
-                    el.appendChild(this._formEl);
+            _renderAccordionView:function() {
+                Y.log(this + '._renderAccordionView() - AccordionForm', 'warn', 'inputEx')
+                var accordion = new YAHOO.widget.AccordionView(this.getID() + '-list',
+                {collapsible: false,width: '600px',expandItem: 0,animationSpeed: '0.3',animate: true,effect: YAHOO.util.Easing.easeBothStrong});
+            },
 
-                    this._renderFields(this._formEl);
-
-                    if (this.get('disabled')) this.disable();
-
-                    Y.log(this + '.render() - Form - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    this.fire(EV_RENDER, null, this.get('el'));
-                    this._rendered = true;
-
-                } catch(e) {
-                    Y.log(this + '.render() Form -  - e: ' + e, 'error', 'inputEx');
-                }
-            }     ,
             _renderFields: function(parentEl, inputFields) {
                 parentEl = parentEl ? parentEl : this.get('el')
 
                 var fieldsCfg = (inputFields) ? inputFields : this.get('fields');
                 if (fieldsCfg && fieldsCfg.length > 0) {
                     // Iterate this.createInput on input fields
+                    var list = Y.Node.create('<ul id="' + this.getID() + '-list"></ul>');
                     for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
-                        fieldCfg.inputParams = Y.merge({parentEl:parentEl}, fieldCfg.inputParams)
+                        var li;
+                        if (fieldCfg.type && fieldCfg.type === 'group') {
+                            li = Y.Node.create('<li></li>')
+                            fieldCfg.inputParams = Y.merge({parentEl:li}, fieldCfg.inputParams)
+                            list.appendChild(li)
+                        } else {
+                            fieldCfg.inputParams = Y.merge({parentEl:parentEl}, fieldCfg.inputParams)
+                        }
                         var field = this._renderField(fieldCfg); // Render the field
+                        if (fieldCfg.type && fieldCfg.type === 'group') {
+                            list.appendChild(li)
+                        }
                     }
+
+                    // TODO add condition
+                    parentEl.appendChild(list)
                 }
 
-                Y.log(this + '._renderFields() - Form - rendered - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'debug', 'inputEx')
+                Y.log(this + '._renderFields() - AccordionForm - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'warn', 'inputEx')
+            },
+
+            /**
+             * Instanciate one field given its parameters, type or fieldClass
+             * @param {Object} fieldOptions The field properties as required bu inputEx.buildField
+             */
+            _renderField: function(fieldOptions) {
+                var field = AccordionForm.superclass._renderField.apply(this, arguments);
+
+                /**
+                 * Some DOM transformation works are done to generate an AccordionView
+                 */
+                if (field instanceof Y.inputEx.Group) {
+                    Y.log(this + '._renderField() - AccordionForm - rendered - field: ' + field, 'warn', 'inputEx');
+                    var legend = field.get('el').query('legend')
+                    var legendText = legend.get('text')
+                    legend.get('parentNode').removeChild(legend)
+                    var h3 = Y.Node.create('<h3>' + legendText + '</h3>')
+                    var li = field.get('parentEl')
+                    li.insertBefore(h3, li.get('firstChild'))
+                }
+                return field;
             }
+
 
         });
 
@@ -105,6 +93,6 @@
         Y.inputEx.AccordionForm = AccordionForm;
         Y.inputEx.registerType("accordionform", AccordionForm);
 
-    }, '3.0.0pr1', {requires:['form']});
+    }, '3.0.0pr1', {requires:['form','accordionform-accordionview']});
 
 })();

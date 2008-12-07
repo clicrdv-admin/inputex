@@ -13,12 +13,12 @@
 
 <script type="text/javascript">
     var form;
-    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('form', 'stringfield', 'urlfield', 'emailfield', 'checkbox', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('accordionform', 'stringfield', 'urlfield', 'emailfield', 'checkbox', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
         try {
             Y.log('quick test begin')
             //Y.inputEx.spacerUrl = "../images/space.gif";
 
-           form = new Y.inputEx.Form({
+           form = new Y.inputEx.AccordionForm({
                method:'get', action:'/test',
                 fields: [
                     {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>inputEx-yui3 - Accordion Form Usage</title>
+
+    <!-- YUI CSS -->
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/reset-fonts/reset-fonts.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/assets/skins/sam/skin.css">
+
+    <script type="text/javascript" src="../js/inputex-loader.js"></script>
+    <script type="text/javascript" src="../lib/tabifier/tabifier.js"></script>
+
+    <!-- Demo CSS -->
+    <link rel="stylesheet" type="text/css" href="css/demo.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dpSyntaxHighlighter.css">
+    <style>
+        div.inputEx-Form-Mask div {
+            background-color: #DDDDFF;
+        }
+
+        div#container2 {
+            width: 400px
+        }
+    </style>
+    <style type="text/css">
+
+	/* specific css for this demo page */
+
+	body {
+		font-size: 0.8em;
+	}
+
+	#wrapper {
+		margin: 20px;
+	}
+
+	.padded {
+		padding: 10px;
+		clear: both;
+	}
+
+	.padded ul li {
+		list-style: inside square;
+	}
+
+	.block {
+		display: block;
+	}
+
+	ul.info li {
+		list-style: inside square;
+	}
+	ul.info {
+		margin-bottom: 1em;
+	}
+	p.code {
+		background: #000;
+		color: #cfc;
+		padding: 20px;
+		font-family: Courier;
+		font-size: 1.2em;
+		margin-left: 4em;
+	}
+
+	h1 {
+		font-size: 2em;
+		font-weight: bold;
+		margin-bottom: 1em;
+	}
+
+	h3 {
+		font-size: 1.6em;
+		font-weight: bold;
+		margin-bottom: 1em;
+	}
+
+	li h3 {
+		display: inline;
+	}
+
+	p {
+		margin-bottom: 1em;
+	}
+	strong {
+		font-weight: bold;
+	}
+	ol.code { font-size: 1.2em;border: 1px solid #ccc; padding: 5px; margin: 0 0 1em 4em; }
+	ol.code code { display: block; padding: 3px; margin-bottom: 0; }
+	.code li { background: #ddd; border: 1px solid #ccc; margin: 0 0 2px 2.2em; list-style-type: decimal-leading-zero; }
+	.indent1 { padding-left: 1em; }
+	.indent2 { padding-left: 2em; }
+	.indent3 { padding-left: 3em; }
+
+	.clearfix:after {
+	    content: ".";
+	    display: block;
+	    clear: both;
+	    visibility: hidden;
+	    line-height: 0;
+	    height: 0;
+	}
+
+	.clearfix {
+	    display: inline-block;
+	}
+
+	html[xmlns] .clearfix {
+	    display: block;
+	}
+
+	* html .clearfix {
+	    height: 1%;
+	}
+
+	fieldset {
+		height: 200px;
+	}
+
+	fieldset label {
+	display: block;
+	width: 100px;
+	text-align: right;
+	font-weight: bold;
+	float: left;
+	margin-right: 10px;
+	}
+
+	fieldset input {
+		width: 200px;
+	}
+	fieldset .checkbox, fieldset .submit {
+		width: auto;
+	}
+	fieldset legend {
+		padding: 10px;
+		font-style: italic;
+		display:block;
+	}
+
+	pre {
+		padding: 10px;
+		font-size: 1.2em;
+	}
+
+	</style> 
+</head>
+
+<body class="yui-skin-sam">
+
+
+<p class='demoTitle'>inputEx - Accordion Form Usage</p>
+
+
+<!-- Example 1 -->
+<div class='exampleDiv'>
+
+    <p class="title">Accordion Form creation</p>
+
+    <p>Use the following code to create a Accordion inputEx Form, based on
+        <a href="http://www.i-marco.nl/weblog/yui-accordion/">YUI AccordionView</a></p>
+
+    <div class='demoContainer' id='container1'></div>
+
+    <div class='codeContainer'>
+        <textarea name="code" class="JScript">
+            new YAHOO.inputEx.Form( {
+            fields: [
+            {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
+            {inputParams: {label: 'Firstname', name: 'firstname', required: true, value:'Jacques' } },
+            {inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
+            {type:'email', inputParams: {label: 'Email', name: 'email'}},
+            {type:'url', inputParams: {label: 'Website',name:'website'}}
+            ],
+            buttons: [{type: 'submit', value: 'Change'}],
+            parentEl: 'container1'
+            });
+        </textarea>
+    </div>
+
+</div>
+
+<script>
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('accordionform', 'stringfield', 'urlfield', 'emailfield', 'checkbox', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
+        try {
+            Y.log('quick test begin')
+            Y.inputEx.spacerUrl = "../images/space.gif";
+
+            form = new Y.inputEx.AccordionForm({
+                method:'get', action:'/test',
+                fields: [
+                    {type:'group',inputParams:{legend:'group 1',name:'group1',fields:[
+                        {type: 'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
+                        {inputParams: {label: 'Firstname', name: 'firstname', required: true, value:'Jacques' } },
+                        {inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } }
+                    ]}},
+                    { type:'group',inputParams:{legend:'group 2',name:'group2',fields:[
+                        {type:'email', inputParams: {label: 'Email', name: 'email',showMsg:true,validator:[{type:'meta',message:'Please enter a valid email address'},{required:true}]}},
+                        {type:'url', inputParams: {label: 'Website',name:'website'}}
+                    ]}}
+                ],
+                buttons: [{type: 'submit', value: 'Change'}],
+                el: 'container1'
+            });
+            form.render()
+
+        } catch(e) {
+            Y.log(e, 'error', 'inputEx');
+        }
+    });
+</script>
+
+<script src="js/dpSyntaxHighlighter.js"></script>
+<script language="javascript">
+    dp.SyntaxHighlighter.HighlightAll('code');
+</script>
+
+</body>
+</html>
