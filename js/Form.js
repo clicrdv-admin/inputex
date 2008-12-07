@@ -45,7 +45,7 @@
              * @type String
              */
             elClass:{
-                value:'inputEx-Form' //,writeOnce:true cannot use writeOnce 
+                value:'inputEx-Form inputEx-Group' //,writeOnce:true cannot use writeOnce 
             },
 
             /**
