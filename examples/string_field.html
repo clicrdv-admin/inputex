@@ -294,7 +294,7 @@
 </div>
 
 <script>
-    inputEx.YUI().use('stringfield', function(Y) {
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('stringfield', function(Y) {
         //Y.on('event:ready', function() {
         // Example 1
         new Y.inputEx.StringField({parentEl:'container1'}).render();

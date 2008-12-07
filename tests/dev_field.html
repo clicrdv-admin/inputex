@@ -14,7 +14,7 @@
 
 <script type="text/javascript">
     var field;
-    inputEx.YUI().use('stringfield', 'group', 'json', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('stringfield', 'json', 'selectfield', function(Y) { // 'json' is required for the stringify on this method
         try {
             //Y.get('#test').set('innerHTML', 'loaded'); //require 'node'
             //            var global = new Y.inputEx.Global()
@@ -62,8 +62,10 @@
     });
 </script>
 <div style="position:absolute; right:0; top:0; margin:10px">
-    <a href="javascript:(function(){field.set('value','on')})()">set to 'on'</a> | <a
-        href="javascript:alert(field.get('inputEl').get('value'));">inputEl.value</a>
+    <a href="javascript:(function(){field.disable()})()">disable</a> |
+    <a href="javascript:(function(){field.enable()})()">enable</a> |
+    <a href="javascript:(function(){field.set('value', 'FR')})()">set('value', 'FR')</a> |
+    <a href="javascript:alert(field.get('inputEl').get('value'));">inputEl.value</a>
 </div>
 <!--
 <p><a href="javascript:

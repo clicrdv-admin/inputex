@@ -40,34 +40,34 @@ if (typeof(inputEx) === 'undefined') {
             return {base:"http://yui.yahooapis.com/3.0.0pr1/build/", timeout: 10000,
                 modules: {
                     'inputex-css':{
-                        fullpath: base + "css/inputEx.css", type:'css'
+                        fullpath: base + 'css/inputEx.css', type:'css'
                     },
                     'inputex':{
-                        fullpath:base + "js/inputex.js", type:'js', requires:['inputex-css']
+                        fullpath:base + 'js/inputex.js', type:'js', requires:['inputex-css']
                     },
                     'field': {
-                        fullpath: base + "js/Field.js", type:'js', requires:['inputex','inputex-css','base','node','json']
+                        fullpath: base + 'js/Field.js', type:'js', requires:['inputex','inputex-css','base','node','json']
                     },
                     'stringfield': {
-                        fullpath: base + "js/fields/StringField.js", type:'js', requires:['field']
+                        fullpath: base + 'js/fields/StringField.js', type:'js', requires:['field']
                     },
                     'urlfield': {
-                        fullpath: base + "js/fields/UrlField.js", type:'js', requires:['stringfield']
+                        fullpath: base + 'js/fields/UrlField.js', type:'js', requires:['stringfield']
                     },
                     'emailfield': {
-                        fullpath: base + "js/fields/EmailField.js", type:'js', requires:['stringfield']
+                        fullpath: base + 'js/fields/EmailField.js', type:'js', requires:['stringfield']
                     },
                     'checkbox': {
-                        fullpath: base + "js/fields/CheckBox.js", type:'js', requires:['field']
+                        fullpath: base + 'js/fields/CheckBox.js', type:'js', requires:['field']
                     },
                     'selectfield': {
-                        fullpath: base + "js/fields/SelectField.js", type:'js', requires:['field']
+                        fullpath: base + 'js/fields/SelectField.js', type:'js', requires:['field']
                     },
                     'group':{
-                        fullpath: '../js/Group.js', type:'js', requires:['field']
+                        fullpath: base + 'js/Group.js', type:'js', requires:['field']
                     },
                     'form':{
-                        fullpath: '../js/Form.js', type:'js', requires:['group']
+                        fullpath: base + 'js/Form.js', type:'js', requires:['group']
                     }
                 }}
         }
