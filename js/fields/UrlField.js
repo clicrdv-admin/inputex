@@ -112,7 +112,7 @@
 
         Y.inputEx.registerType("url", UrlField);
 
-    }, '3.0.0pr1', {requires:['stringfield']});
+    }, '3.0.0pr2', {requires:['stringfield']});
 
 })();
 

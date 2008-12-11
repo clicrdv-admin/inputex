@@ -121,5 +121,5 @@
         Y.inputEx.SelectField = SelectField;
         Y.inputEx.registerType("select", SelectField);
 
-    }, '3.0.0pr1', {requires:['field']});
+    }, '3.0.0pr2', {requires:['field']});
 })();

@@ -30,15 +30,14 @@
             initializer : function(cfg) {
                 Y.log(this + '.initializer() - AccordionForm -  initialized', 'debug', 'inputEx');
             },
-
+/*
             render:function() {
                 AccordionForm.superclass.render.apply(this, arguments);
-                this._renderAccordionView();
-            },
+            },*/
 
             _renderAccordionView:function() {
                 //Y.log(this + '._renderAccordionView() - AccordionForm', 'warn', 'inputEx')
-                var accordion = new YAHOO.widget.AccordionView(this.getID() + '-list',this.get('accordion'));
+                var accordion = new YAHOO.widget.AccordionView(this.getID() + '-list', this.get('accordion'));
             },
 
             _renderFields: function(parentEl, inputFields) {
@@ -67,6 +66,9 @@
                     parentEl.appendChild(list)
                 }
 
+                this._renderAccordionView();
+                //document.getElementById('email-field').onblur = function() {alert('bing');};
+                //Y.Node.get('#email-field').on('blur', function() {alert('test')})
                 //Y.log(this + '._renderFields() - AccordionForm - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'warn', 'inputEx')
             },
 
@@ -99,6 +101,6 @@
         Y.inputEx.AccordionForm = AccordionForm;
         Y.inputEx.registerType("accordionform", AccordionForm);
 
-    }, '3.0.0pr1', {requires:['form','accordionform-accordionview']});
+    }, '3.0.0pr2', {requires:['form','accordionform-accordionview']});
 
 })();

@@ -7,7 +7,7 @@ if (typeof(inputEx) === 'undefined') {
         //TODO enhance it to allow users to override YUI configurations
         YUI : function(cfg) {
             if (typeof(YUI) === 'undefined' && !inputEx.loaded) {
-                var w = window.d = document,l = d.location,ld = 'yui.yahooapis.com/3.0.0pr1/build/yui/yui-min.js';
+                var w = window.d = document,l = d.location,ld = 'yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js';
                 var _s = d.createElement('script');
                 //_s.src = 'http' + (l.location == 'https' ? 's' : '') + '://' + ld;
                 _s.src = (cfg && cfg.base) ? cfg.base + 'yui/yui-min.js' : 'http://' + ld;
@@ -37,7 +37,7 @@ if (typeof(inputEx) === 'undefined') {
         getProfile:function(base) {
             base = (base) ? base : 'http://inputex.googlecode.com/svn/branches/inputex-yui3/'
             //base = (base)?base:'http://inputex.googlecode.com/svn/release/inputEx-0.yui3' //TODO change this
-            return {base:"http://yui.yahooapis.com/3.0.0pr1/build/", timeout: 10000,
+            return {base:"http://yui.yahooapis.com/3.0.0pr2/build/", timeout: 10000,
                 modules: {
                     'inputex-css':{
                         fullpath: base + 'css/inputEx.css', type:'css'

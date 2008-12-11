@@ -256,5 +256,5 @@
                     }
                 }
 
-    }, '3.0.0pr1', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
+    }, '3.0.0pr2', {skinnable:true}); //TODO don't know what the 'use' exactly do //use:['field','stringfield'],
 })());

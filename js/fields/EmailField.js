@@ -66,6 +66,6 @@
         Y.inputEx.EmailField = EmailField;
         Y.inputEx.registerType("email", EmailField);
 
-    }, '3.0.0pr1', {requires:['stringfield']});
+    }, '3.0.0pr2', {requires:['stringfield']});
 
 })();

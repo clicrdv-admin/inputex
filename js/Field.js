@@ -714,10 +714,7 @@
 
         Y.namespace('inputEx');
         Y.inputEx.Field = Field;
-    }, '3.0.0pr1', {requires:['inputex','base', 'node','json']});
-    //}, '3.0.0pr1', {requires:['base', 'io', 'node', 'json','queue']});
-
-
+    }, '3.0.0pr2', {requires:['inputex','base', 'node','json']});
 })();
 
 

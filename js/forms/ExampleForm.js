@@ -2,7 +2,7 @@
  * refer to: http://code.google.com/p/inputex/issues/detail?id=99
  *
  * Usage:
- * <script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr1/build/yui/yui-min.js"></script>
+ * <script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js"></script>
  * <script type="text/javascript" src="inputeg.js"></script>
  *
  * It assumes the followng:

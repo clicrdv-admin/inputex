@@ -176,7 +176,7 @@
         Y.inputEx.StringField = StringField;
         Y.inputEx.registerType("string", StringField);
 
-    }, '3.0.0pr1', {requires:['field']});
+    }, '3.0.0pr2', {requires:['field']});
 
-    // YUI.add('inputex', function(Y) {}, '3.0.0pr1', {use:['inputex','field'],skinnable:true})
+    // YUI.add('inputex', function(Y) {}, '3.0.0pr2', {use:['inputex','field'],skinnable:true})
 })();

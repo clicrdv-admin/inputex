@@ -116,7 +116,7 @@
         Y.inputEx.Form = Form;
         Y.inputEx.registerType("form", Form);
 
-    }, '3.0.0pr1', {requires:['group']});
+    }, '3.0.0pr2', {requires:['group']});
 
 })();
 

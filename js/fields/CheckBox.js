@@ -213,5 +213,5 @@
         Y.inputEx.CheckBox = CheckBox;
         Y.inputEx.registerType("boolean", CheckBox);
 
-    }, '3.0.0pr1', {requires:['field']});
+    }, '3.0.0pr2', {requires:['field']});
 })();
