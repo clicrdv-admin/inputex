@@ -59,6 +59,8 @@ log changes to annouce to users about the update
 
 10. behavior of checkbox is significantly changed. @see the docs
 
+
+
 To developer
 1. typeInvite
     - updateTypeInvite is now triggered by custom event. this changes reduces coupling
@@ -76,4 +78,5 @@ To developer
 2. getState()
     - it doesn't perform validation now, but return a state base on the last validation result
 
-    
+
+3. please create test cases, check the /tests/*Tests.html

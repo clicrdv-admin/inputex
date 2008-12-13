@@ -296,7 +296,7 @@
 
         };
 
-        Y.extend(Field, Y.Base, {
+        Y.extend(Field, Y.Widget, {
             /**
              * The Node of the Input Wrapper. by default, it's a <div>. Notice that an inputElement may have more than
              * one wrapper. e.g. for StringField, it has two wrappers. This el reference to the outer wrapper. The
@@ -714,7 +714,7 @@
 
         Y.namespace('inputEx');
         Y.inputEx.Field = Field;
-    }, '3.0.0pr2', {requires:['inputex','base', 'node','json']});
+    }, '3.0.0pr2', {requires:['inputex','widget', 'node','json']});
 })();
 
 

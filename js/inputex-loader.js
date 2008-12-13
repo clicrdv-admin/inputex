@@ -50,7 +50,7 @@ if (typeof(inputEx) === 'undefined') {
                         fullpath:base + 'js/inputex.js', type:'js', requires:['inputex-css']
                     },
                     'field': {
-                        fullpath: base + 'js/Field.js', type:'js', requires:['inputex','inputex-css','base','node','json']
+                        fullpath: base + 'js/Field.js', type:'js', requires:['inputex','inputex-css','base','widget','json']
                     },
                     'stringfield': {
                         fullpath: base + 'js/fields/StringField.js', type:'js', requires:['field']
