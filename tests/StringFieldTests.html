@@ -27,7 +27,7 @@
                 Y.Assert.isTrue(typeof(Y.inputEx.StringField) !== 'undefined')
             },
 
-            testFieldConstructor:function() {
+            testStringFieldConstructor:function() {
                 // 1. construct with parentEl
                 Y.get('#test').appendChild(Y.Node.create('<div id="test01"></div>'))
                 var test01 = new Y.inputEx.StringField({parentEl:'test01'})
@@ -37,7 +37,7 @@
                 //Y.get('#test').contains(test01.get('boundingBox'))
             },
 
-            testFieldSimpleRender:function() {
+            testStringFieldSimpleRender:function() {
                 var testEl = Y.Node.create('<div id="test02"></div>')
                 Y.get('#test').appendChild(testEl)
 
