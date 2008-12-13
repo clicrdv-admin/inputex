@@ -26,8 +26,12 @@ if (typeof(inputEx) === 'undefined') {
                         window.setTimeout(delegate, 500)
                     } else {
                         var merged = inputEx.getProfile(cfg ? cfg.inputExBase : null)
-                        YUI().use(function(Y) { merged = Y.merge(merged, cfg)})
-                        YUI.use.apply(YUI(merged), arguments);
+                        YUI().use(function(Y) {
+                            merged = Y.merge(merged, cfg)
+                        })
+                        var yui = YUI(merged)
+                        yui.log('created YUI instance, inputExBase: ' + merged.inputExBase + ', base: ' + merged.base, 'debug', 'inputEx')
+                        YUI.use.apply(yui, arguments);
                     }
                 }
             }
