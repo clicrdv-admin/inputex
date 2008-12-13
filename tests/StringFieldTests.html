@@ -13,7 +13,7 @@
     inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'stringfield', function(Y) {
         Y.namespace('inputEx.tests')
         Y.inputEx.tests.StringFieldTests = new Y.Test.Case({
-            name: 'Simple Field Test',
+            name: 'String Field Tests',
             setUp:function() {
                 this.data = {}
                 Y.get('#test').set('innerHTML', '')
@@ -24,7 +24,7 @@
 
             testLoader:function() {
                 Y.Assert.isTrue(typeof(Y.inputEx) !== 'undefined')
-                Y.Assert.isTrue(typeof(Y.inputEx.Field) !== 'undefined')
+                Y.Assert.isTrue(typeof(Y.inputEx.StringField) !== 'undefined')
             },
 
             testFieldConstructor:function() {
@@ -32,7 +32,7 @@
                 Y.get('#test').appendChild(Y.Node.create('<div id="test01"></div>'))
                 var test01 = new Y.inputEx.StringField({parentEl:'test01'})
                 Y.Assert.isNotUndefined(test01)
-                Y.Assert.isInstanceOf(Y.inputEx.StringField, test01, 'The field is not a Y.inputEx.Field')
+                Y.Assert.isInstanceOf(Y.inputEx.StringField, test01, 'The field is not a Y.inputEx.StringField')
                 //Y.Assert.isObject(test01.get('boundingBox'))
                 //Y.get('#test').contains(test01.get('boundingBox'))
             },

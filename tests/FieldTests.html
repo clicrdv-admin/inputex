@@ -13,13 +13,14 @@
     inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'field', function(Y) {
         Y.namespace('inputEx.tests')
         Y.inputEx.tests.FieldTests = new Y.Test.Case({
-            name: 'Simple Field Test',
+            name: 'Field Tests',
             setUp:function() {
-                this.data = {
-                    testdata: 'testdata1'
-                }
+                this.data = {}
+                Y.get('#test').set('innerHTML', '')
             },
-            tearDown:function() { delete this.data;},
+            tearDown:function() {
+                delete this.data;
+            },
 
             testLoader:function() {
                 Y.Assert.isTrue(typeof(Y.inputEx) !== 'undefined')
@@ -32,10 +33,6 @@
                 var test01 = new Y.inputEx.Field({parentEl:'test01'})
                 Y.Assert.isNotUndefined(test01)
                 Y.Assert.isInstanceOf(Y.inputEx.Field, test01, 'The field is not a Y.inputEx.Field')
-                Y.Assert.isObject(test01.get('boundingBox'))
-                Y.get('#test').contains(test01.get('boundingBox'))
-                delete test01
-                Y.get('#test').removeChild(test01.get('boundingBox'))
             }
         })
 
