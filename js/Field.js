@@ -329,11 +329,11 @@
                  * and not to return false in invalid case to avoid skipping the next event.
                  */
                 this.on(EV_CHANGE, Y.bind(function() { this.validate(); }, this), this);
-                this.on(EV_CHANGE, this.syncUI, this);
-                this.on(EV_RENDER, Y.bind(function() {
-                    this.validate();
-                    this.syncUI();
-                }, this), this)
+                //this.on(EV_CHANGE, this.syncUI, this);
+                /*this.on(EV_RENDER, Y.bind(function() {
+                 this.validate();
+                 this.syncUI();
+                 }, this), this)*/
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
@@ -370,7 +370,7 @@
                     el.appendChild(floatBreaker)
 
                     Y.log(this + '.renderUI() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
+                    //this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
                     return this;
                 } catch(e) {
                     Y.log(this + '.renderUI() - Field - ' + e, 'error', 'inputEx');
@@ -468,8 +468,9 @@
             },
 
             focus:function() {
-                //Field.superclass.focus.apply(this, arguments);
-                this._getInputEl().focus();
+                Field.superclass.focus.apply(this, arguments);
+                var inputEl = this._getInputEl()
+                if (inputEl) inputEl.focus();
                 return this;
             },
 

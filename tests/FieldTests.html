@@ -38,26 +38,21 @@
             /**
              * This test is to ensure widget behavior is correctly inherited
              */
-            testWidgetAttributes:function(){
+            testWidgetAttributes:function() {
                 var testEl = Y.Node.create('<div id="test_widgetAttributes"></div>')
                 Y.get('#test').appendChild(testEl)
                 var field = new Y.inputEx.Field({el:testEl})
 
+                // 'rendered'
                 Y.Assert.isFalse(field.get('rendered'))
-                //field.render();
-                //Y.Assert.isTrue(field.get('rendered'))
-            }
-            /*,
+                field.render();
+                Y.Assert.isTrue(field.get('rendered'))
 
-            testFocus:function() {
-                var testEl = Y.Node.create('<div id="test_focus"></div>')
-                Y.get('#test').appendChild(testEl)
-                var field = new Y.inputEx.Field({el:testEl})
-
+                // 'hasFocus'
                 Y.Assert.isFalse(field.get('hasFocus'))
                 field.focus();
                 Y.Assert.isTrue(field.get('hasFocus'))
-            }*/
+            }
         })
 
 
