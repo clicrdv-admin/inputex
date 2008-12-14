@@ -303,7 +303,7 @@
              * inner wrapper is not accessible by Field. This element is created by Field on render() and is accessible
              * in renderComponent()
              *
-             * //TODO rename it ti _inputBox or inputElBox 
+             * //TODO rename it ti _inputBox or inputElBox
              */
             _inputWrapperEl:null,
 
@@ -329,10 +329,10 @@
                  * and not to return false in invalid case to avoid skipping the next event.
                  */
                 this.on(EV_CHANGE, Y.bind(function() { this.validate(); }, this), this);
-                this.on(EV_CHANGE, this._setClassFromState, this);
+                this.on(EV_CHANGE, this.syncUI, this);
                 this.on(EV_RENDER, Y.bind(function() {
                     this.validate();
-                    this._setClassFromState();
+                    this.syncUI();
                 }, this), this)
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
@@ -393,6 +393,40 @@
                     Y.log(this + '.bindUI() - Field - no available field', 'warn', 'inputEx');
                 }
                 this._eventInitialized = true;
+            },
+
+            /**
+             * Formerly named setClassFromState
+             *
+             * Set the styles for valid/invalide state. This is called in upon the following events:
+             *  - in the last stage of rendering
+             *  - when the field value is updated
+             *  - onblur
+             *
+             */
+            syncUI:function() {
+                Y.log(this + '.syncUI() - Field - begin', 'debug', 'inputEx');
+                // remove previous class
+                if (this.previousState) {
+                    // remove invalid className for both required and invalid fields
+                    var className = 'inputEx-' + ((this.previousState == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : this.previousState)
+                    this.get('el').removeClass(className);
+                }
+
+                // add new class
+                var state = this.getState();
+                if (!(state == Y.inputEx.stateEmpty && this.get('el').hasClass('inputEx-focused') )) {
+                    // add invalid className for both required and invalid fields
+                    var className = 'inputEx-' + ((state == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : state)
+                    this.get('el').addClass(className);
+                }
+
+                if (this.get('showMsg')) {
+                    this.displayMessage(this.getStateString(state));
+                }
+
+                Y.log(this + '.syncUI() - Field - previousState: ' + this.previousState + ', state: ' + state, 'debug', 'inputEx');
+                this.previousState = state;
             },
 
             displayMessage:function(msg) {
@@ -462,7 +496,7 @@
                 this.get('el').removeClass('inputEx-focused')
                 if (!this._validated) {// for the case that the field is focused then blurred without onchange
                     this.validate();
-                    this._setClassFromState();
+                    this.syncUI();
                 }
 
                 if (this.get('value') !== this._getInputEl().get('value') && this._inputElToValueUpdateEnabled) {
@@ -476,40 +510,6 @@
                 var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
                 Y.log(this + '._inputElOnChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
                 if (oldVal !== newVal) { this.set('value', newVal)}
-            },
-
-            /**
-             * Formerly named setClassFromState
-             *
-             * Set the styles for valid/invalide state. This is called in upon the following events:
-             *  - in the last stage of rendering
-             *  - when the field value is updated
-             *  - onblur
-             *
-             */
-            _setClassFromState:function() {
-                Y.log(this + '._setClassFromState() - Field - begin', 'debug', 'inputEx');
-                // remove previous class
-                if (this.previousState) {
-                    // remove invalid className for both required and invalid fields
-                    var className = 'inputEx-' + ((this.previousState == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : this.previousState)
-                    this.get('el').removeClass(className);
-                }
-
-                // add new class
-                var state = this.getState();
-                if (!(state == Y.inputEx.stateEmpty && this.get('el').hasClass('inputEx-focused') )) {
-                    // add invalid className for both required and invalid fields
-                    var className = 'inputEx-' + ((state == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : state)
-                    this.get('el').addClass(className);
-                }
-
-                if (this.get('showMsg')) {
-                    this.displayMessage(this.getStateString(state));
-                }
-
-                Y.log(this + '._setClassFromState() - Field - previousState: ' + this.previousState + ', state: ' + state, 'debug', 'inputEx');
-                this.previousState = state;
             },
 
             /**
