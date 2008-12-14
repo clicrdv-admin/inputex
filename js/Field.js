@@ -179,7 +179,7 @@
                     if (!Y.Lang.isUndefined(this.get('value'))) {
                         Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     }
-                    if (this._rendered) this._updateInputEl(v); // ensure the inputEl is in sync
+                    if (this.get('rendered')) this._updateInputEl(v); // ensure the inputEl is in sync
                     this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return v;
                 },
@@ -303,7 +303,7 @@
              * inner wrapper is not accessible by Field. This element is created by Field on render() and is accessible
              * in renderComponent()
              *
-             * //TODO review the name
+             * //TODO rename it ti _inputBox or inputElBox 
              */
             _inputWrapperEl:null,
 
@@ -313,7 +313,6 @@
             _inputEl:null, //reference to the Field node
 
             _eventInitialized:false,
-            _rendered:false, //TODO state, review this
             _previousState:null,
             /**
              * _state.validated - indicate the field has been validated. it doesn't mean it is valid.
@@ -370,11 +369,8 @@
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
 
-                    //if (!this._eventInitialized) { this._initEvents();}
-
                     Y.log(this + '.renderUI() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    //this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
-                    this._rendered = true;
+                    this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
                     return this;
                 } catch(e) {
                     Y.log(this + '.renderUI() - Field - ' + e, 'error', 'inputEx');
@@ -438,6 +434,7 @@
             },
 
             focus:function() {
+                //Field.superclass.focus.apply(this, arguments);
                 this._getInputEl().focus();
                 return this;
             },
@@ -482,7 +479,10 @@
             },
 
             /**
+             * Formerly named setClassFromState
+             *
              * Set the styles for valid/invalide state. This is called in upon the following events:
+             *  - in the last stage of rendering
              *  - when the field value is updated
              *  - onblur
              *

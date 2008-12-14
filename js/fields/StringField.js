@@ -79,18 +79,18 @@
                     Y.log(this + '.renderComponent() - StringField - e: ' + e, 'error', 'inputEx');
                 }
             },
-
+/*
             _initEvents:function() {
                 StringField.superclass._initEvents.apply(this, arguments);
                 //var el = this.get('el'), id = this.getID(), field = el.query('#' + id + '-field')
 
-                /*if (Y.UA.ie) { // refer to inputEx-95
+                *//*if (Y.UA.ie) { // refer to inputEx-95
                  new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
                  field.blur();
                  field.focus();
                  }}).enable()
-                 }*/
-            },
+                 }*//*
+            },*/
 
             validate:function() {
                 if (this._typeInviteOn) {

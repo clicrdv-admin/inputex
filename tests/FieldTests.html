@@ -33,12 +33,36 @@
                 var test01 = new Y.inputEx.Field({parentEl:'test01'})
                 Y.Assert.isNotUndefined(test01)
                 Y.Assert.isInstanceOf(Y.inputEx.Field, test01, 'The field is not a Y.inputEx.Field')
+            },
+
+            /**
+             * This test is to ensure widget behavior is correctly inherited
+             */
+            testWidgetAttributes:function(){
+                var testEl = Y.Node.create('<div id="test_widgetAttributes"></div>')
+                Y.get('#test').appendChild(testEl)
+                var field = new Y.inputEx.Field({el:testEl})
+
+                Y.Assert.isFalse(field.get('rendered'))
+                //field.render();
+                //Y.Assert.isTrue(field.get('rendered'))
             }
+            /*,
+
+            testFocus:function() {
+                var testEl = Y.Node.create('<div id="test_focus"></div>')
+                Y.get('#test').appendChild(testEl)
+                var field = new Y.inputEx.Field({el:testEl})
+
+                Y.Assert.isFalse(field.get('hasFocus'))
+                field.focus();
+                Y.Assert.isTrue(field.get('hasFocus'))
+            }*/
         })
 
 
         //TODO: Y.Console{width:'600px'} won't work, simplify the following once the console height and width have been fixed
-        var console = new Y.Console()
+        var console = new Y.Console({defaultSource:'TestRunner'})
         console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
         console.render()
         console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
