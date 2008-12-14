@@ -9,9 +9,9 @@
 </head>
 
 <body>
-
-<p class='demoTitle'>inputEx - SelectField Usage</p>
-
+<p class='demoTitle'>
+    <script>document.write(document.title)</script>
+</p>
 
 <!-- Example 1 -->
 <div class='exampleDiv'>
@@ -24,8 +24,8 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new inputEx.SelectField({name: 'country', selectValues: ['United States of America','France'], parentEl:
-            'container1'});
+            new Y.inputEx.SelectField({name: 'country', selectValues: ['United States of
+            America','France']}).render('#container1');
         </textarea>
     </div>
 
@@ -43,39 +43,51 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            var el = YAHOO.util.Dom.get('container2');
-            var field = new YAHOO.inputEx.SelectField({name: 'country', selectValues: ['United States of
-            America','France'], parentEl: el});
-            var logDiv = YAHOO.inputEx.cn('div', null, null, "Log :<br/>");
-            el.appendChild(logDiv);
-            field.updatedEvt.subscribe(function(e,params) {
-            var value = params[0];
-            logDiv.innerHTML += "Updated at "+(new Date())+" with value "+value+"<br/>";
+            var el = Y.Node.get('#container2');
+            var field = new Y.inputEx.SelectField({name: 'country', selectValues: ['United States of
+            America','France']});
+            field.render(el);
+
+            var button1 = Y.Node.create('
+            <button>SetValue with "United States of America"</button>
+            ')
+            var val = 'United States of America';
+            el.appendChild(button1);
+            button1.on("click", function() {
+            field.set('value',val);
+            val = (val == 'France') ? 'United States of America' : 'France';
+            button1.set('innerHTML', "SetValue with '" + val + "'")
             });
+
+            var logDiv = Y.Node.create('
+            <div>Log :<br/>')
+                el.appendChild(logDiv);
+                field.on('field:change', function(e, value) {
+                logDiv.set('innerHTML', logDiv.get('innerHTML') + "Updated at " + (new Date()) + " with value " + value
+                + "<br/>");
+                });
         </textarea>
     </div>
 
 </div>
 
 <script>
-
-    inputEx.YUI().use('selectfield', function(Y) {
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('selectfield', function(Y) {
         //Y.on('event:ready', function() {
 
         // Example 1
-        new Y.inputEx.SelectField({name: 'country', selectValues: ['United States of America','France'], parentEl: 'container1'}).render();
-
+        new Y.inputEx.SelectField({name: 'country', selectValues: ['United States of America','France']}).render('#container1');
 
         // Example 2
         var el = Y.Node.get('#container2');
-        var field = new Y.inputEx.SelectField({name: 'country', selectValues: ['United States of America','France'], parentEl: el});
-        field.render();
+        var field = new Y.inputEx.SelectField({name: 'country', selectValues: ['United States of America','France']});
+        field.render(el);
 
         var button1 = Y.Node.create('<button>SetValue with "United States of America"</button>')
         var val = 'United States of America';
         el.appendChild(button1);
         button1.on("click", function() {
-            field.set('value',val);
+            field.set('value', val);
             val = (val == 'France') ? 'United States of America' : 'France';
             button1.set('innerHTML', "SetValue with '" + val + "'")
         });

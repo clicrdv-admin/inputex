@@ -45,18 +45,18 @@
             _faviconTimer:null,
 
             initializer : function(cfg) {
-                this.on('field:change', this.updateFavicon, this)
+                this.on('field:change', this.syncUI, this)
                 Y.log(this + '.initializer() - UrlField - initialized', 'debug', 'inputEx');
             },
 
             /**
              * Adds a img tag before the field to display the favicon
              */
-            render:function() {
-                UrlField.superclass.render.call(this, arguments);
+            renderUI:function() {
+                UrlField.superclass.renderUI.call(this, arguments);
 
-                if (this.get('el').get('size') < 27)
-                    this.get('el').set('size', 27); //TODO why set to 27
+                if (this.get('contentBox').get('size') < 27)
+                    this.get('contentBox').set('size', 27); //TODO why set to 27
 
                 if (this.get('favicon')) {
                     this._faviconEl = Y.Node.create('<img src="' + Y.inputEx.spacerUrl + '" width="16" height="16"/>')
@@ -67,19 +67,22 @@
                     // Create the favicon image tag
                     this._inputWrapperEl.insertBefore(this._faviconEl, this._inputWrapperEl.get('firstChild'));
 
-                    this.get('el').removeClass('nofavicon'); //for use when favicon attribute is dynamically changed
+                    this.get('contentBox').removeClass('nofavicon'); //for use when favicon attribute is dynamically changed
 
-                    this.updateFavicon();
                 } else {
                     this._inputEl.addClass('nofavicon');
                 }
             },
 
-            updateFavicon: function() {
+            syncUI:function() {
+                UrlField.superclass.syncUI.apply(this, arguments);
+                this._updateFavicon();
+            },
+            _updateFavicon: function() {
                 if (!this.get('favicon') || !this._faviconEl) { return; }
 
                 var url = this._getInputEl().get('value')
-                var faviconUrl = (this._validated)? url.match(/https?:\/\/[^\/]*/)+'/favicon.ico' : Y.inputEx.spacerUrl
+                var faviconUrl = (this._validated) ? url.match(/https?:\/\/[^\/]*/) + '/favicon.ico' : Y.inputEx.spacerUrl
 
                 //Y.log(this + '.updateFavicon() - UrlField - _validated: ' + this._validated + ', url: ' + url + ', ', 'debug', 'inputEx')
                 if (this._validated && faviconUrl != this._faviconEl.get('src')) {
@@ -93,7 +96,7 @@
                     // Set the timer to launch displayFavicon in 1s
                     if (this._faviconTimer) { clearTimeout(this._faviconTimer); }
                     this._faviconTimer = Y.later(1000, this, this.displayFavicon)
-                    Y.log(this + '.updateFavicon() - updated favicon', 'debug', 'inputEx');
+                    Y.log(this + '._updateFavicon() - updated favicon', 'debug', 'inputEx');
                 }
             },
 

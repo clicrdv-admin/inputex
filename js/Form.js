@@ -72,9 +72,9 @@
                 Y.log(this + '.initializer() - Form -  initialized', 'debug', 'inputEx');
             },
 
-            render:function() {
+            renderUI:function() {
                 try {
-                    var el = this.get('el'), id = el.get('id');
+                    var el = this.get('contentBox'), id = el.get('id');
                     el.addClass(this.get('elClass'))
 
                     this._formEl = Y.Node.create('<form id="' + id + '-form"></form>')
@@ -87,8 +87,8 @@
 
                     if (this.get('disabled')) this.disable();
 
-                    Y.log(this + '.render() - Form - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    this.fire(EV_RENDER, null, this.get('el'));
+                    Y.log(this + '.render() - Form - rendered - el.innerHTML: ' + this.get('contentBox').get('innerHTML'), 'debug', 'inputEx')
+                    this.fire(EV_RENDER, null, this.get('contentBox'));
                     this._rendered = true;
 
                 } catch(e) {
@@ -96,7 +96,7 @@
                 }
             }     ,
             _renderFields: function(parentEl, inputFields) {
-                parentEl = parentEl ? parentEl : this.get('el')
+                parentEl = parentEl ? parentEl : this.get('contentBox')
 
                 var fieldsCfg = (inputFields) ? inputFields : this.get('fields');
                 if (fieldsCfg && fieldsCfg.length > 0) {

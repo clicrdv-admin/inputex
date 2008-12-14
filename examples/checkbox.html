@@ -9,9 +9,9 @@
 </head>
 
 <body>
-
-<p class='demoTitle'>inputEx - CheckBox Usage</p>
-
+<p class='demoTitle'>
+    <script>document.write(document.title)</script>
+</p>
 
 <!-- Example 1 -->
 <div class='exampleDiv'>
@@ -24,7 +24,7 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new Y.inputEx.CheckBox({parentEl: 'container1'}).render();
+            new Y.inputEx.CheckBox().render('#container1');
         </textarea>
     </div>
 
@@ -42,8 +42,7 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new Y.inputEx.CheckBox({label: 'Do you like inputEx ?', rightLabel: 'Check me !', parentEl: 'container2',
-            value: false}).render();
+            new Y.inputEx.CheckBox({label: 'Do you like inputEx ?', rightLabel: 'Check me !', value: false, description: 'Check this box if you like the inputEx demos'}).render('#container2');
         </textarea>
     </div>
 
@@ -62,12 +61,11 @@
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
             var exampleDiv = Y.get('#container3');
-            var field1 = new Y.inputEx.CheckBox({rightLabel: 'I return true/false', parentEl: exampleDiv});
-            field1.render();
-            var button = Y.Node.create('
-            <button>getValue()')
-                exampleDiv.appendChild(button);
-                button.on('click', function() { alert(field1.get('value')); })
+            var field1 = new Y.inputEx.CheckBox({rightLabel: 'I return true/false'});
+            field1.render(exampleDiv);
+            var button = Y.Node.create('<button>getValue()')
+            exampleDiv.appendChild(button);
+            button.on('click', function() { alert(field1.get('value')); })
         </textarea>
     </div>
 
@@ -86,13 +84,11 @@
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
             var exampleDiv = Y.get('#container4');
-            var field2 = new Y.inputEx.CheckBox({checkedValue:'Yes',uncheckedValue:'No', rightLabel: 'Do you agree ?',
-            parentEl: exampleDiv, value: 'No'});
-            field2.render();
-            var button = Y.Node.create('
-            <button>getValue()')
-                exampleDiv.appendChild(button);
-                button.on('click', function() { alert(field2.get('value')); })
+            var field2 = new Y.inputEx.CheckBox({checkedValue:'Yes',uncheckedValue:'No', rightLabel: 'Do you agree ?', value: 'No'});
+            field2.render(exampleDiv);
+            var button = Y.Node.create('<button>getValue()')
+            exampleDiv.appendChild(button);
+            button.on('click', function() { alert(field2.get('value')); })
         </textarea>
     </div>
 
@@ -110,25 +106,25 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript" cols="60" rows="1">
-        var el = Y.get('#container5');
-        var field = new Y.inputEx.CheckBox({parentEl: el });
-        field.render();
+            var el = Y.get('#container5');
+                    var field = new Y.inputEx.CheckBox();
+                    field.render(el);
 
-        var button1 = Y.Node.create('<button>SetValue with true</button>')
-        var bool = true;
-        el.appendChild(button1);
-        button1.on('click', function() {
-            field.set('value', bool)
-            bool = !bool;
-            button1.set('innerHTML', "SetValue with " + bool);
-        })
+                    var button1 = Y.Node.create('<button>SetValue with true</button>')
+                    var bool = true;
+                    el.appendChild(button1);
+                    button1.on('click', function() {
+                        field.set('value', bool)
+                        bool = !bool;
+                        button1.set('innerHTML', "SetValue with " + bool);
+                    })
 
-        var logDiv = Y.Node.create('<div>Log :<br/></div>')
-        el.appendChild(logDiv);
-        field.on('field:change', function(e, val) {
-            logDiv.set('innerHTML', logDiv.get('innerHTML') + "Updated at " + (new Date()) + " with value: " + val + "<br />")
-        })
-        </textarea>
+                    var logDiv = Y.Node.create('<div>Log :<br/></div>')
+                    el.appendChild(logDiv);
+                    field.on('field:change', function(e, val) {
+                        logDiv.set('innerHTML', logDiv.get('innerHTML') + "Updated at " + (new Date()) + " with value: " + val + "<br />")
+                    })
+         </textarea>
     </div>
 
 </div>
@@ -138,33 +134,31 @@
         //Y.on('event:ready', function() {
 
         // Example 1
-        new Y.inputEx.CheckBox({parentEl: 'container1'}).render();
-
+        new Y.inputEx.CheckBox().render('#container1');
 
         // Example 2
-        new Y.inputEx.CheckBox({label: 'Do you like inputEx ?', rightLabel: 'Check me !', parentEl: 'container2', value: false, description: 'Check this box if you like the inputEx demos'}).render();
-
+        new Y.inputEx.CheckBox({label: 'Do you like inputEx ?', rightLabel: 'Check me !', value: false, description: 'Check this box if you like the inputEx demos'}).render('#container2');
 
         // Example 3
         var exampleDiv = Y.get('#container3');
-        var field1 = new Y.inputEx.CheckBox({rightLabel: 'I return true/false', parentEl: exampleDiv});
-        field1.render();
+        var field1 = new Y.inputEx.CheckBox({rightLabel: 'I return true/false'});
+        field1.render(exampleDiv);
         var button = Y.Node.create('<button>getValue()')
         exampleDiv.appendChild(button);
         button.on('click', function() { alert(field1.get('value')); })
 
         // Example 4
         var exampleDiv = Y.get('#container4');
-        var field2 = new Y.inputEx.CheckBox({checkedValue:'Yes',uncheckedValue:'No', rightLabel: 'Do you agree ?', parentEl: exampleDiv, value: 'No'});
-        field2.render();
+        var field2 = new Y.inputEx.CheckBox({checkedValue:'Yes',uncheckedValue:'No', rightLabel: 'Do you agree ?', value: 'No'});
+        field2.render(exampleDiv);
         var button = Y.Node.create('<button>getValue()')
         exampleDiv.appendChild(button);
         button.on('click', function() { alert(field2.get('value')); })
 
         // Example 5
        var el = Y.get('#container5');
-        var field = new Y.inputEx.CheckBox({parentEl: el });
-        field.render();
+        var field = new Y.inputEx.CheckBox();
+        field.render(el);
 
         var button1 = Y.Node.create('<button>SetValue with true</button>')
         var bool = true;

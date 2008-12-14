@@ -228,7 +228,7 @@
 </div>
 
 <script>
-    inputEx.YUI().use('group','stringfield','emailfield','urlfield','checkbox', function(Y) {
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('group','stringfield','emailfield','urlfield','checkbox', function(Y) {
         //Y.on('event:ready', function() {
         // Required for the UrlField and listfield
         Y.inputEx.spacerUrl = "../images/space.gif";
@@ -241,7 +241,7 @@
             {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy'}},
             {type:'url', inputParams: {label: 'Website', name:'website'}}
         ];
-        new Y.inputEx.Group({parentEl: 'container1', fields: contactFormFields, legend: 'Tell us about yourself...'}).render();
+        new Y.inputEx.Group({fields: contactFormFields, legend: 'Tell us about yourself...'}).render('#container1');
 
         //});
     })

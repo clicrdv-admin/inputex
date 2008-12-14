@@ -55,10 +55,10 @@
                 }
             },
 
-            renderComponent:function(parentEl) {
+            renderComponent:function(container) {
                 try {
-                    var el = parentEl ? parentEl : this.get('el'), id = this.getID();
-                    parentEl.addClass('inputEx-StringField')
+                    var el = container ? container : this.get('contentBox'), id = this.getID();
+                    container.addClass('inputEx-StringField')
                     var fieldEl = Y.Node.create('<div class="inputEx-StringField-wrapper"></div>')
 
                     //Note: for simple DOM, uses  class="inputEx-Field inputEx-StringField" on input
@@ -82,7 +82,7 @@
 /*
             _initEvents:function() {
                 StringField.superclass._initEvents.apply(this, arguments);
-                //var el = this.get('el'), id = this.getID(), field = el.query('#' + id + '-field')
+                //var el = this.get('contentBox'), id = this.getID(), field = el.query('#' + id + '-field')
 
                 *//*if (Y.UA.ie) { // refer to inputEx-95
                  new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
@@ -114,31 +114,31 @@
 
                 switch (eventType) {
                     case 'field:focus': //on focus
-                        if (this.get('el').hasClass('inputEx-typeInvite')) {
+                        if (this.get('contentBox').hasClass('inputEx-typeInvite')) {
                             this._getInputEl().set('value', ''); // remove typeInvite upon focus
-                            this.get('el').removeClass('inputEx-typeInvite');
+                            this.get('contentBox').removeClass('inputEx-typeInvite');
                             this._typeInviteOn = false;
                         }
                         break;
                     case 'field:blur':
                         if (this.get('value') === '') { // if empty, show typeInvite
-                            this.get('el').addClass('inputEx-typeInvite');
+                            this.get('contentBox').addClass('inputEx-typeInvite');
                             this._getInputEl().set('value', this.get('typeInvite'));
                             this._typeInviteOn = true;
                             Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
                         } else {
-                            this.get('el').removeClass('inputEx-typeInvite');
+                            this.get('contentBox').removeClass('inputEx-typeInvite');
                             this._typeInviteOn = false;
                         }
                         break;
                     default: //probably called indirectly by this.set('value')
                         if (this._getInputEl().get('value') === '') { //if empty
-                            this.get('el').addClass('inputEx-typeInvite');
+                            this.get('contentBox').addClass('inputEx-typeInvite');
                             this._getInputEl().set('value', this.get('typeInvite'));
                             this._typeInviteOn = true;
                             Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
                         } else {
-                            this.get('el').removeClass('inputEx-typeInvite');
+                            this.get('contentBox').removeClass('inputEx-typeInvite');
                             this._typeInviteOn = false;
                         }
                         break;

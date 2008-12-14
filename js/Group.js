@@ -84,26 +84,26 @@
                 }
                 Y.log(this + '.initializer() - Group -  initialized', 'debug', 'inputEx');
             },
-            render:function() {
+            renderUI:function() {
                 try {
-                    var el = this.get('el'), id = el.get('id');
+                    var el = this.get('contentBox'), id = el.get('id');
                     el.addClass(this.get('elClass'))
 
                     this._renderFields(el);
 
                     if (this.get('disabled')) this.disable();
 
-                    Y.log(this + '.render() - Group - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    this.fire(EV_RENDER, null, this.get('el'));
+                    Y.log(this + '.renderUI() - Group - rendered - el.innerHTML: ' + this.get('contentBox').get('innerHTML'), 'debug', 'inputEx')
+                    this.fire(EV_RENDER, null, this.get('contentBox'));
                     this._rendered = true;
 
                 } catch(e) {
-                    Y.log(this + '.render() Group -  - e: ' + e, 'error', 'inputEx');
+                    Y.log(this + '.renderUI() Group -  - e: ' + e, 'error', 'inputEx');
                 }
             },
 
             _renderFields: function(parentEl, inputFields) {
-                parentEl = parentEl ? parentEl : this.get('el')
+                parentEl = parentEl ? parentEl : this.get('contentBox')
                 var fieldset = Y.Node.create('<fieldset id="' + this.getID() + '-fieldset"></fieldset>')
 
                 if (this.get('collapsible')) {// Option Collapsible
@@ -122,9 +122,7 @@
                 if (fieldsCfg && fieldsCfg.length > 0) {
                     // Iterate this.createInput on input fields
                     for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
-                        fieldCfg.inputParams = Y.merge({parentEl:fieldset}, fieldCfg.inputParams)
-
-                        var field = this._renderField(fieldCfg); // Render the field
+                        var field = this._renderField(fieldCfg, fieldset); // Render the field
                         //if (field && field.get('el')) fieldset.appendChild(field.get('el'))
                     }
                 }
@@ -138,7 +136,7 @@
              * Instanciate one field given its parameters, type or fieldClass
              * @param {Object} fieldOptions The field properties as required bu inputEx.buildField
              */
-            _renderField: function(fieldOptions) {
+            _renderField: function(fieldOptions,fieldset) {
                 // Instanciate the field
                 var field = new Y.inputEx(fieldOptions);
 
@@ -147,7 +145,7 @@
                     return;
                 }
 
-                field.render();
+                field.render(fieldset);
                 this._inputs.push(field);
 
                 // Create the this.hasInteractions to run interactions at startup

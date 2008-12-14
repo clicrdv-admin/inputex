@@ -94,7 +94,7 @@
             /**
              * Render the checkbox and the hidden field
              */
-            renderComponent: function() {
+            renderComponent: function(container) {
                 if (!this._inputEl) this._inputEl = Y.Node.create('<select></select>')
 
                 if (this.get('name')) this._inputEl.set('name', this.get('name'))
@@ -111,7 +111,7 @@
                 }
                 this._inputEl.set('selectedIndex', this.get('selectedIndex'))
 
-                this.get('el').appendChild(this._inputEl);
+                container.appendChild(this._inputEl);
 
             }
         }

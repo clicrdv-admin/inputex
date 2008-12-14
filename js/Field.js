@@ -95,21 +95,6 @@
             name:{},
 
             /**
-             * it could be set as 'elementId', '#elementId', HTMLElement, or Y.Node, store as Y.Node, nullable, writeOnce
-             * parentEl is used only during construction to define a el
-             * @attribute target
-             * @type Node
-             */
-            parentEl:{
-                set:function(cfg) {
-                    return Y.inputEx.findNode(cfg);
-                }//,
-                //value: Y.Node.get('body'),
-                //writeOnce:true
-            },
-
-
-            /**
              * id is optional. When it is defined, it will be used as the id of the top level element of the field.
              * (but not the id of the <input> element)
              *
@@ -146,6 +131,7 @@
              * If a node cannot be found in any of the above ways, a new one is created, optionally under the parentEl
              * (if specified)
              */
+/*
             el:{
                 set:function(cfg) {
                     var el;
@@ -169,6 +155,7 @@
                 },
                 value:null,
                 writeOnce:true},
+*/
 
             /**
              * @attribute value
@@ -204,7 +191,7 @@
                     if (!Y.Lang.isUndefined(this.get('label')))
                         Y.log(this + '.set("label") - Field - updated from "' + this.get('label') + '" to "' + v + '"', 'debug', 'inputEx')
 
-                    var labelEl = this.get('el').query('#' + this.get('el').get('id') + '-label')
+                    var labelEl = this.get('contentBox').query('#' + this.get('contentBox').get('id') + '-label')
                     if (labelEl) labelEl.set('innerHTML', v);
                     return v;
                 },
@@ -220,7 +207,7 @@
                 set:function(v) {
                     if (!Y.Lang.isUndefined(this.get('description')))
                         Y.log(this + '.set("description") - Field - updated from "' + this.get('description') + '" to "' + v + '"', 'debug', 'inputEx')
-                    var descEl = this.get('el').query('#' + this.get('el').get('id') + '-description')
+                    var descEl = this.get('contentBox').query('#' + this.get('contentBox').get('id') + '-description')
                     if (descEl) descEl.set('innerHTML', v);
                     return v;
                 },
@@ -339,7 +326,7 @@
 
             renderUI:function() {
                 try {
-                    var el = this.get('el'), id = el.get('id');
+                    var el = this.get('contentBox'), id = el.get('id');
                     el.addClass(this.get('elClass'))
 
                     if (this.get('required')) el.addClass('inputEx-required')
@@ -369,8 +356,8 @@
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
 
-                    Y.log(this + '.renderUI() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    //this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
+                    Y.log(this + '.renderUI() - Field - rendered - el.innerHTML: ' + this.get('contentBox').get('innerHTML'), 'debug', 'inputEx')
+                    //this.fire(EV_RENDER, null, this.get('contentBox'));//workarounded this.fire(EV_RENDER, this.get('contentBox'));
                     return this;
                 } catch(e) {
                     Y.log(this + '.renderUI() - Field - ' + e, 'error', 'inputEx');
@@ -410,15 +397,15 @@
                 if (this.previousState) {
                     // remove invalid className for both required and invalid fields
                     var className = 'inputEx-' + ((this.previousState == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : this.previousState)
-                    this.get('el').removeClass(className);
+                    this.get('contentBox').removeClass(className);
                 }
 
                 // add new class
                 var state = this.getState();
-                if (!(state == Y.inputEx.stateEmpty && this.get('el').hasClass('inputEx-focused') )) {
+                if (!(state == Y.inputEx.stateEmpty && this.get('contentBox').hasClass('inputEx-focused') )) {
                     // add invalid className for both required and invalid fields
                     var className = 'inputEx-' + ((state == Y.inputEx.stateRequired) ? Y.inputEx.stateInvalid : state)
-                    this.get('el').addClass(className);
+                    this.get('contentBox').addClass(className);
                 }
 
                 if (this.get('showMsg')) {
@@ -430,7 +417,7 @@
             },
 
             displayMessage:function(msg) {
-                var el = this.get('el')
+                var el = this.get('contentBox')
                 var fieldDiv = el.query('div.' + this.get('className'));
                 if (!fieldDiv) {
                     return;
@@ -474,7 +461,7 @@
                 return this;
             },
 
-            getID:function() { return this.get('el').get('id');},
+            getID:function() { return this.get('contentBox').get('id');},
 
             /**
              * Return this._inputEl if existed. Otherwise, it tries to look for the inputEl by naming convention.
@@ -482,19 +469,19 @@
             _getInputEl:function() {
                 if (this._inputEl) return this._inputEl;
 
-                if (this.get('el')) { this._inputEl = this.get('el').query('#' + this.getID() + '-field'); }
+                if (this.get('contentBox')) { this._inputEl = this.get('contentBox').query('#' + this.getID() + '-field'); }
                 return this._inputEl;
             },
 
             _inputElOnFocus:function() {
-                this.get('el').removeClass('inputEx-empty')
-                this.get('el').addClass('inputEx-focused')
+                this.get('contentBox').removeClass('inputEx-empty')
+                this.get('contentBox').addClass('inputEx-focused')
                 Y.log(this + '._inputElOnFocus() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
-                this.fire(EV_FOCUS, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+                this.fire(EV_FOCUS, null, this.get('contentBox'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _inputElOnBlur:function() {
-                this.get('el').removeClass('inputEx-focused')
+                this.get('contentBox').removeClass('inputEx-focused')
                 if (!this._validated) {// for the case that the field is focused then blurred without onchange
                     this.validate();
                     this.syncUI();
@@ -504,7 +491,7 @@
                     this.set('value', this._getInputEl().get('value'))
                 }
                 Y.log(this + '._inputElOnBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
-                this.fire(EV_BLUR, null, this.get('el'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+                this.fire(EV_BLUR, null, this.get('contentBox'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _inputElOnChange:function() {
@@ -589,12 +576,12 @@
             },
 
             show:function() {
-                this.get('el').setStyle('display', '')
+                this.get('contentBox').setStyle('display', '')
                 return this;
             },
 
             hide:function() {
-                this.get('el').setStyle('display', 'none')
+                this.get('contentBox').setStyle('display', 'none')
                 return this;
             },
 

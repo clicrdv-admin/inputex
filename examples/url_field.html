@@ -26,8 +26,7 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new Y.inputEx.UrlField({parentEl: 'container1', showMsg: true, size:50, value:
-            'http://ajaxian.com/archives/inputex-json-form-builder'}).render();
+            new Y.inputEx.UrlField({showMsg: true, size:50, value: 'http://ajaxian.com/archives/inputex-json-form-builder'}).render('#container1');
         </textarea>
     </div>
 
@@ -45,8 +44,7 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new Y.inputEx.UrlField({parentEl: 'container2', showMsg: true, favicon: false, value:
-            'http://www.ajaxian.com'}).render();
+            new Y.inputEx.UrlField({showMsg: true, favicon: false, value: 'http://www.ajaxian.com'}).render('#container2');
         </textarea>
     </div>
 
@@ -64,8 +62,7 @@
 
     <div class='codeContainer'>
         <textarea name="code" class="JScript">
-            new Y.inputEx.UrlField({parentEl: 'container3', showMsg: true, favicon: false, typeInvite: 'webservice
-            url'}).render();
+            new Y.inputEx.UrlField({showMsg: true, favicon: false, typeInvite: 'webservice url'}).render('#container3');
         </textarea>
     </div>
 
@@ -78,15 +75,13 @@
         Y.inputEx.spacerUrl = "../images/space.gif";
 
         // Example 1
-        new Y.inputEx.UrlField({parentEl: 'container1', showMsg: true, size:50, value: 'http://ajaxian.com/archives/inputex-json-form-builder'}).render();
-
+        new Y.inputEx.UrlField({showMsg: true, size:50, value: 'http://ajaxian.com/archives/inputex-json-form-builder'}).render('#container1');
 
         // Example 2
-        new Y.inputEx.UrlField({parentEl: 'container2', showMsg: true, favicon: false, value: 'http://www.ajaxian.com'}).render();
-
+        new Y.inputEx.UrlField({showMsg: true, favicon: false, value: 'http://www.ajaxian.com'}).render('#container2');
 
         // Example 3
-        new Y.inputEx.UrlField({parentEl: 'container3', showMsg: true, favicon: false, typeInvite: 'webservice url'}).render();
+        new Y.inputEx.UrlField({showMsg: true, favicon: false, typeInvite: 'webservice url'}).render('#container3');
     });
 
 </script>

@@ -41,7 +41,7 @@
             },
 
             _renderFields: function(parentEl, inputFields) {
-                parentEl = parentEl ? parentEl : this.get('el')
+                parentEl = parentEl ? parentEl : this.get('contentBox')
 
                 var fieldsCfg = (inputFields) ? inputFields : this.get('fields');
                 if (fieldsCfg && fieldsCfg.length > 0) {
