@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>YUI3 Widget Tests</title>
+    <script type="text/javascript" src="../js/inputex-loader.js"></script>
+</head>
+<body class="yui-skin-sam">
+<h1><script>document.write(document.title)</script></h1>
+
+<div id="test"></div>
+
+<script type="text/javascript">
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'field', function(Y) {
+        Y.namespace('inputEx.tests')
+        Y.inputEx.tests.WidgetTests = new Y.Test.Case({
+            name: 'YUI3 Widget Tests',
+            setUp:function() {
+                Y.get('#test').set('innerHTML', '')
+            },
+            tearDown:function() {
+            },
+
+            testLoader:function() {
+                Y.Assert.isTrue(typeof(Y.Widget) !== 'undefined')
+            }
+
+          /*  testFieldConstructor:function() {
+                var widget = new Y.Widget();
+
+                var test = this;
+                widget.on('widget:render',function(e){
+                     test.resume(function(){
+29	                    Y.Assert.areEqual(myAnim.get("node").get("offsetWidth"), 400, "Width of the DIV should be 400."); 
+31	                });
+                })
+                // 1. construct with parentEl
+                Y.get('#test').appendChild(Y.Node.create('<div id="test01"></div>'))
+                var test01 = new Y.inputEx.Field({parentEl:'test01'})
+                Y.Assert.isNotUndefined(test01)
+                Y.Assert.isInstanceOf(Y.inputEx.Field, test01, 'The field is not a Y.inputEx.Field')
+            }*/
+        })
+
+
+        //TODO: Y.Console{width:'600px'} won't work, simplify the following once the console height and width have been fixed
+        var console = new Y.Console()
+        console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
+        console.render()
+        console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
+
+        Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
+        Y.Test.Runner.run();
+
+    })
+</script>
+</body>
+
+</html>

@@ -46,7 +46,23 @@
                 Y.Assert.isNull(testEl.query('input'))
                 test.render()
                 Y.Assert.isNotUndefined(testEl.query('input'))
+            },
+
+            /**
+             * Create a test field with label and message, check the created DOM:
+             * 1. Verify boundingBox and there shall be nth outside the boundingBox
+             * 2. Verify contextBox
+             */
+            testStringFieldDOMStructure:function() {
+                var testEl = Y.Node.create('<div id="test03"></div>')
+                Y.get('#test').appendChild(testEl)
+
+                var field = new Y.inputEx.StringField({el:testEl})
+                field.render();
+
+
             }
+
         })
 
 

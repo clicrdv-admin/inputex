@@ -338,7 +338,7 @@
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
-            render:function() {
+            renderUI:function() {
                 try {
                     var el = this.get('el'), id = el.get('id');
                     el.addClass(this.get('elClass'))
@@ -370,14 +370,14 @@
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
 
-                    if (!this._eventInitialized) { this._initEvents();}
+                    //if (!this._eventInitialized) { this._initEvents();}
 
-                    Y.log(this + '.render() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
-                    this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
+                    Y.log(this + '.renderUI() - Field - rendered - el.innerHTML: ' + this.get('el').get('innerHTML'), 'debug', 'inputEx')
+                    //this.fire(EV_RENDER, null, this.get('el'));//workarounded this.fire(EV_RENDER, this.get('el'));
                     this._rendered = true;
                     return this;
                 } catch(e) {
-                    Y.log(this + '.render() - Field - ' + e, 'error', 'inputEx');
+                    Y.log(this + '.renderUI() - Field - ' + e, 'error', 'inputEx');
                 }
             },
 
@@ -386,15 +386,15 @@
                 Y.log(this + '.renderComponent() - Field - method should have been overidden!', 'warn', 'inputEx');
             },
 
-            _initEvents:function() {
+            bindUI:function() {
                 if (this._eventInitialized) return;
                 if (this._getInputEl()) {
                     this._getInputEl().on('change', Y.bind(this._inputElOnChange, this));
                     this._getInputEl().on('focus', Y.bind(this._inputElOnFocus, this));
                     this._getInputEl().on('blur', Y.bind(this._inputElOnBlur, this));
-                    Y.log(this + '.initEvent() - Field - subscribed to change, focus & blur', 'debug', 'inputEx');
+                    Y.log(this + '.bindUI() - Field - subscribed to change, focus & blur', 'debug', 'inputEx');
                 } else {
-                    Y.log(this + '.initEvent() - Field - no available field', 'warn', 'inputEx');
+                    Y.log(this + '.bindUI() - Field - no available field', 'warn', 'inputEx');
                 }
                 this._eventInitialized = true;
             },
