@@ -112,52 +112,6 @@
              */
 
             /**
-             * TODO: the following is written as a specification, and the spec is NOT implemented yet
-             * It takes any of the following values:
-             * - null/undefined
-             * - a String
-             * - a HTMLElement
-             * - a Node
-             *
-             * If it is a Node,
-             *      the node shall be a compatiable input element
-             *      if id attribute is specified, it is used to override any existed id on the Node.
-             *      if id attribute is not used, any id from the input element is taken as id for this field.
-             *
-             * If it is a String, and
-             *      if the string prefix with #, it is looked up as an id, or
-             *      if the string is not started with #, '#' is appended as prefix to do a lookup
-             *
-             * If a node cannot be found in any of the above ways, a new one is created, optionally under the parentEl
-             * (if specified)
-             */
-/*
-            el:{
-                set:function(cfg) {
-                    var el;
-                    if (!Y.Lang.isNull(cfg)) {
-                        el = Y.inputEx.findNode(cfg)
-                    }
-
-                    if (!el) { //create a new el under parent
-                        var id = Y.Lang.isString(cfg) ? cfg.charAt(0) == '#' ? cfg.substring(1, cfg.length) : cfg : null
-                        id = (id) ? id : Y.Lang.isUndefined(this.get('name')) ? Y.guid('div') : this.get('name')
-                        el = Y.Node.create('<div id="' + id + '"></div>');
-                        if (this.get('parentEl')) {
-                            this.get('parentEl').appendChild(el);
-                        } else {
-                            Y.log(this + '.set("el") - Field - parentEl is undefined or invalid, the el is NOT appended to the DOM, el: ' + el + ', parentEl: ' + this.get('parentEl'), 'warn', 'inputEx');
-                        }
-
-                    }
-                    Y.log(this + '.set("el") - Field - el: ' + el + ', cfg: ' + cfg + ', parentEl: ' + this.get('parentEl') + ', name: ' + this.get('name'), 'debug', 'inputEx')
-                    return el;
-                },
-                value:null,
-                writeOnce:true},
-*/
-
-            /**
              * @attribute value
              * @type String
              */
