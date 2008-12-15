@@ -237,9 +237,9 @@
 
                     if (oldVal !== newVal) {
                         if (newVal === true) {
-                            this.on('change', this._fnValidate, this)
+                            this.on(EV_CHANGE, this._fnValidate, this)
                         } else {
-                            this.unsubscribe('change', this._fnValidate, this)
+                            this.unsubscribe(EV_CHANGE, this._fnValidate, this)
                         }
                     }
                 },

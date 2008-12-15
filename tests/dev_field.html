@@ -35,9 +35,6 @@
                 value:'US',
                 label:'Please choose a country: ',
                 showMsg:true});   */
-            field.on('render', function(){Y.log('on render','info','dev')})
-            field.after('render', function(){Y.log('after render','info','dev')})
-            field.on('field:validated', function(newVal, violations){Y.log('validated','info','dev')})
             field.render('#test');
             /*field.on('updated', function(evt, newVal, oldVal) {
              alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
