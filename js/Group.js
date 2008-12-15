@@ -84,6 +84,22 @@
                 }
                 Y.log(this + '.initializer() - Group -  initialized', 'debug', 'inputEx');
             },
+            renderer:function() {
+                //construct fields before rendering
+                this._createFields();
+                Group.superclass.renderer.apply(this, arguments);
+            },
+            _createFields:function() {
+                var fieldsCfg = this.get('fields');
+                if (fieldsCfg && fieldsCfg.length > 0) {
+                    // Iterate this.createInput on input fields
+                    for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
+                        var field = new Y.inputEx(fieldCfg);
+                        if (field) this._inputs.push(field)
+                    }
+                }
+                Y.log(this + '._createFields() - Group -  created ' + this._inputs.length + ' field(s)', 'info', 'inputEx');
+            },
             renderUI:function() {
                 try {
                     var el = this.get('contentBox'), id = el.get('id');
@@ -94,16 +110,15 @@
                     if (this.get('disabled')) this.disable();
 
                     Y.log(this + '.renderUI() - Group - rendered - el.innerHTML: ' + this.get('contentBox').get('innerHTML'), 'debug', 'inputEx')
-                    this.fire(EV_RENDER, null, this.get('contentBox'));
+                    //this.fire(EV_RENDER, null, this.get('contentBox'));
                     this._rendered = true;
 
                 } catch(e) {
                     Y.log(this + '.renderUI() Group -  - e: ' + e, 'error', 'inputEx');
                 }
             },
-
-            _renderFields: function(parentEl, inputFields) {
-                parentEl = parentEl ? parentEl : this.get('contentBox')
+            _renderFields: function(container) {
+                container = container ? container : this.get('contentBox')
                 var fieldset = Y.Node.create('<fieldset id="' + this.getID() + '-fieldset"></fieldset>')
 
                 if (this.get('collapsible')) {// Option Collapsible
@@ -118,45 +133,42 @@
                     fieldset.appendChild(legend)
                 }
 
-                var fieldsCfg = (inputFields) ? inputFields : this.get('fields');
-                if (fieldsCfg && fieldsCfg.length > 0) {
-                    // Iterate this.createInput on input fields
-                    for (var i = 0,fieldCfg; fieldCfg = fieldsCfg[i]; i++) {
-                        var field = this._renderField(fieldCfg, fieldset); // Render the field
-                        //if (field && field.get('el')) fieldset.appendChild(field.get('el'))
-                    }
+                container.appendChild(fieldset); // Append the fieldset
+
+                for (var i = 0,field; field = this._inputs[i]; i++) {
+                    Y.log(this + '._renderFields() - to render - field: ' + field + ', fieldset: ' + fieldset, 'warn', 'inputEx')
+                    field.render(fieldset)
                 }
 
-                parentEl.appendChild(fieldset); // Append the fieldset
-
-                Y.log(this + '._renderFields() - Group - rendered - fieldsCfg.length: ' + (fieldsCfg ? fieldsCfg.length : fieldsCfg) + ', _inputs.length: ' + this._inputs.length, 'debug', 'inputEx')
+                Y.log(this + '._renderFields() - Group - rendered', 'debug', 'inputEx')
             },
 
-            /**
+            bindUI:function() {
+                Group.superclass.bindUI.apply(this, arguments);
+                // Subscribe to the "field:change" event to send the "group:change" event
+                var onChange = Y.bind(this._onChange, this)
+                Y.each(this._inputs, function(field) {
+                    field.on('field:change', onChange)
+                })
+
+            },
+
+            /**//**
              * Instanciate one field given its parameters, type or fieldClass
              * @param {Object} fieldOptions The field properties as required bu inputEx.buildField
-             */
-            _renderField: function(fieldOptions,fieldset) {
-                // Instanciate the field
-                var field = new Y.inputEx(fieldOptions);
+             *//*
+             _renderField: function(fieldOptions, fieldset) {
+             field.render(fieldset);
 
-                if (!field || !field.get) {
-                    //Y.log(this + '._renderField() - Group - invalid field, field: ' + Y.JSON.stringify(field) + ', fieldOptions: ' + Y.JSON.stringify(fieldOptions), 'warn', 'inputEx')
-                    return;
-                }
+             // Create the this.hasInteractions to run interactions at startup
+             if (!this.hasInteractions && this.get('interactions')) {
+             this.hasInteractions = true;
+             }
 
-                field.render(fieldset);
-                this._inputs.push(field);
-
-                // Create the this.hasInteractions to run interactions at startup
-                if (!this.hasInteractions && this.get('interactions')) {
-                    this.hasInteractions = true;
-                }
-
-                // Subscribe to the "field:change" event to send the "group:change" event
-                //field.on('field:change', this._onChange, this)  //TODO double check the argument
-                return field;
-            },
+             // Subscribe to the "field:change" event to send the "group:change" event
+             //field.on('field:change', this._onChange, this)  //TODO double check the argument
+             return field;
+             },*/
 
             _inputElOnChange:function(field) {
                 Y.log(this + '._onChange() - field: ' + field + ', to fire group:change event', 'debug', 'inputEx');

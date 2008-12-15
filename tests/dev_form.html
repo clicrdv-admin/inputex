@@ -31,10 +31,9 @@
                         {type:'url', inputParams: {label: 'Website',name:'website'}}
                     ]}}
                 ],
-                buttons: [{type: 'submit', value: 'Change'}],
-                el: 'test'
+                buttons: [{type: 'submit', value: 'Change'}]
             });
-            form.render()
+            form.render('#test')
 
 
             var testHTML = Y.Node.get('#parent').get('innerHTML')

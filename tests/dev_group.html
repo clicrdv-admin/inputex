@@ -20,15 +20,15 @@
             Y.log('quick test begin')
             //Y.inputEx.spacerUrl = "../images/space.gif";
 
-            group = new Y.inputEx.Group({el: 'test', legend:'test group', fields: [
+            group = new Y.inputEx.Group({legend:'test group', fields: [
                 {type:'select', inputParams: {label: 'Title', name: 'title', selectValues: ['Mr','Mrs','Mme'] } },
                 {type:'string', inputParams: {label: 'Firstname', name: 'firstname',showMsg: true,validator:[{required: true, message:'first name is required'}] } },
                 {type:'string', inputParams: {label: 'Lastname', name: 'lastname', value:'Dupont' } },
-                {type:'email', inputParams: {label: 'Email', name: 'email', value:'Demo@email.com',required: true, showMsg: true}},
+                {type:'email', inputParams: {label: 'Email', name: 'email', value:'Demo@email.com',validator:[{required:true}],showMsg: true}},
                 {type:'boolean', inputParams: {label: 'Happy to be there ?', name: 'happy', checkedValue:'happy', uncheckedValue:'not_happy'}},
                 {type:'url', inputParams: {label: 'Website', name:'website', value:'http://www.yahoo.com', favicon:true}}
             ]});
-            group.render();
+            group.render('#test');
 
             var testHTML = Y.Node.get('#parent').get('innerHTML')
             Y.Node.get('#result').set('innerHTML', Y.inputEx.escapeHTML(testHTML))
