@@ -55,22 +55,27 @@
             } ,
 
             testEvent_Change:function() {
-                var container = Y.Node.create('<div id="test_widgetAttributes"></div>')
+                var container = Y.Node.create('<div id="testEvent_Change"></div>')
                 Y.get('#test').appendChild(container)
                 var field = new Y.inputEx.Field({value:'oldValue'})
                 field.render()
 
                 Y.Assert.areEqual('oldValue', field.get('value'))
 
-                field.on("change", function(evt, n , o) {
+                field.on("change", function(evt, n, o) { // both 'change' and 'field:change' could be used
                     this.resume(function() {
                         Y.Assert.areEqual('newValue', n)
                         Y.Assert.areEqual('oldValue', o)
                         Y.Assert.areEqual('oldValue', field.get('value'));// on change is called during the change, so the value is not updated yet
                     });
                 }, this, true);
+
+                //create a dummy input element for test
+                var inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>')
+                field._inputEl = inputEl
                 field.set('value', 'newValue')
                 Y.Assert.areEqual('newValue', field.get('value'))
+                Y.Assert.areEqual('newValue', field._inputEl.get('value'),'input change by api is not sync to the inputEl')
                 this.wait(2000);
             }
         })

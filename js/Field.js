@@ -117,8 +117,7 @@
                     if (!Y.Lang.isUndefined(this.get('value'))) {
                         Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
                     }
-                    if (this.get('rendered')) this._updateInputEl(v); // ensure the inputEl is in sync
-                    this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
+                    this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded with the null argument
                     return v;
                 },
                 value:null
@@ -279,6 +278,13 @@
             _violations:[],
 
             initializer : function(cfg) {
+                // when value is updated by API, sync the value to the inputEl
+                this.on('change', function(evt, newVal) {
+                    if (this.get('rendered') === true && this._getInputEl()) {
+                        this._updateInputEl(newVal)
+                    }
+                }, this)
+
                 /**
                  * If an event handling function return false, the next event will not fire. So validate() is wrapped
                  * and not to return false in invalid case to avoid skipping the next event.
