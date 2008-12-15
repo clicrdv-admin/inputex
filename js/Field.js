@@ -56,17 +56,7 @@
              * @param value, {Array} violations
              * @type Event.Custom
              */
-                EV_VALIDATED = 'field:validated',
-            /**
-             * @event field:invalid
-             * @description failed in validation
-             * @preventable TODO DUMMY, REMOVE THIS
-             * @param {Event} node
-             * @bubbles TODO DUMMY, REMOVE THIS
-             * @type Event.Custom
-             */
-                EV_INVALID = 'field:invalid'
-
+                EV_VALIDATED = 'field:validated'
         /**
          * @class Field
          * @extends Base
@@ -79,7 +69,6 @@
             this.publish(EV_BLUR);
             this.publish(EV_CHANGE);
             this.publish(EV_VALIDATED);
-            this.publish(EV_INVALID);
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this);
         };
         Y.augment(Field, Y.Event.Target);
@@ -229,10 +218,7 @@
             validateAfterRendered:{
                 set:function(newVal) {
                     Y.log(this + '.set("validateAfterRendered") - Field - newVal: ' + newVal, 'debug', 'inputEx')
-
-                    if (newVal === true) {
-                        this.after('field:render', Y.bind(function() {this.validate();}, this), this)
-                    }
+                    if (newVal === true) { this.after('render', Y.bind(function() {this.validate();}, this), this) }
                 },
                 value:true,
                 writeOnce:true
@@ -307,11 +293,7 @@
             _fnValidate:null,
 
             initializer : function(cfg) {
-                //this.on(EV_CHANGE, this.syncUI, this);
-                /*this.on(EV_RENDER, Y.bind(function() {
-                 this.validate();
-                 this.syncUI();
-                 }, this), this)*/
+                this.on(EV_CHANGE, this.syncUI, this);
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
 
@@ -647,7 +629,8 @@
 
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
                     this._validated = true;
-                    this.fire(EV_VALIDATED, null, this.get('value'), this._violations);//TODO workarounded
+                    this.fire(EV_VALIDATED, null, value, this._violations);//TODO workarounded
+                    this.syncUI();
                     return result;
                 } catch(e) {
                     Y.log(this + '.validate() - Field - e: ' + e, 'error', 'inputEx');
