@@ -52,10 +52,8 @@
 
             /**
              * @event field:validated
-             * @description successfully validated
-             * @preventable TODO DUMMY, REMOVE THIS
-             * @param {Event} node
-             * @bubbles TODO DUMMY, REMOVE THIS
+             * @description after performed validation, if it is valid, violations.length shall be zero
+             * @param value, {Array} violations
              * @type Event.Custom
              */
                 EV_VALIDATED = 'field:validated',
@@ -113,12 +111,16 @@
              * @type String
              */
             value:{
-                set:function(v) {
+                set:function(newVal) {
                     if (!Y.Lang.isUndefined(this.get('value'))) {
-                        Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + v + '"', 'debug', 'inputEx')
+                        Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + newVal + '"', 'debug', 'inputEx')
                     }
-                    this.fire(EV_CHANGE, null, v, this.get('value'));//workarounded with the null argument
-                    return v;
+
+                    // when value is updated by API, sync the value to the inputEl; it shall be set b4 any change event
+                    if (this.get('rendered') === true) { this._updateInputEl(newVal) }
+
+                    this.fire(EV_CHANGE, null, newVal, this.get('value'));//workarounded with the null argument
+                    return newVal;
                 },
                 value:null
             },
@@ -234,7 +236,21 @@
              * @default true
              */
             validateOnChange:{
+                set:function(newVal) {
+                    var oldVal = this.get('validateOnChange')
+                    Y.log(this + '.set("validateOnChange") - Field - newVal: ' + newVal + ', oldVal: ' + oldVal, 'debug', 'inputEx')
+                    if (!this._fnValidate) this._fnValidate = Y.bind(function() {this.validate();}, this)
+
+                    if (oldVal !== newVal) {
+                        if (newVal === true) {
+                            this.on('change', this._fnValidate, this)
+                        } else {
+                            this.unsubscribe('change', this._fnValidate, this)
+                        }
+                    }
+                },
                 value:true
+                //TODO add validate to ensure only true or false are used
             },
             /**
              * @attribute inputEl
@@ -276,20 +292,13 @@
              * store a full copy of any violated validation rule(s). Before validate() is called, it's an empty array.
              */
             _violations:[],
+            /**
+             * If an event handling function return false, the next event will not fire. So validate() is wrapped
+             * and not to return false in invalid case to avoid skipping the next event.
+             */
+            _fnValidate:null,
 
             initializer : function(cfg) {
-                // when value is updated by API, sync the value to the inputEl
-                this.on('change', function(evt, newVal) {
-                    if (this.get('rendered') === true && this._getInputEl()) {
-                        this._updateInputEl(newVal)
-                    }
-                }, this)
-
-                /**
-                 * If an event handling function return false, the next event will not fire. So validate() is wrapped
-                 * and not to return false in invalid case to avoid skipping the next event.
-                 */
-                this.on(EV_CHANGE, Y.bind(function() { this.validate(); }, this), this);
                 //this.on(EV_CHANGE, this.syncUI, this);
                 /*this.on(EV_RENDER, Y.bind(function() {
                  this.validate();
@@ -579,7 +588,10 @@
              */
             validate: function(value) {
                 try {
-                    if (!this._getInputEl()) return; //no validation before the field is rendered
+                    if (!this.get('rendered') || !this._getInputEl()) {
+                        Y.log(this + '.validate() - Field - field is not rendered or inputEl is null, validate is skipped', 'warn', 'inputEx')
+                        return;
+                    }
                     value = Y.Lang.isUndefined(value) ? this._getInputEl().get('value') : value; //validate() is called before set('value')
                     var meta, result = true,validator = this.get('validator');
                     this._violations = [];
@@ -602,6 +614,9 @@
                                 } else if (!Y.Lang.isUndefined(rule.minLength) || !Y.Lang.isUndefined(rule.maxLength)) {
                                     if (!Y.Lang.isUndefined(rule.minLength)) rulePassed = rulePassed && (value.length >= rule.minLength)
                                     if (!Y.Lang.isUndefined(rule.maxLength)) rulePassed = rulePassed && (value.length <= rule.maxLength)
+                                } else if (!Y.Lang.isUndefined(rule.min) || !Y.Lang.isUndefined(rule.max)) {
+                                    if (!Y.Lang.isUndefined(rule.min)) rulePassed = rulePassed && (value >= rule.min)
+                                    if (!Y.Lang.isUndefined(rule.max)) rulePassed = rulePassed && (value <= rule.max)
                                 } else {
                                     Y.log(this + '.validate() - Field - unhandled rule - rule: ' + Y.JSON.stringify(rule), 'warn', 'inputEx');
                                 }
@@ -624,7 +639,7 @@
 
                     Y.log(this + '.validate() - Field - result: ' + result + ', ' + ((this._violations.length == 0) ? 'passed all validation rule(s), rules: ' + Y.JSON.stringify(this.get('validator')) : 'violations: ' + Y.JSON.stringify(this._violations)), 'debug', 'inputEx')
                     this._validated = true;
-                    this.fire(EV_VALIDATED, null, this.get('value'));
+                    this.fire(EV_VALIDATED, null, this.get('value'), this._violations);//TODO workarounded
                     return result;
                 } catch(e) {
                     Y.log(this + '.validate() - Field - e: ' + e, 'error', 'inputEx');

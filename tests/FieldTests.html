@@ -70,13 +70,38 @@
                     });
                 }, this, true);
 
-                //create a dummy input element for test
-                var inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>')
-                field._inputEl = inputEl
+                field._inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>') //dummy inputEl for test
                 field.set('value', 'newValue')
                 Y.Assert.areEqual('newValue', field.get('value'))
-                Y.Assert.areEqual('newValue', field._inputEl.get('value'),'input change by api is not sync to the inputEl')
+                Y.Assert.areEqual('newValue', field._inputEl.get('value'), 'input change by api is not sync to the inputEl')
                 this.wait(2000);
+            },
+
+            testValidateAttributes:function() {
+                var container = Y.Node.create('<div id="testEvent_Change"></div>')
+                Y.get('#test').appendChild(container)
+                var field = new Y.inputEx.Field({value:10,validateOnRender:false,validateOnChange:true,validator:[{min:20}]})
+                field._inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>') //dummy inputEl for test
+                field.render()
+
+                //upon rendered, the field hv not been validated
+                Y.Assert.isFalse(field._validated, 'shall not validate on render')
+                Y.Assert.areEqual(0, field._violations.length)
+
+                //set flag to true and update value to trigger validation
+                field.set('validateOnChange', true)
+                field.set('value', 15)
+                Y.Assert.isTrue(field._validated)
+                Y.Assert.isTrue(field._violations.length > 0)
+
+                // set to a valid value
+                field.set('value', 20)
+                Y.Assert.areEqual(0, field._violations.length)
+
+                //set flag to false
+                field.set('validateOnChange', false)
+                field.set('value', 15)
+                Y.Assert.areEqual(0, field._violations.length); //onchange validation is disabled
             }
         })
 
