@@ -27,10 +27,8 @@
                 Y.Assert.isTrue(typeof(Y.inputEx.Field) !== 'undefined')
             },
 
-            testFieldConstructor:function() {
-                // 1. construct with parentEl
-                Y.get('#test').appendChild(Y.Node.create('<div id="test01"></div>'))
-                var test01 = new Y.inputEx.Field({parentEl:'test01'})
+            testConstructor:function() {
+                var test01 = new Y.inputEx.Field()
                 Y.Assert.isNotUndefined(test01)
                 Y.Assert.isInstanceOf(Y.inputEx.Field, test01, 'The field is not a Y.inputEx.Field')
             },
@@ -39,13 +37,13 @@
              * This test is to ensure widget behavior is correctly inherited
              */
             testWidgetAttributes:function() {
-                var testEl = Y.Node.create('<div id="test_widgetAttributes"></div>')
-                Y.get('#test').appendChild(testEl)
-                var field = new Y.inputEx.Field({el:testEl})
+                var container = Y.Node.create('<div id="test_widgetAttributes"></div>')
+                Y.get('#test').appendChild(container)
+                var field = new Y.inputEx.Field()
 
                 // 'rendered'
                 Y.Assert.isFalse(field.get('rendered'))
-                field.render();
+                field.render(container);
                 Y.Assert.isTrue(field.get('rendered'))
 
                 // 'hasFocus'

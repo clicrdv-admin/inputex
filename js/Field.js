@@ -310,7 +310,7 @@
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
 
-                    Y.log(this + '.renderUI() - Field - rendered - el.innerHTML: ' + this.get('contentBox').get('innerHTML'), 'debug', 'inputEx')
+                    Y.log(this + '.renderUI() - Field - rendered', 'debug', 'inputEx')
                     //this.fire(EV_RENDER, null, this.get('contentBox'));//workarounded this.fire(EV_RENDER, this.get('contentBox'));
                     return this;
                 } catch(e) {

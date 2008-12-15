@@ -102,6 +102,7 @@
             },
             renderUI:function() {
                 try {
+                    Y.log(this + '.renderUI() - Group', 'info', 'inputEx');
                     var el = this.get('contentBox'), id = el.get('id');
                     el.addClass(this.get('elClass'))
 
@@ -109,7 +110,7 @@
 
                     if (this.get('disabled')) this.disable();
 
-                    Y.log(this + '.renderUI() - Group - rendered - el.innerHTML: ' + this.get('contentBox').get('innerHTML'), 'debug', 'inputEx')
+                    Y.log(this + '.renderUI() - Group - rendered', 'debug', 'inputEx')
                     //this.fire(EV_RENDER, null, this.get('contentBox'));
                     this._rendered = true;
 
@@ -136,20 +137,34 @@
                 container.appendChild(fieldset); // Append the fieldset
 
                 for (var i = 0,field; field = this._inputs[i]; i++) {
-                    Y.log(this + '._renderFields() - to render - field: ' + field + ', fieldset: ' + fieldset, 'warn', 'inputEx')
-                    field.render(fieldset)
+                    Y.log(this + '._renderFields() - renderUI for field: ' + field + '{name: ' + field.get('name') + '},' +
+                          ' fieldset: ' + fieldset, 'debug', 'inputEx')
+                    //field.render(fieldset)
+                    field._renderUI(fieldset)
+                    field.renderUI()
                 }
 
                 Y.log(this + '._renderFields() - Group - rendered', 'debug', 'inputEx')
             },
 
             bindUI:function() {
-                Group.superclass.bindUI.apply(this, arguments);
+                Y.log(this + '.bindUI() - Group', 'info', 'inputEx');
                 // Subscribe to the "field:change" event to send the "group:change" event
-                var onChange = Y.bind(this._onChange, this)
+                var onChange = Y.bind(this._inputElOnChange, this)
                 Y.each(this._inputs, function(field) {
+                    Y.log(this + '.bindUI() - Group - bindUI for field: ' + field + '{name: ' + field.get('name') + '}', 'debug', 'inputEx')
+                    field.bindUI()
                     field.on('field:change', onChange)
-                })
+                }, this)
+
+            },
+
+            syncUI:function() {
+                Y.log(this + '.syncUI() - Group', 'info', 'inputEx');
+                Y.each(this._inputs, function(field) {
+                    Y.log(this + '.syncUI() - Group - syncUI for field: ' + field + '{name: ' + field.get('name') + '}', 'debug', 'inputEx')
+                    field.syncUI()
+                }, this)
 
             },
 
@@ -171,7 +186,8 @@
              },*/
 
             _inputElOnChange:function(field) {
-                Y.log(this + '._onChange() - field: ' + field + ', to fire group:change event', 'debug', 'inputEx');
+                Y.log(this + '._inputElOnChange() - field { id: ' + field.get('id') + ', name: ' + field.get('name') + '} ' +
+                      ', to fire group:change event', 'debug', 'inputEx');
                 this.fire(EV_CHANGE, null, field); //pass in the field that is changed
             },
 

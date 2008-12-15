@@ -1,19 +1,21 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-    <title>Field Test Suite</title>
+    <title>Select Field Test Suite</title>
     <script type="text/javascript" src="../js/inputex-loader.js"></script>
 </head>
 <body class="yui-skin-sam">
-<h1><script>document.write(document.title)</script></h1>
+<h1>
+    <script>document.write(document.title)</script>
+</h1>
 
 <div id="test"></div>
 
 <script type="text/javascript">
-    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'stringfield', function(Y) {
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'selectfield', function(Y) {
         Y.namespace('inputEx.tests')
-        Y.inputEx.tests.StringFieldTests = new Y.Test.Case({
-            name: 'String Field Tests',
+        Y.inputEx.tests.SelectFieldTests = new Y.Test.Case({
+            name: 'Select Field Tests',
             setUp:function() {
                 this.data = {}
                 Y.get('#test').set('innerHTML', '')
@@ -24,40 +26,27 @@
 
             testLoader:function() {
                 Y.Assert.isTrue(typeof(Y.inputEx) !== 'undefined')
-                Y.Assert.isTrue(typeof(Y.inputEx.StringField) !== 'undefined')
+                Y.Assert.isTrue(typeof(Y.inputEx.SelectField) !== 'undefined')
             },
 
             testConstructor:function() {
-                var test01 = new Y.inputEx.StringField()
-                Y.Assert.isNotUndefined(test01)
-                Y.Assert.isInstanceOf(Y.inputEx.StringField, test01, 'The field is not a Y.inputEx.StringField')
+                var field = new Y.inputEx.SelectField()
+                Y.Assert.isNotUndefined(field)
+                Y.Assert.isInstanceOf(Y.inputEx.SelectField, field, 'Incorrect type')
                 //Y.Assert.isObject(test01.get('boundingBox'))
                 //Y.get('#test').contains(test01.get('boundingBox'))
             },
-
             testRendering:function() {
                 var container = Y.Node.create('<div id="test02"></div>')
                 Y.get('#test').appendChild(container)
 
-                var test = new Y.inputEx.StringField()
+                var test = new Y.inputEx.SelectField()
                 Y.Assert.isNotUndefined(test)
-                Y.Assert.isNull(container.query('input'))
+                Y.Assert.isNull(container.query('select'))
                 test.render(container)
-                Y.Assert.isNotUndefined(container.query('input'))
-            },
-
-            /**
-             * Create a test field with label and message, check the created DOM:
-             * 1. Verify boundingBox and there shall be nth outside the boundingBox
-             * 2. Verify contextBox
-             */
-            testStringFieldDOMStructure:function() {
-                var container = Y.Node.create('<div id="test03"></div>')
-                Y.get('#test').appendChild(container)
-
-                var field = new Y.inputEx.StringField()
-                field.render(container);
+                Y.Assert.isNotUndefined(container.query('select'))
             }
+
 
 
         })
@@ -69,7 +58,7 @@
         console.render()
         console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
 
-        Y.Test.Runner.add(Y.inputEx.tests.StringFieldTests);
+        Y.Test.Runner.add(Y.inputEx.tests.SelectFieldTests);
         Y.Test.Runner.run();
 
     })

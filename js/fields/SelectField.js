@@ -69,11 +69,13 @@
 
         Y.extend(SelectField, Y.inputEx.Field, {
             initializer : function(cfg) {
-                if (this.get('selectValues').length <= 0)
-                    Y.log(this + '.initializer() - no selectValues, select box will be empty - selectValues.length: ' + this.get('selectValues').length, 'warn', 'inputEx')
+                if (!this.get('selectValues') || this.get('selectValues').length <= 0)
+                    Y.log(this + '.initializer() - no selectValues, select box will be empty' +
+                          ' - selectValues.length: ' + this.get('selectValues') || this.get('selectValues').length, 'warn', 'inputEx')
 
                 if (this.get('selectedIndex') && this.get('selectedIndex') + 1 > this.get('selectValues').length)
-                    throw new Error('selectedIndex is invalid, selectedIndex: ' + this.get('selectedIndex') + ', selectValues.length: ' + this.get('selectValues').length)
+                    Y.fail('selectedIndex is invalid, selectedIndex: ' + this.get('selectedIndex') +
+                           ', selectValues.length: ' + this.get('selectValues').length)
 
 
                 if (!this.get('selectedIndex') && !this.get('value')) {
@@ -97,17 +99,20 @@
             renderComponent: function(container) {
                 if (!this._inputEl) this._inputEl = Y.Node.create('<select></select>')
 
+                this._inputEl.set('id', this.getID() + '-field')
                 if (this.get('name')) this._inputEl.set('name', this.get('name'))
                 this._inputEl.set('multiple', this.get('multiple'))
                 this._inputEl.set('size', this.get('size'))
-                
+
                 var values = this.get('selectValues'), options = this.get('selectOptions')
-                for (var i = 0; i < values.length; i++) {
-                    var label = "" + ((options) ? options[i] : values[i])
-                    var selected = i === this.get('selectedIndex') ? ' selected="selected"' : ''; //for generating a correct HTML, it's not taking effect
-                    var option = Y.Node.create('<option value="' + values[i] + '"' + selected + '>' + label + '</option>')
-                    //if (i === this.get('selectedIndex')) option.set('selected', true) //can't use https://sourceforge.net/tracker2/?func=detail&aid=2391291&group_id=165715&atid=836476
-                    this._inputEl.appendChild(option);
+                if (values) {
+                    for (var i = 0; i < values.length; i++) {
+                        var label = "" + ((options) ? options[i] : values[i])
+                        var selected = i === this.get('selectedIndex') ? ' selected="selected"' : ''; //for generating a correct HTML, it's not taking effect
+                        var option = Y.Node.create('<option value="' + values[i] + '"' + selected + '>' + label + '</option>')
+                        //if (i === this.get('selectedIndex')) option.set('selected', true) //can't use https://sourceforge.net/tracker2/?func=detail&aid=2391291&group_id=165715&atid=836476
+                        this._inputEl.appendChild(option);
+                    }
                 }
                 this._inputEl.set('selectedIndex', this.get('selectedIndex'))
 

@@ -28,10 +28,15 @@
              label:'this is a test field',
              typeInvite: 'please enter some data', size: 60,
              description:'this field is for demonstration purpose only'});*/
-            field = new Y.inputEx.SelectField({name: 'country', selectValues: ['US', 'FR'],
-                selectOptions:['United States of America','France'], size:1, value:'US', boundingBox: '#test'});
+            field = new Y.inputEx.SelectField({name: 'country',
+                selectValues: ['US', 'FR'],
+                selectOptions:['United States of America','France'],
+                size:1,
+                value:'US',
+                label:'Please choose a country: ',
+                showMsg:true});
             //field.validate();
-            field.render();
+            field.render('#test');
             /*field.on('updated', function(evt, newVal, oldVal) {
              alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))
              });*/
