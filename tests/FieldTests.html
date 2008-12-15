@@ -5,7 +5,9 @@
     <script type="text/javascript" src="../js/inputex-loader.js"></script>
 </head>
 <body class="yui-skin-sam">
-<h1><script>document.write(document.title)</script></h1>
+<h1>
+    <script>document.write(document.title)</script>
+</h1>
 
 <div id="test"></div>
 
@@ -50,6 +52,26 @@
                 Y.Assert.isFalse(field.get('hasFocus'))
                 field.focus();
                 Y.Assert.isTrue(field.get('hasFocus'))
+            } ,
+
+            testEvent_Change:function() {
+                var container = Y.Node.create('<div id="test_widgetAttributes"></div>')
+                Y.get('#test').appendChild(container)
+                var field = new Y.inputEx.Field({value:'oldValue'})
+                field.render()
+
+                Y.Assert.areEqual('oldValue', field.get('value'))
+
+                field.on("change", function(evt, n , o) {
+                    this.resume(function() {
+                        Y.Assert.areEqual('newValue', n)
+                        Y.Assert.areEqual('oldValue', o)
+                        Y.Assert.areEqual('oldValue', field.get('value'));// on change is called during the change, so the value is not updated yet
+                    });
+                }, this, true);
+                field.set('value', 'newValue')
+                Y.Assert.areEqual('newValue', field.get('value'))
+                this.wait(2000);
             }
         })
 

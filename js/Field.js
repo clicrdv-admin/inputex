@@ -221,6 +221,23 @@
             },
 
             /**
+             * @attribute validateOnRender
+             * @type boolean
+             * @default true
+             */
+            validateOnRender:{
+                value:true
+            },
+
+            /**
+             * @attribute validateOnChange
+             * @type boolean
+             * @default true
+             */
+            validateOnChange:{
+                value:true
+            },
+            /**
              * @attribute inputEl
              * @description readOnly field for getting the <input> element. value of the inputEl may not be the same as the value of
              * the field. e.g. when typeInvite is being shown.
@@ -399,7 +416,8 @@
              * @param v
              */
             _updateInputEl:function(v) {
-                if (v !== this._getInputEl().get('value')) {
+                var inputEl = this._getInputEl();
+                if (inputEl && v !== inputEl.get('value')) {
                     Y.log(this + '.set("value") - Field - inputEl is updated from "' + this._getInputEl().get('value') + '" to "' + v + '"', 'debug', 'inputEx');
                     this._getInputEl().set('value', v)
                 }

@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>YUI3 Base Tests - [#2266255] </title>
+    <script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui-skin-sam">
+<h1>
+    <script>document.write(document.title)</script>
+</h1>
+
+<div id="test"></div>
+
+<script type="text/javascript">
+    YUI().use('node', 'base', 'json', 'yuitest','console', function(Y) {
+        function Simple() {
+            Simple.superclass.constructor.apply(this, arguments);
+        }
+        Simple.NAME = 'simple'
+        Y.extend(Simple, Y.Base, {
+            test:function() {
+                Y.log('test()', 'debug', 'dev')
+                //this.fire('tested', null, 'arg0', 'arg1'); //workaround
+                this.fire('tested', 'arg0', 'arg1');
+            }
+        })
+
+        Y.FireEventTest = new Y.Test.Case({
+            name: 'FireEventTest',
+            testFireEvent:function() {
+                var s = new Simple();
+                s.on("tested", function(evt, arg0, arg1) {
+                    Y.log('tested - arg0: ' + Y.JSON.stringify(arg0) + ', arg1: ' + Y.JSON.stringify(arg1), 'debug', 'dev')
+                    Y.Assert.areEqual('arg0', arg0)
+                    Y.Assert.areEqual('arg1', arg1)
+                }, this, true);
+                s.test()
+                this.wait();
+            }
+        })
+
+        var console = new Y.Console({defaultSource:'TestRunner'})
+        console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
+        console.render()
+        console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
+        
+
+        Y.Test.Runner.add(Y.FireEventTest);
+        Y.Test.Runner.run();
+    })
+</script>
+</body>
+
+</html>

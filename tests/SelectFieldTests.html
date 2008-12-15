@@ -51,25 +51,28 @@
                 Y.get('#test').appendChild(container)
 
                 //case 1: selectValues only
-                var field = new Y.inputEx.SelectField({id:'countryTest',name: 'country', selectValues: ['United States','France']})
+                var field = new Y.inputEx.SelectField({id:'countryTest',name: 'country',size:2})
                 field.render(container)
                 var selectEl = container.query('select')
                 Y.Assert.isNotUndefined(selectEl)
                 Y.Assert.areEqual(field.get('name'), selectEl.get('name'))
                 Y.Assert.areEqual(field.get('id') + '-field', selectEl.get('id'))
-                //Y.log('selectEl.class: ' + selectEl.class, 'info', 'dev')
+                Y.Assert.areEqual(field.get('size'), selectEl.get('size')) // default size is 1
             },
 
-            XtestSelectElements:function() {
+            testSelectElements:function() {
                 var container = Y.Node.create('<div id="testSelectElements"></div>')
                 Y.get('#test').appendChild(container)
 
                 //case 1: selectValues only
-                var field = new Y.inputEx.SelectField({name: 'country', selectValues: ['United States','France']})
+                var field = new Y.inputEx.SelectField({id:'country',name: 'country', selectValues: ['United States','France']})
                 field.render(container)
                 var selectEl = container.query('select')
                 Y.Assert.isNotUndefined(selectEl)
-                Y.log('selectEl: ' + selectEl.toString(), 'info', 'dev')
+//                var optionEls = Y.all('#country-field option')
+                Y.log('query: '+selectEl.queryAll('option'),'info','dev')
+//                Y.Assert.isInstanceOf(Y.NodeList, optionEls)
+                //Y.Assert.areEqual(field.get('selectValues').length, selectEl.queryAll('option').length)
             }
 
 
