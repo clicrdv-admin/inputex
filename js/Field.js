@@ -103,13 +103,10 @@
              *
              * //TODO implement this
              */
-            /*   id:{
-             set:function(v) { this._},
-             get:function() {},
-             value:'',
-             writeOnce:true
-             },
-             */
+            id:{
+                value:null,
+                writeOnce:true
+            },
 
             /**
              * @attribute value
@@ -415,7 +412,9 @@
                 return this;
             },
 
-            getID:function() { return this.get('contentBox').get('id');},
+            getID:function() {
+                return this.get('id') || this.get('contentBox').get('id');
+            },
 
             /**
              * Return this._inputEl if existed. Otherwise, it tries to look for the inputEl by naming convention.
