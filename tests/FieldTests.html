@@ -77,10 +77,20 @@
                 this.wait(2000);
             },
 
-            testValidateAttributes:function() {
-                var container = Y.Node.create('<div id="testEvent_Change"></div>')
+            testValidateAfterRendered:function() {
+                var container = Y.Node.create('<div id="testValidateAfterRendered"></div>')
                 Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:10,validateOnRender:false,validateOnChange:true,validator:[{min:20}]})
+                var field = new Y.inputEx.Field({value:10,validateAfterRendered:true,validator:[{min:20}]})//validateAfterRendered default to true
+                field._inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>') //dummy inputEl for test
+                field.render()
+                Y.Assert.isTrue(field._validated, 'shall have been validated on render')
+                Y.Assert.isTrue(field._violations.length > 0)
+            },
+
+            testValidateOnChangeAttribute:function() {
+                var container = Y.Node.create('<div id="testValidateOnChangeAttribute"></div>')
+                Y.get('#test').appendChild(container)
+                var field = new Y.inputEx.Field({value:10,validateAfterRendered:false,validateOnChange:true,validator:[{min:20}]})
                 field._inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>') //dummy inputEl for test
                 field.render()
 

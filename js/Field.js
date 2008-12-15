@@ -226,8 +226,16 @@
              * @type boolean
              * @default true
              */
-            validateOnRender:{
-                value:true
+            validateAfterRendered:{
+                set:function(newVal) {
+                    Y.log(this + '.set("validateAfterRendered") - Field - newVal: ' + newVal, 'debug', 'inputEx')
+
+                    if (newVal === true) {
+                        this.after('field:render', Y.bind(function() {this.validate();}, this), this)
+                    }
+                },
+                value:true,
+                writeOnce:true
             },
 
             /**
