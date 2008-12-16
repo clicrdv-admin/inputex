@@ -203,7 +203,7 @@
              * //TODO: rename to fieldElClass?
              */
             fieldBoxClass:{
-                value:'inputEx-field'//,writeOnce:true
+                value:'inputEx-Field'//,writeOnce:true
             },
 
             /**
