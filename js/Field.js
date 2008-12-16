@@ -203,12 +203,13 @@
 
             /**
              * @attribute validateOnRender
+             * @description validate *after* rendered
              * @type boolean
              * @default true
              */
-            validateAfterRendered:{
+            validateOnRender:{
                 set:function(newVal) {
-                    Y.log(this + '.set("validateAfterRendered") - Field - newVal: ' + newVal, 'debug', 'inputEx')
+                    Y.log(this + '.set("validateOnRender") - Field - newVal: ' + newVal, 'debug', 'inputEx')
                     if (newVal === true) { this.after('render', Y.bind(function() {this.validate();}, this), this) }
                 },
                 value:true,
@@ -264,6 +265,8 @@
 
             /**
              * The Node of the Input element, e.g. <input ... />
+             * Avoid direct reference to this, use _getInputEl() instead. _getInputEl() will attemp to look up the field
+             * by id if _inputEl is null.
              */
             _inputEl:null, //reference to the Field node
 
@@ -297,6 +300,7 @@
                  */
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
             },
+
             /**
              * YUI Widget protected method
              */
@@ -304,8 +308,9 @@
                 Field.superclass._renderBoxClassNames.apply(this, arguments);
                 this.get('boundingBox').addClass(this.get('boundingBoxClass'))
             },
+
             /**
-             * YUI Widget protected method
+             * YUI Widget protected method. Overriden to disable the default focus behavior
              */
             _bindDOMListeners : function() {
                 Y.log(this + '._bindDOMListener() - _inputEl: ' + this._inputEl, 'debug', 'inputEx');
@@ -396,6 +401,9 @@
              */
             syncUI:function() {
                 Y.log(this + '.syncUI() - Field - begin', 'debug', 'inputEx');
+
+                //TODO move the focus class to bounding box, and utilize the YUI Widget mechanism
+
                 // remove previous class
                 if (this.previousState) {
                     // remove invalid className for both required and invalid fields
@@ -591,7 +599,7 @@
             },
 
             /**
-             * validate only on 'field:change'
+             * validate depends on the validateOnChange and validateOnRender 
              */
             validate: function(value) {
                 try {

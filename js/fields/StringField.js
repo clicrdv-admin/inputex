@@ -45,19 +45,29 @@
             _typeInviteOn:false,//type invite is being shown
 
             initializer : function(cfg) {
-                if (this.get('typeInvite')) {
+                /*if (this.get('typeInvite')) {
                     this.on('field:render', this._updateTypeInvite, this)
                     this.on('field:focus', this._updateTypeInvite, this)
                     this.on('field:blur', this._updateTypeInvite, this)
                     Y.log(this + '.initializer() - StringField - initialized - subscribed _updateTypeInvite to render,focus & blur', 'debug', 'inputEx');
                 } else {
                     //Y.log(this + '.initializer() - StringField - initialized', 'debug', 'inputEx');
-                }
+                }*/
             },
 
             syncUI:function() {
                 StringField.superclass.syncUI.apply(this, arguments);
                 this._updateTypeInvite();
+            },
+
+            bindUI:function() {
+                StringField.superclass.bindUI.apply(this, arguments);
+                /*if (Y.UA.ie) { // refer to inputEx-95
+                 new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
+                 field.blur();
+                 field.focus();
+                 }}).enable()
+                 }*/
             },
 
             renderComponent:function(container) {
@@ -84,18 +94,6 @@
                     Y.log(this + '.renderComponent() - StringField - e: ' + e, 'error', 'inputEx');
                 }
             },
-            /*
-             _initEvents:function() {
-             StringField.superclass._initEvents.apply(this, arguments);
-             //var el = this.get('contentBox'), id = this.getID(), field = el.query('#' + id + '-field')
-
-             *//*if (Y.UA.ie) { // refer to inputEx-95
-             new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
-             field.blur();
-             field.focus();
-             }}).enable()
-             }*//*
-             },*/
 
             validate:function() {
                 if (this._typeInviteOn) {
@@ -104,13 +102,6 @@
                     StringField.superclass.validate.apply(this, arguments);
                 }
             },
-
-            /*  _updateToInputEl:function(v) {
-             if (!this._typeInviteOn || this.get('value') === '') {
-             StringField.superclass._updateToInputEl.apply(this, arguments);
-             this._updateTypeInvite();
-             }
-             },*/
 
             _updateTypeInvite: function() {
                 if (!this.get('typeInvite')) return;
@@ -136,6 +127,10 @@
                     }
                 }
             },
+
+            /**
+             * Override the parent _updateFromInputEl, with logic to handle typeInvite
+             */
             _updateFromInputEl:function() {
                 var inputEl = this._getInputEl();
                 var typeInviteEnabled = this.get('contentBox').hasClass('inputEx-typeInvite')
@@ -147,31 +142,6 @@
                     Y.log(this + '._updateFromInputEl() - StringField - update value from "' + this.get('value') + '" to "' + inputEl.get('value') + '"', 'debug', 'inputEx');
                     this.set('value', inputEl.get('value'))
                 }
-            },
-            /*_inputElOnChange:function() {
-             var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
-             var isChanged = oldVal !== newVal
-             Y.log(this + '._inputElOnChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
-             if (isChanged && !this._typeInviteOn) { this.set('value', newVal) }
-             },*/
-            /*
-             _onFocus:function() {
-             StringField.superclass._onFocus.apply(this, arguments);
-             },
-             */
-
-            _onKeyPress:function() {
-                // override me
-            },
-            _onKeyUp:function() {
-                // override me
-                //
-                //   example :
-                //
-                //   lang.later(0, this, this.setClassFromState);
-                //
-                //     -> Set style immediatly when typing in the field
-                //     -> Call setClassFromState escaping the stack (after the event has been fully treated, because the value has to be updated)
             }
         });
 

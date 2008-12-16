@@ -91,7 +91,7 @@
             testValidateAfterRendered:function() {
                 var container = Y.Node.create('<div id="testValidateAfterRendered"></div>')
                 Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:10,validateAfterRendered:true,validator:[{min:20}]})//validateAfterRendered default to true
+                var field = new Y.inputEx.Field({value:10,validateOnRender:true,validator:[{min:20}]})//validateAfterRendered default to true
                 field.renderComponent = this.data.createTextField;
                 field.render(container)
                 Y.Assert.isTrue(field._validated, 'shall have been validated on render')
@@ -101,7 +101,7 @@
             testValidateOnChangeAttribute:function() {
                 var container = Y.Node.create('<div id="testValidateOnChangeAttribute"></div>')
                 Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:10,validateAfterRendered:false,validateOnChange:true,validator:[{min:20}]})
+                var field = new Y.inputEx.Field({value:10,validateOnRender:false,validateOnChange:true,validator:[{min:20}]})
                 field.renderComponent = this.data.createTextField;
                 field.render(container)
 
@@ -125,32 +125,10 @@
                 Y.Assert.areEqual(0, field._violations.length); //onchange validation is disabled
             },
 
-            testInputElSync:function() {
-                var container = Y.Node.create('<div id="testInputElSync"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'defaultValue',validateAfterRendered:false,validateOnChange:false})
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-
-                Y.Assert.areEqual(field.get('value'), field._getInputEl().get('value'))
-
-                //change by API
-                field.set('value', 'setByAPI')
-                Y.Assert.areEqual('setByAPI', field._getInputEl().get('value'))
-
-                //change by field
-                field._getInputEl().focus()
-                field._getInputEl().set('value', 'setByInputEl')
-                field._getInputEl().blur()
-                //fire a change event
-                Y.Assert.areEqual('setByInputEl', field.get('value'))
-
-            },
-
             testHideShow:function() {
                 var container = Y.Node.create('<div id="testHideShow"></div>')
                 Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'defaultValue',validateAfterRendered:false,validateOnChange:false})
+                var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
                 field.renderComponent = this.data.createTextField;
                 field.render(container)
 
@@ -172,7 +150,7 @@
             testEnableDisable:function() {
                 var container = Y.Node.create('<div id="testEnableDisable"></div>')
                 Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'defaultValue',validateAfterRendered:false,validateOnChange:false})
+                var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
                 field.renderComponent = this.data.createTextField;
                 field.render(container)
 
@@ -189,8 +167,28 @@
                 field.enable()
                 Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
                 Y.Assert.isFalse(field._getInputEl().get('disabled'))
-            }
+            },
 
+            testInputElSync:function() {
+                var container = Y.Node.create('<div id="testInputElSync"></div>')
+                Y.get('#test').appendChild(container)
+                var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
+                field.renderComponent = this.data.createTextField;
+                field.render(container)
+
+                Y.Assert.areEqual(field.get('value'), field._getInputEl().get('value'))
+
+                //change by API
+                field.set('value', 'setByAPI')
+                Y.Assert.areEqual('setByAPI', field._getInputEl().get('value'))
+
+                //change by field
+                field._getInputEl().focus()
+                field._getInputEl().set('value', 'setByInputEl')
+                field._getInputEl().blur()
+                //fire a change event
+                Y.Assert.areEqual('setByInputEl', field.get('value'))
+            }
 
             //TODO add test case for focus
         })
