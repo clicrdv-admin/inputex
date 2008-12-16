@@ -224,10 +224,10 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             Y.Assert.areEqual('setByAPI', field._getInputEl().get('value'))
 
             //change by field
-            field._getInputEl().focus()
+            //field._getInputEl().focus()
             field._getInputEl().set('value', 'setByInputEl')
-            field._getInputEl().blur()
-            //fire a change event
+            field._inputElOnChange();//simulate onChange event, TODO: see if Y.simulate could do the job
+            //field._getInputEl().blur()
             Y.Assert.areEqual('setByInputEl', field.get('value'))
         },
 
