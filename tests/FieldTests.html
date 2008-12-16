@@ -306,9 +306,9 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             // field
             // Remarks: renderComponent is a dummy implementation to avoid error, DOM structure shall not be tested
 
-            var fieldBox = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-field')
+            var fieldBox = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-Field')
             Y.Assert.isInstanceOf(Y.Node, fieldBox, 'fieldBox is not a Node')
-            Y.Assert.isTrue(fieldBox.hasClass('inputEx-field'), 'shall have class "inputEx-field"')
+            Y.Assert.isTrue(fieldBox.hasClass('inputEx-Field'), 'shall have class "inputEx-Field"')
             Y.Assert.isInstanceOf(Y.Node, fieldBox.query('div.inputEx-description'), 'description is not a Node')
             Y.Assert.areEqual(id + '-description', fieldBox.query('div.inputEx-description').getAttribute('id'))
             Y.Assert.isTrue(fieldBox.query('div.inputEx-description').hasClass('inputEx-description'))
