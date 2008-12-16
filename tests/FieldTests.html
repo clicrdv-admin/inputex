@@ -44,6 +44,47 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             Y.Assert.isInstanceOf(Y.inputEx.Field, field, 'The field is not a Y.inputEx.Field')
         },
 
+        testID:function() {
+            var container = Y.Node.create('<div id="testInputElSync"></div>')
+            Y.get('#test').appendChild(container)
+            var field;
+
+            // id only
+            field = new Y.inputEx.Field({id:'idAsID'})
+            Y.Assert.areEqual('idAsID', field.get('id'))
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+            Y.Assert.areEqual('idAsID', field.get('boundingBox').get('id'))
+            container.set('innerHTML', '')
+
+            // boundingBox default ID
+            var boundingBox = Y.Node.create('<div id="domID"></div>')
+            container.appendChild(boundingBox)
+            field = new Y.inputEx.Field({boundingBox:'#domID'}) //both String ID and node are ok
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+            Y.Assert.areEqual('domID', field.get('boundingBox').get('id'))
+            Y.Assert.areEqual('domID', field.get('id'))
+            container.set('innerHTML', '')
+
+            // name only
+            field = new Y.inputEx.Field({name:'nameAsID'})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+            Y.Assert.areEqual('nameAsID', field.get('boundingBox').get('id'))
+            Y.Assert.areEqual('nameAsID', field.get('id'))
+            container.set('innerHTML', '')
+
+            // absense, id shall prefix with 'inputEx'
+            field = new Y.inputEx.Field()
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+            Y.Assert.areEqual('inputEx-', field.get('boundingBox').get('id').substring(0, 8))
+            Y.Assert.areEqual('inputEx-', field.get('id').substring(0, 8))
+
+            container.set('innerHTML', '')
+        },
+
         /**
          * This test is to ensure widget behavior is correctly inherited
          */
@@ -190,19 +231,31 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             Y.Assert.areEqual('setByInputEl', field.get('value'))
         },
 
-        testID:function() {
-            var container = Y.Node.create('<div id="testInputElSync"></div>')
-            Y.get('#test').appendChild(container)
-            var field;
-            field = new Y.inputEx.Field({id:'testID'})
-            Y.Assert.areEqual('testID', field.get('id'))
-
-            field = new Y.inputEx.Field({id:'testID'})
-            Y.Assert.areEqual('testID', field.get('id'))
-            
-        }
-
+        X:{}
         //TODO add test case for focus
+    })
+
+    Y.inputEx.tests.FieldDevTests = new Y.Test.Case({
+        name: 'Field Tests under Development',
+        setUp:function() {
+            this.data = {
+                createTextField:  function(container) {
+                    var field = Y.Node.create('<input id="' + this.getID() + '-field" type="text"/>')
+                    if (this.get('name')) field.set('name', this.get('name'))
+                    if (this.get('value')) field.set('value', this.get('value'))
+                    container.appendChild(field)
+                    this._inputEl = field
+                }
+            }
+            Y.get('#test').set('innerHTML', '')
+        },
+        tearDown:function() {
+            delete this.data;
+        },
+
+        testNth:function() {}
+
+
     })
 
 
@@ -214,6 +267,7 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
     console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
 
     Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
+    //Y.Test.Runner.add(Y.inputEx.tests.FieldDevTests);
     Y.Test.Runner.run();
 
 })

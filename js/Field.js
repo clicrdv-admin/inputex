@@ -69,6 +69,7 @@
             this.publish(EV_BLUR);
             this.publish(EV_CHANGE);
             this.publish(EV_VALIDATED);
+
             //TODO register to a page-scope inputEx manager. reference: DDM._regDrag(this);
         };
         Y.augment(Field, Y.Event.Target);
@@ -82,8 +83,17 @@
             name:{},
 
             /**
-             * id is optional. When it is defined, it will be used as the id of the top level element of the field.
-             * (but not the id of the <input> element)
+             * ID is the key reference of every field. It's identical to the id of the boundingBox, and every component,
+             * e.g. label, inputBox, input field etc. uses the ID as ID prefix. e.g. if the field ID is field0, the
+             * label ID is field0-label.
+             *
+             * Field ID is determined in the following sequence:
+             * 1. 'id' attribute
+             * 2. 'id' of boundingBox, if presence
+             * 3. 'name' attribute, if presence
+             * 4. a generated ID by Y.guid('inputEx')
+             *
+             * Notice that ID is not the same as the ID of input element (<input>)
              *
              * @attribute id
              * @type String
@@ -92,7 +102,11 @@
              */
             id:{
                 valueFn:function() {
-                    return this.get('name') || Y.guid('inputEx')
+                    var id;
+                    id = this._boundingBoxOriginalID
+                    id = id || this.get('name')
+                    id = id || Y.guid('inputEx')
+                    return id;
                 },
                 writeOnce:true
             },
@@ -265,7 +279,7 @@
              *
              * //TODO rename it ti _inputBox or inputElBox
              */
-            _inputElBox:null,
+            _inputBox:null,
 
             /**
              * The Node of the Input element, e.g. <input ... />
@@ -274,7 +288,6 @@
              */
             _inputEl:null, //reference to the Field node
 
-            _eventInitialized:false,
             _previousState:null,
             /**
              * _state.validated - indicate the field has been validated. it doesn't mean it is valid.
@@ -291,6 +304,7 @@
             _fnValidate:null,
 
             initializer : function(cfg) {
+                this._initID(this.get('id'))
                 this.on(EV_CHANGE, this.syncUI, this);
                 //remarks: the following hasFocusChange handling override the widget default, and no yui-xxx-focus class will be set
                 /*
@@ -303,6 +317,18 @@
                  }, this)
                  */
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
+            },
+
+
+            /**
+             * Called by ID attribute
+             */
+            _initID:function(id) {
+                if (this.get('boundingBox')) this.get('boundingBox').set('id', id)
+                if (this.get('contentBox')) this.get('contentBox').set('id', id + '-content')
+                if (this._inputBox) this._inputBox.set('id', id + '-inputBox')
+                if (this._getInputEl()) this._getInputEl().set('id', id + '-field')
+                Y.log(this + '._initID() - id: ' + id, 'info', 'inputEx')
             },
 
             /**
@@ -336,18 +362,27 @@
             },
 
             /**
+             * Due to a bug in PR2 that writeOnce attribute cannot be overridden, 'boundingBox' will be loaded before 'id'.
+             * When id is loaded, and if id is not defined, _boundingBoxOriginalID will be checked to define field ID
+             *
+             * TODO: move this logic to boundingBox attribute
+             */
+            _boundingBoxOriginalID:null,
+            _setBoundingBox:function(node) {
+                node = Y.Node.get(node)
+                if (node && node.get('id')) {
+                    Y.log(this + '._setBoundingBox() - node.id: ' + node.get('id'), 'debug', 'inputEx')
+                    this._boundingBoxOriginalID = node.get('id')
+                }
+                return this._setBox(node, this.BOUNDING_TEMPLATE);
+            },
+
+            /**
              * YUI Widget protected method. Overriden to support variable
              */
-            _setBox : function(node, template) {
-                Y.log('template: ' + template, 'warn', 'dev')
-                Y.log('this.getAtts(): ' + Y.JSON.stringify(this.getAtts()), 'warn', 'dev')
-                Y.log('id: ' + this.getAtts().id, 'warn', 'dev')
-                Y.log('substitute: ' + Y.substitute(template, this.getAtts()), 'warn', 'dev')
-                node = Y.Node.get(node) || Y.Node.create(Y.substitute(template, this.getAtts()))
-
-                var sid = Y.stamp(node);
-                if (!node.get('id')) { node.set('id', sid); }
-                return node;
+            _setContentBox:function(node) {
+                var template = Y.substitute(this.CONTENT_TEMPLATE, this.CONTENT_COMPONENTS)
+                return this._setBox(node, template)
             },
 
             renderUI:function() {
@@ -365,19 +400,19 @@
                         //TODO the trunk has error. backport the label for
                     }
 
-                    this._inputElBox = Y.Node.create('<div class="' + this.get('className') + '"></div>');
+                    this._inputBox = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
-                    this.renderComponent(this._inputElBox);
+                    this.renderComponent(this._inputBox);
                     this._inputEl = this._getInputEl();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
                         desc.set('innerHTML', this.get('description'))
-                        this._inputElBox.appendChild(desc)
+                        this._inputBox.appendChild(desc)
                         //TODO update docs: use description instead of 'desc', unless we change them all globally, always be consistent in naming
                     }
 
-                    el.appendChild(this._inputElBox);
+                    el.appendChild(this._inputBox);
 
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
@@ -389,6 +424,7 @@
                     Y.log(this + '.renderUI() - Field - ' + e, 'error', 'inputEx');
                 }
             },
+
 
             /**
              * @abstract
@@ -402,8 +438,11 @@
                  container.appendChild(field)*/
             },
 
+            _bindUIDone:false,
+
             bindUI:function() {
-                if (this._eventInitialized) return;
+                if (this._bindUIDone) return;
+
                 this._inputEl.on('focus', Y.bind(this._onFocus, this));
                 this._inputEl.on('blur', Y.bind(this._onBlur, this));
 
@@ -415,7 +454,7 @@
                 } else {
                     Y.log(this + '.bindUI() - Field - no available field', 'warn', 'inputEx');
                 }
-                this._eventInitialized = true;
+                this._bindUIDone = true;
             },
 
             /**

@@ -157,18 +157,18 @@
                 this._inputEl = Y.Node.create('<input id="' + this.getID() + '-field" type="checkbox"/>');
                 this._inputEl.set('checked', this.get('checked'))
                 this._inputEl.set('value', value)
-                this._inputElBox.appendChild(this._inputEl);
+                this._inputBox.appendChild(this._inputEl);
 
                 // render right hand side label
                 var rightLabelEl = Y.Node.create('<label for="' + this.getID() + '" class="inputEx-CheckBox-rightLabel">' + this.get('rightLabel') + '</label>');
-                this._inputElBox.appendChild(rightLabelEl);
+                this._inputBox.appendChild(rightLabelEl);
 
                 // Keep state of checkbox in a hidden field (format : this.checkedValue or this.uncheckedValue)
                 if (this.get('hiddenField')) {
                     this._hiddenInputEl = Y.Node.create('<input id="' + this.getID() + '-hidden" type="hidden"/>')
                     this._hiddenInputEl.set('name', this.get('name') || '')
                     this._hiddenInputEl.set('value', value);
-                    this._inputElBox.appendChild(this._hiddenInputEl);
+                    this._inputBox.appendChild(this._hiddenInputEl);
                 }
             },
 

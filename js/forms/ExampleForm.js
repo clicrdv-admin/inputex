@@ -193,7 +193,7 @@
                 return this;
             },
 
-            render:function() {
+            renderUI:function() {
                 try {
                     Y.log('render() - begin - inputEg.isHighlightEnabled: ' + inputEg.isHighlightEnabled, 'debug', 'inputEg')
 

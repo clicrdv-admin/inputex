@@ -31,7 +31,7 @@
                 Y.log(this + '.initializer() - AccordionForm -  initialized', 'debug', 'inputEx');
             },
 /*
-            render:function() {
+            renderUI:function() {
                 AccordionForm.superclass.render.apply(this, arguments);
             },*/
 
