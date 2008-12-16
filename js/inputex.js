@@ -21,7 +21,7 @@
                 if (fieldClass === null) fieldClass = Y.inputEx.StringField;
             }
             else {
-                fieldClass = fieldOptions.fieldClass ? fieldOptions.fieldClass : Y.inputEx.StringField;
+                fieldClass = fieldOptions.fieldBoxClass ? fieldOptions.fieldBoxClass : Y.inputEx.StringField;
             }
 
             // yui3: new mechanism, try to guess a class

@@ -6,10 +6,10 @@
     <script type="text/javascript" src="../lib/tabifier/tabifier.js"></script>
 </head>
 <body class="yui-skin-sam">
-<form id="testForm">
+<!--<form id="testForm">-->
     <div id="test"></div>
-    <input type="submit"/>
-</form>
+    <!--<input type="submit"/>-->
+<!--</form>-->
 <textarea id="result" rows="30" cols="120"></textarea>
 
 <script type="text/javascript">
@@ -59,11 +59,11 @@
 
             runTabifier('result', 'result', 'HTML')
 
-            Y.get('#testForm').on('submit', function() {
+            /*Y.get('#testForm').on('submit', function() {
                 alert(field.get('value'));
                 return false;
             }
-                    )
+                    )*/
         } catch(e) {
             Y.log(e, 'error', 'inputEx');
         }

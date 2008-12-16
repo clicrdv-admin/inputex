@@ -4,6 +4,8 @@
     YUI.add('field', function(Y) {
         Y.inputEx = Y.inputEx || {};
 
+
+        //TODO: review all events, some are overlapped with widget events and may be removed
         /**
          * @module inputEx
          */
@@ -184,11 +186,11 @@
              * @type String
              */
             boundingBoxClass:{
-                value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
+                value:'inputEx-bounding'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
             },
 
             contentBoxClass:{
-                value:'inputEx-contentBox'
+                value:'inputEx-content'
             },
 
             /**
@@ -200,8 +202,8 @@
              * user may set a margin for a field, or position it specially.
              * //TODO: rename to fieldElClass?
              */
-            className:{
-                value:'inputEx-Field'//,writeOnce:true
+            fieldBoxClass:{
+                value:'inputEx-field'//,writeOnce:true
             },
 
             /**
@@ -304,7 +306,7 @@
             _fnValidate:null,
 
             initializer : function(cfg) {
-                this._initID(this.get('id'))
+                this._initIDAndClasses(this.get('id'))
                 this.on(EV_CHANGE, this.syncUI, this);
                 //remarks: the following hasFocusChange handling override the widget default, and no yui-xxx-focus class will be set
                 /*
@@ -323,9 +325,19 @@
             /**
              * Called by ID attribute
              */
-            _initID:function(id) {
-                if (this.get('boundingBox')) this.get('boundingBox').set('id', id)
-                if (this.get('contentBox')) this.get('contentBox').set('id', id + '-content')
+            _initIDAndClasses:function(id) {
+                if (this.get('boundingBox')) {
+                    this.get('boundingBox').set('id', id)
+                    if (!this.get('boundingBox').hasClass(this.get('boundingBoxClass'))) {
+                        this.get('boundingBox').addClass(this.get('boundingBoxClass'))
+                    }
+                }
+                if (this.get('contentBox')) {
+                    this.get('contentBox').set('id', id + '-content')
+                    if (!this.get('contentBox').hasClass(this.get('contentBoxClass'))) {
+                        this.get('contentBox').addClass(this.get('contentBoxClass'))
+                    }
+                }
                 if (this._inputBox) this._inputBox.set('id', id + '-inputBox')
                 if (this._getInputEl()) this._getInputEl().set('id', id + '-field')
                 Y.log(this + '._initID() - id: ' + id, 'info', 'inputEx')
@@ -352,15 +364,6 @@
                 }, this))
             },
 
-            CONTENT_TEMPLATE:'<div id="{id}-content" class="{className}"></div>',
-
-            CONTENT_COMPONENTS:{
-                label:'<div><labe></label></div>',
-                message:'<div><labe></label></div>',
-                inputElBox:'<div></div>',
-                description:'<div><labe></label></div>'
-            },
-
             /**
              * Due to a bug in PR2 that writeOnce attribute cannot be overridden, 'boundingBox' will be loaded before 'id'.
              * When id is loaded, and if id is not defined, _boundingBoxOriginalID will be checked to define field ID
@@ -377,18 +380,9 @@
                 return this._setBox(node, this.BOUNDING_TEMPLATE);
             },
 
-            /**
-             * YUI Widget protected method. Overriden to support variable
-             */
-            _setContentBox:function(node) {
-                //var template = Y.substitute(this.CONTENT_TEMPLATE, this.CONTENT_COMPONENTS)
-                var template = this.CONTENT_TEMPLATE
-                return this._setBox(node, template)
-            },
-
             renderUI:function() {
                 try {
-                    var el = this.get('contentBox'), id = el.get('id');
+                    var el = this.get('contentBox'), id = this.get('id');
                     el.addClass(this.get('boundingBoxClass'))
 
                     if (this.get('required')) el.addClass('inputEx-required')
@@ -401,7 +395,7 @@
                         //TODO the trunk has error. backport the label for
                     }
 
-                    this._inputBox = Y.Node.create('<div class="' + this.get('className') + '"></div>');
+                    this._inputBox = Y.Node.create('<div class="' + this.get('fieldBoxClass') + '"></div>');
 
                     this.renderComponent(this._inputBox);
                     this._inputEl = this._getInputEl();
@@ -497,7 +491,7 @@
 
             displayMessage:function(msg) {
                 var el = this.get('contentBox')
-                var fieldDiv = el.query('div.' + this.get('className'));
+                var fieldDiv = el.query('div.' + this.get('fieldBoxClass'));
                 if (!fieldDiv) {
                     return;
                 }
