@@ -57,7 +57,9 @@ General YUI/JavaScript notes:
 
 To report to YUI3 team:
   - [docs]  YUI.add() doc missed the required argument.
-     YUI add ( name , namespace , fn , version ) 
+     YUI add ( name , namespace , fn , version )
+
+  - ATTRS / getAtts()?
 
 
 Naming conventions

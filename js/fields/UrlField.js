@@ -65,7 +65,7 @@
                     this._faviconEl.on('click', this.focus, this)
 
                     // Create the favicon image tag
-                    this._inputWrapperEl.insertBefore(this._faviconEl, this._inputWrapperEl.get('firstChild'));
+                    this._inputElBox.insertBefore(this._faviconEl, this._inputElBox.get('firstChild'));
 
                     this.get('contentBox').removeClass('nofavicon'); //for use when favicon attribute is dynamically changed
 

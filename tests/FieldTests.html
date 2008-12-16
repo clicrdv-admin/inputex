@@ -12,199 +12,211 @@
 <div id="test"></div>
 
 <script type="text/javascript">
-    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'field', function(Y) {
-        Y.namespace('inputEx.tests')
-        Y.inputEx.tests.FieldTests = new Y.Test.Case({
-            name: 'Field Tests',
-            setUp:function() {
-                this.data = {
-                    createTextField:  function(container) {
-                        var field = Y.Node.create('<input id="' + this.getID() + '-field" type="text"/>')
-                        if (this.get('name')) field.set('name', this.get('name'))
-                        if (this.get('value')) field.set('value', this.get('value'))
-                        container.appendChild(field)
-                        this._inputEl = field
-                    }
+inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'field', function(Y) {
+    Y.namespace('inputEx.tests')
+    Y.inputEx.tests.FieldTests = new Y.Test.Case({
+        name: 'Field Tests',
+        setUp:function() {
+            this.data = {
+                createTextField:  function(container) {
+                    var field = Y.Node.create('<input id="' + this.getID() + '-field" type="text"/>')
+                    if (this.get('name')) field.set('name', this.get('name'))
+                    if (this.get('value')) field.set('value', this.get('value'))
+                    container.appendChild(field)
+                    this._inputEl = field
                 }
-                Y.get('#test').set('innerHTML', '')
-            },
-            tearDown:function() {
-                delete this.data;
-            },
-
-
-            testLoader:function() {
-                Y.Assert.isTrue(typeof(Y.inputEx) !== 'undefined')
-                Y.Assert.isTrue(typeof(Y.inputEx.Field) !== 'undefined')
-            },
-
-            testConstructor:function() {
-                var field = new Y.inputEx.Field()
-                Y.Assert.isNotUndefined(field)
-                Y.Assert.isInstanceOf(Y.inputEx.Field, field, 'The field is not a Y.inputEx.Field')
-            },
-
-            /**
-             * This test is to ensure widget behavior is correctly inherited
-             */
-            testWidgetAttributes:function() {
-                var container = Y.Node.create('<div id="test_widgetAttributes"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field()
-                field.renderComponent = this.data.createTextField;
-
-                // 'rendered'
-                Y.Assert.isFalse(field.get('rendered'), 'rendered shall be false before render()')
-                field.render(container);
-                Y.Assert.isTrue(field.get('rendered'), 'rendered shall be true after render()')
-
-                // 'hasFocus'
-                Y.Assert.isFalse(field.get('hasFocus'), 'hasFocus shall be false before focus()')
-                field.focus();
-                Y.Assert.isTrue(field.get('hasFocus'), 'hasFocus shall be true after focus()')
-            } ,
-
-            testEvent_Change:function() {
-                var container = Y.Node.create('<div id="testEvent_Change"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'oldValue'})
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-
-                Y.Assert.areEqual('oldValue', field.get('value'))
-
-                field.on("change", function(evt, n, o) { // both 'change' and 'field:change' could be used
-                    this.resume(function() {
-                        Y.Assert.areEqual('newValue', n)
-                        Y.Assert.areEqual('oldValue', o)
-                        Y.Assert.areEqual('oldValue', field.get('value'));// on change is called during the change, so the value is not updated yet
-                    });
-                }, this, true);
-
-                field._inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>') //dummy inputEl for test
-                field.set('value', 'newValue')
-                Y.Assert.areEqual('newValue', field.get('value'))
-                Y.Assert.areEqual('newValue', field._inputEl.get('value'), 'input change by api is not sync to the inputEl')
-                this.wait(2000);
-            },
-
-            testValidateAfterRendered:function() {
-                var container = Y.Node.create('<div id="testValidateAfterRendered"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:10,validateOnRender:true,validator:[{min:20}]})//validateAfterRendered default to true
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-                Y.Assert.isTrue(field._validated, 'shall have been validated on render')
-                Y.Assert.isTrue(field._violations.length > 0)
-            },
-
-            testValidateOnChangeAttribute:function() {
-                var container = Y.Node.create('<div id="testValidateOnChangeAttribute"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:10,validateOnRender:false,validateOnChange:true,validator:[{min:20}]})
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-
-                //upon rendered, the field hv not been validated
-                Y.Assert.isFalse(field._validated, 'shall not validate on render')
-                Y.Assert.areEqual(0, field._violations.length)
-
-                //set flag to true and update value to trigger validation
-                field.set('validateOnChange', true)
-                field.set('value', 15)
-                Y.Assert.isTrue(field._validated)
-                Y.Assert.isTrue(field._violations.length > 0)
-
-                // set to a valid value
-                field.set('value', 20)
-                Y.Assert.areEqual(0, field._violations.length)
-
-                //set flag to false
-                field.set('validateOnChange', false)
-                field.set('value', 15)
-                Y.Assert.areEqual(0, field._violations.length); //onchange validation is disabled
-            },
-
-            testHideShow:function() {
-                var container = Y.Node.create('<div id="testHideShow"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-
-                // default, after rendered
-                Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-hidden'), 'shall not be hidden right after rendered')
-                Y.Assert.areEqual('block', field.get('boundingBox').getStyle('display'))
-
-                // hide
-                field.hide()
-                Y.Assert.isTrue(field.get('boundingBox').hasClass('yui-field-hidden'), 'boundingBox shall be hidden')
-                Y.Assert.areEqual('none', field.get('boundingBox').getStyle('display'))
-
-                // show
-                field.show()
-                Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-hidden'), 'boundingBox not be hidden after show()')
-                Y.Assert.areEqual('block', field.get('boundingBox').getStyle('display'))
-            },
-
-            testEnableDisable:function() {
-                var container = Y.Node.create('<div id="testEnableDisable"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-
-                // default, after rendered
-                Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
-                Y.Assert.isFalse(field._getInputEl().get('disabled'))
-
-                // disable
-                field.disable()
-                Y.Assert.isTrue(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
-                Y.Assert.isTrue(field._getInputEl().get('disabled'))
-
-                // enable
-                field.enable()
-                Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
-                Y.Assert.isFalse(field._getInputEl().get('disabled'))
-            },
-
-            testInputElSync:function() {
-                var container = Y.Node.create('<div id="testInputElSync"></div>')
-                Y.get('#test').appendChild(container)
-                var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
-                field.renderComponent = this.data.createTextField;
-                field.render(container)
-
-                Y.Assert.areEqual(field.get('value'), field._getInputEl().get('value'))
-
-                //change by API
-                field.set('value', 'setByAPI')
-                Y.Assert.areEqual('setByAPI', field._getInputEl().get('value'))
-
-                //change by field
-                field._getInputEl().focus()
-                field._getInputEl().set('value', 'setByInputEl')
-                field._getInputEl().blur()
-                //fire a change event
-                Y.Assert.areEqual('setByInputEl', field.get('value'))
             }
+            Y.get('#test').set('innerHTML', '')
+        },
+        tearDown:function() {
+            delete this.data;
+        },
 
-            //TODO add test case for focus
-        })
 
+        testLoader:function() {
+            Y.Assert.isTrue(typeof(Y.inputEx) !== 'undefined')
+            Y.Assert.isTrue(typeof(Y.inputEx.Field) !== 'undefined')
+        },
 
-        //TODO: Y.Console{width:'600px'} won't work, simplify the following once the console height and width have been fixed
-        var console = new Y.Console()
-        console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
-        console.render()
-        console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
-        console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
+        testConstructor:function() {
+            var field = new Y.inputEx.Field()
+            Y.Assert.isNotUndefined(field)
+            Y.Assert.isInstanceOf(Y.inputEx.Field, field, 'The field is not a Y.inputEx.Field')
+        },
 
-        Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
-        Y.Test.Runner.run();
+        /**
+         * This test is to ensure widget behavior is correctly inherited
+         */
+        testWidgetAttributes:function() {
+            var container = Y.Node.create('<div id="test_widgetAttributes"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field()
+            field.renderComponent = this.data.createTextField;
 
+            // 'rendered'
+            Y.Assert.isFalse(field.get('rendered'), 'rendered shall be false before render()')
+            field.render(container);
+            Y.Assert.isTrue(field.get('rendered'), 'rendered shall be true after render()')
+
+            // 'hasFocus'
+            Y.Assert.isFalse(field.get('hasFocus'), 'hasFocus shall be false before focus()')
+            field.focus();
+            Y.Assert.isTrue(field.get('hasFocus'), 'hasFocus shall be true after focus()')
+        } ,
+
+        testEvent_Change:function() {
+            var container = Y.Node.create('<div id="testEvent_Change"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:'oldValue'})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+
+            Y.Assert.areEqual('oldValue', field.get('value'))
+
+            field.on("change", function(evt, n, o) { // both 'change' and 'field:change' could be used
+                this.resume(function() {
+                    Y.Assert.areEqual('newValue', n)
+                    Y.Assert.areEqual('oldValue', o)
+                    Y.Assert.areEqual('oldValue', field.get('value'));// on change is called during the change, so the value is not updated yet
+                });
+            }, this, true);
+
+            field._inputEl = Y.Node.create('<input value="' + field.get('value') + '"/>') //dummy inputEl for test
+            field.set('value', 'newValue')
+            Y.Assert.areEqual('newValue', field.get('value'))
+            Y.Assert.areEqual('newValue', field._inputEl.get('value'), 'input change by api is not sync to the inputEl')
+            this.wait(2000);
+        },
+
+        testValidateAfterRendered:function() {
+            var container = Y.Node.create('<div id="testValidateAfterRendered"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:10,validateOnRender:true,validator:[{min:20}]})//validateAfterRendered default to true
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+            Y.Assert.isTrue(field._validated, 'shall have been validated on render')
+            Y.Assert.isTrue(field._violations.length > 0)
+        },
+
+        testValidateOnChangeAttribute:function() {
+            var container = Y.Node.create('<div id="testValidateOnChangeAttribute"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:10,validateOnRender:false,validateOnChange:true,validator:[{min:20}]})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+
+            //upon rendered, the field hv not been validated
+            Y.Assert.isFalse(field._validated, 'shall not validate on render')
+            Y.Assert.areEqual(0, field._violations.length)
+
+            //set flag to true and update value to trigger validation
+            field.set('validateOnChange', true)
+            field.set('value', 15)
+            Y.Assert.isTrue(field._validated)
+            Y.Assert.isTrue(field._violations.length > 0)
+
+            // set to a valid value
+            field.set('value', 20)
+            Y.Assert.areEqual(0, field._violations.length)
+
+            //set flag to false
+            field.set('validateOnChange', false)
+            field.set('value', 15)
+            Y.Assert.areEqual(0, field._violations.length); //onchange validation is disabled
+        },
+
+        testHideShow:function() {
+            var container = Y.Node.create('<div id="testHideShow"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+
+            // default, after rendered
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-hidden'), 'shall not be hidden right after rendered')
+            Y.Assert.areEqual('block', field.get('boundingBox').getStyle('display'))
+
+            // hide
+            field.hide()
+            Y.Assert.isTrue(field.get('boundingBox').hasClass('yui-field-hidden'), 'boundingBox shall be hidden')
+            Y.Assert.areEqual('none', field.get('boundingBox').getStyle('display'))
+
+            // show
+            field.show()
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-hidden'), 'boundingBox not be hidden after show()')
+            Y.Assert.areEqual('block', field.get('boundingBox').getStyle('display'))
+        },
+
+        testEnableDisable:function() {
+            var container = Y.Node.create('<div id="testEnableDisable"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+
+            // default, after rendered
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
+            Y.Assert.isFalse(field._getInputEl().get('disabled'))
+
+            // disable
+            field.disable()
+            Y.Assert.isTrue(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
+            Y.Assert.isTrue(field._getInputEl().get('disabled'))
+
+            // enable
+            field.enable()
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('yui-field-disabled'), 'shall not be disabled right after rendered')
+            Y.Assert.isFalse(field._getInputEl().get('disabled'))
+        },
+
+        testInputElSync:function() {
+            var container = Y.Node.create('<div id="testInputElSync"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:'defaultValue',validateOnRender:false,validateOnChange:false})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+
+            Y.Assert.areEqual(field.get('value'), field._getInputEl().get('value'))
+
+            //change by API
+            field.set('value', 'setByAPI')
+            Y.Assert.areEqual('setByAPI', field._getInputEl().get('value'))
+
+            //change by field
+            field._getInputEl().focus()
+            field._getInputEl().set('value', 'setByInputEl')
+            field._getInputEl().blur()
+            //fire a change event
+            Y.Assert.areEqual('setByInputEl', field.get('value'))
+        },
+
+        testID:function() {
+            var container = Y.Node.create('<div id="testInputElSync"></div>')
+            Y.get('#test').appendChild(container)
+            var field;
+            field = new Y.inputEx.Field({id:'testID'})
+            Y.Assert.areEqual('testID', field.get('id'))
+
+            field = new Y.inputEx.Field({id:'testID'})
+            Y.Assert.areEqual('testID', field.get('id'))
+            
+        }
+
+        //TODO add test case for focus
     })
+
+
+    //TODO: Y.Console{width:'600px'} won't work, simplify the following once the console height and width have been fixed
+    var console = new Y.Console()
+    console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
+    console.render()
+    console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
+    console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
+
+    Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
+    Y.Test.Runner.run();
+
+})
 </script>
 </body>
 

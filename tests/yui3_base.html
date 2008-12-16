@@ -12,20 +12,26 @@
 <div id="test"></div>
 
 <script type="text/javascript">
-    YUI().use('node', 'base', 'json', 'yuitest','console', function(Y) {
+    YUI().use('node', 'base', 'json', 'yuitest', 'console', function(Y) {
         function Simple() {
             Simple.superclass.constructor.apply(this, arguments);
         }
         Simple.NAME = 'simple'
+        Simple.ATTRS = {
+            varFn:{valueFn:function() { return this.get('var1') + '-fn'}},
+            var1:{value:'variable1'},
+            var2:{value:'variable2'}
+
+        }
         Y.extend(Simple, Y.Base, {
             test:function() {
                 Y.log('test()', 'debug', 'dev')
-                //this.fire('tested', null, 'arg0', 'arg1'); //workaround
-                this.fire('tested', 'arg0', 'arg1');
+                this.fire('tested', null, 'arg0', 'arg1'); //workaround
+                //this.fire('tested', 'arg0', 'arg1');
             }
         })
 
-        Y.FireEventTest = new Y.Test.Case({
+        Y.BaseTest = new Y.Test.Case({
             name: 'FireEventTest',
             testFireEvent:function() {
                 var s = new Simple();
@@ -36,6 +42,14 @@
                 }, this, true);
                 s.test()
                 this.wait();
+            },
+            testAttributes:function() {
+                var s = new Simple();
+                Y.Assert.areEqual('variable1', s.getAtts().var1)
+            },
+            testTemplate:function() {
+                var s = new Simple({className:'simpleClass'});
+                Y.log('valueFn: ' + s.get('varFn'))
             }
         })
 
@@ -43,9 +57,9 @@
         console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
         console.render()
         console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
-        
+        console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
 
-        Y.Test.Runner.add(Y.FireEventTest);
+        Y.Test.Runner.add(Y.BaseTest);
         Y.Test.Runner.run();
     })
 </script>

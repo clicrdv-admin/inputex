@@ -91,7 +91,9 @@
              * //TODO implement this
              */
             id:{
-                value:null,
+                valueFn:function() {
+                    return this.get('name') || Y.guid('inputEx')
+                },
                 writeOnce:true
             },
 
@@ -169,6 +171,10 @@
              */
             boundingBoxClass:{
                 value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
+            },
+
+            contentBoxClass:{
+                value:'inputEx-contentBox'
             },
 
             /**
@@ -251,8 +257,6 @@
         };
 
         Y.extend(Field, Y.Widget, {
-            CONTENT_TEMPLATE:'<div class="inputEx-content"></div>',
-
             /**
              * The Node of the Input Wrapper. by default, it's a <div>. Notice that an inputElement may have more than
              * one wrapper. e.g. for StringField, it has two wrappers. This el reference to the outer wrapper. The
@@ -261,7 +265,7 @@
              *
              * //TODO rename it ti _inputBox or inputElBox
              */
-            _inputWrapperEl:null,
+            _inputElBox:null,
 
             /**
              * The Node of the Input element, e.g. <input ... />
@@ -322,6 +326,30 @@
                 }, this))
             },
 
+            CONTENT_TEMPLATE:'<div id="{id}-content" class="{className}"></div>',
+
+            CONTENT_COMPONENTS:{
+                label:'<div><labe></label></div>',
+                message:'<div><labe></label></div>',
+                inputElBox:'<div></div>',
+                description:'<div><labe></label></div>'
+            },
+
+            /**
+             * YUI Widget protected method. Overriden to support variable
+             */
+            _setBox : function(node, template) {
+                Y.log('template: ' + template, 'warn', 'dev')
+                Y.log('this.getAtts(): ' + Y.JSON.stringify(this.getAtts()), 'warn', 'dev')
+                Y.log('id: ' + this.getAtts().id, 'warn', 'dev')
+                Y.log('substitute: ' + Y.substitute(template, this.getAtts()), 'warn', 'dev')
+                node = Y.Node.get(node) || Y.Node.create(Y.substitute(template, this.getAtts()))
+
+                var sid = Y.stamp(node);
+                if (!node.get('id')) { node.set('id', sid); }
+                return node;
+            },
+
             renderUI:function() {
                 try {
                     var el = this.get('contentBox'), id = el.get('id');
@@ -337,19 +365,19 @@
                         //TODO the trunk has error. backport the label for
                     }
 
-                    this._inputWrapperEl = Y.Node.create('<div class="' + this.get('className') + '"></div>');
+                    this._inputElBox = Y.Node.create('<div class="' + this.get('className') + '"></div>');
 
-                    this.renderComponent(this._inputWrapperEl);
+                    this.renderComponent(this._inputElBox);
                     this._inputEl = this._getInputEl();
 
                     if (this.get('description')) {
                         var desc = Y.Node.create('<div id="' + id + '-description" class="inputEx-description"></div>')
                         desc.set('innerHTML', this.get('description'))
-                        this._inputWrapperEl.appendChild(desc)
+                        this._inputElBox.appendChild(desc)
                         //TODO update docs: use description instead of 'desc', unless we change them all globally, always be consistent in naming
                     }
 
-                    el.appendChild(this._inputWrapperEl);
+                    el.appendChild(this._inputElBox);
 
                     var floatBreaker = Y.Node.create('<div class="inputEx-br" style="clear:both"/>') //remarks: added inputEx-br for lookup
                     el.appendChild(floatBreaker)
@@ -599,7 +627,7 @@
             },
 
             /**
-             * validate depends on the validateOnChange and validateOnRender 
+             * validate depends on the validateOnChange and validateOnRender
              */
             validate: function(value) {
                 try {
@@ -671,12 +699,6 @@
                  this.set('value', Y.Lang.isUndefined(this.get('value')) ? '' : )*/
                 //this.setValue(lang.isUndefined(this.options.value) ? '' : this.options.value, sendUpdatedEvt);
             },
-
-            /**
-             * This method is provided for backward compatiability. Please use getField() instead
-             * @deprecated
-             */
-            getEl: function() { return this._getInputEl(); },
 
             /**
              * @deprecated
