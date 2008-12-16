@@ -23,7 +23,7 @@
 
             field = new Y.inputEx.StringField({
                 id:'myfield',
-                name:'hello',  elClass:'inputEx-fieldWrapper', showMsg:true,
+                name:'hello',  boundingBoxClass:'inputEx-fieldWrapper', showMsg:true,
                 validator:[
                     {type:'meta',message:'there is at least one error in this field'},
                     {required:true,message:'this is a required field'},
@@ -40,6 +40,7 @@
              label:'Please choose a country: ',
              showMsg:true});   */
             field.on('field:change', function(){Y.log('field change','info', 'dev')})
+            field.on('field:focus', function(){Y.log('field focused','info', 'dev')})
             field.render('#test');
             /*field.on('updated', function(evt, newVal, oldVal) {
              alert('field is updated from ' + o + ' to ' + Y.JSON.stringify(evt))

@@ -45,14 +45,12 @@
             _typeInviteOn:false,//type invite is being shown
 
             initializer : function(cfg) {
-                /*if (this.get('typeInvite')) {
+                if (this.get('typeInvite')) {
                     this.on('field:render', this._updateTypeInvite, this)
                     this.on('field:focus', this._updateTypeInvite, this)
                     this.on('field:blur', this._updateTypeInvite, this)
                     Y.log(this + '.initializer() - StringField - initialized - subscribed _updateTypeInvite to render,focus & blur', 'debug', 'inputEx');
-                } else {
-                    //Y.log(this + '.initializer() - StringField - initialized', 'debug', 'inputEx');
-                }*/
+                }
             },
 
             syncUI:function() {
@@ -107,21 +105,21 @@
                 if (!this.get('typeInvite')) return;
                 //TODO: if user enter exactly the same text as typeInvite, it's treated as typeInvite but not entered text
                 var el = this.get('contentBox'), inputEl = this._getInputEl(), inputValue = Y.Lang.trim(inputEl.get('value'))
-                var enabled = el.hasClass('inputEx-typeInvite'), hasFocus = this.get('contentBox').hasClass('inputEx-focused'), hasValue = (inputValue !== '' && inputValue !== this.get('typeInvite'))
-                Y.log(this + '._updateTypeInvite() - StringField - hasFocus: ' + hasFocus + ', enabled: ' + enabled + ', hasValue: ' + hasValue, 'warn', 'dev');
+                var enabled = el.hasClass('inputEx-typeInvite'), hasFocus = this.get('hasFocus'), hasValue = (inputValue !== '' && inputValue !== this.get('typeInvite'))
+                //Y.log(this + '._updateTypeInvite() - StringField - hasFocus: ' + hasFocus + ', enabled: ' + enabled + ', hasValue: ' + hasValue, 'warn', 'dev');
 
                 if (!hasFocus) {
                     if (!enabled && !hasValue) { //init state, blur without change
-                        Y.log(this + '._updateTypeInvite() - StringField - enable & set to typeInvite', 'warn', 'dev');
+                        //Y.log(this + '._updateTypeInvite() - StringField - enable & set to typeInvite', 'warn', 'dev');
                         el.addClass('inputEx-typeInvite')
                         inputEl.set('value', this.get('typeInvite'))
                     } else if (!enabled && hasValue) { //entered some value
-                        Y.log(this + '._updateTypeInvite() - StringField - disable', 'warn', 'dev');
+                        //Y.log(this + '._updateTypeInvite() - StringField - disable', 'warn', 'dev');
                         el.removeClass('inputEx-typeInvite')
                     }
                 } else {
                     if (enabled && !hasValue) { //focused on field without value
-                        Y.log(this + '._updateTypeInvite() - StringField - disable & set to value', 'warn', 'dev');
+                        //Y.log(this + '._updateTypeInvite() - StringField - disable & set to value', 'warn', 'dev');
                         el.removeClass('inputEx-typeInvite')
                         inputEl.set('value', this.get('value'))
                     }

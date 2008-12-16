@@ -381,7 +381,8 @@
              * YUI Widget protected method. Overriden to support variable
              */
             _setContentBox:function(node) {
-                var template = Y.substitute(this.CONTENT_TEMPLATE, this.CONTENT_COMPONENTS)
+                //var template = Y.substitute(this.CONTENT_TEMPLATE, this.CONTENT_COMPONENTS)
+                var template = this.CONTENT_TEMPLATE
                 return this._setBox(node, template)
             },
 
