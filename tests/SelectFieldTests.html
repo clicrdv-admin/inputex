@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-    <title>Select Field Test Suite</title>
+    <title>SelectField Test Suite</title>
     <script type="text/javascript" src="../js/inputex-loader.js"></script>
 </head>
 <body class="yui-skin-sam">
@@ -60,7 +60,7 @@
                 Y.Assert.areEqual(field.get('size'), selectEl.get('size')) // default size is 1
             },
 
-            testSelectElements:function() {
+            XtestSelectElements:function() {
                 var container = Y.Node.create('<div id="testSelectElements"></div>')
                 Y.get('#test').appendChild(container)
 
@@ -69,9 +69,9 @@
                 field.render(container)
                 var selectEl = container.query('select')
                 Y.Assert.isNotUndefined(selectEl)
-//                var optionEls = Y.all('#country-field option')
-                Y.log('query: '+selectEl.queryAll('option'),'info','dev')
-//                Y.Assert.isInstanceOf(Y.NodeList, optionEls)
+                //                var optionEls = Y.all('#country-field option')
+                Y.log('query: ' + selectEl.queryAll('option'), 'info', 'dev')
+                //                Y.Assert.isInstanceOf(Y.NodeList, optionEls)
                 //Y.Assert.areEqual(field.get('selectValues').length, selectEl.queryAll('option').length)
             }
 
@@ -85,7 +85,8 @@
         console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
         console.render()
         console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
-
+        console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
+        
         Y.Test.Runner.add(Y.inputEx.tests.SelectFieldTests);
         Y.Test.Runner.run();
 

@@ -32,7 +32,7 @@
                     if (!Y.Lang.isUndefined(this.get('value'))) {
                         Y.log(this + '.set("value") - Field - updated from "' + this.get('value') + '" to "' + lowercase + '"', 'debug', 'inputEx')
                     }
-                    if (this._rendered) this._updateInputEl(lowercase); // ensure the inputEl is in sync
+                    if (this._rendered) this._updateToInputEl(lowercase); // ensure the inputEl is in sync
                     this.fire('field:change', null, lowercase, this.get('value'));//workarounded this.fire(EV_UPDATE, v, this.get('value'));
                     return lowercase;
 

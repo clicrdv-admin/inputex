@@ -55,6 +55,11 @@
                 }
             },
 
+            syncUI:function() {
+                StringField.superclass.syncUI.apply(this, arguments);
+                this._updateTypeInvite();
+            },
+
             renderComponent:function(container) {
                 try {
                     var el = container ? container : this.get('contentBox'), id = this.getID();
@@ -79,18 +84,18 @@
                     Y.log(this + '.renderComponent() - StringField - e: ' + e, 'error', 'inputEx');
                 }
             },
-/*
-            _initEvents:function() {
-                StringField.superclass._initEvents.apply(this, arguments);
-                //var el = this.get('contentBox'), id = this.getID(), field = el.query('#' + id + '-field')
+            /*
+             _initEvents:function() {
+             StringField.superclass._initEvents.apply(this, arguments);
+             //var el = this.get('contentBox'), id = this.getID(), field = el.query('#' + id + '-field')
 
-                *//*if (Y.UA.ie) { // refer to inputEx-95
-                 new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
-                 field.blur();
-                 field.focus();
-                 }}).enable()
-                 }*//*
-            },*/
+             *//*if (Y.UA.ie) { // refer to inputEx-95
+             new YAHOO.util.KeyListener(this.el, {keys:[13]}, {fn:function() {
+             field.blur();
+             field.focus();
+             }}).enable()
+             }*//*
+             },*/
 
             validate:function() {
                 if (this._typeInviteOn) {
@@ -100,57 +105,55 @@
                 }
             },
 
-            _updateInputEl:function(v) {
-                if (!this._typeInviteOn || this.get('value') === '') {
-                    StringField.superclass._updateInputEl.apply(this, arguments);
-                    this._updateTypeInvite();
-                }
-            },
+            /*  _updateToInputEl:function(v) {
+             if (!this._typeInviteOn || this.get('value') === '') {
+             StringField.superclass._updateToInputEl.apply(this, arguments);
+             this._updateTypeInvite();
+             }
+             },*/
 
-            _updateTypeInvite: function(evt) {
+            _updateTypeInvite: function() {
                 if (!this.get('typeInvite')) return;
+                //TODO: if user enter exactly the same text as typeInvite, it's treated as typeInvite but not entered text
+                var el = this.get('contentBox'), inputEl = this._getInputEl(), inputValue = Y.Lang.trim(inputEl.get('value'))
+                var enabled = el.hasClass('inputEx-typeInvite'), hasFocus = this.get('contentBox').hasClass('inputEx-focused'), hasValue = (inputValue !== '' && inputValue !== this.get('typeInvite'))
+                Y.log(this + '._updateTypeInvite() - StringField - hasFocus: ' + hasFocus + ', enabled: ' + enabled + ', hasValue: ' + hasValue, 'warn', 'dev');
 
-                var eventType = evt ? evt.type : 'not_event'
-
-                switch (eventType) {
-                    case 'field:focus': //on focus
-                        if (this.get('contentBox').hasClass('inputEx-typeInvite')) {
-                            this._getInputEl().set('value', ''); // remove typeInvite upon focus
-                            this.get('contentBox').removeClass('inputEx-typeInvite');
-                            this._typeInviteOn = false;
-                        }
-                        break;
-                    case 'field:blur':
-                        if (this.get('value') === '') { // if empty, show typeInvite
-                            this.get('contentBox').addClass('inputEx-typeInvite');
-                            this._getInputEl().set('value', this.get('typeInvite'));
-                            this._typeInviteOn = true;
-                            Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
-                        } else {
-                            this.get('contentBox').removeClass('inputEx-typeInvite');
-                            this._typeInviteOn = false;
-                        }
-                        break;
-                    default: //probably called indirectly by this.set('value')
-                        if (this._getInputEl().get('value') === '') { //if empty
-                            this.get('contentBox').addClass('inputEx-typeInvite');
-                            this._getInputEl().set('value', this.get('typeInvite'));
-                            this._typeInviteOn = true;
-                            Y.log(this + '._updateTypeInvite() - StringField - evt: ' + eventType + ' - value is empty, show typeInvite', 'debug', 'inputEx')
-                        } else {
-                            this.get('contentBox').removeClass('inputEx-typeInvite');
-                            this._typeInviteOn = false;
-                        }
-                        break;
+                if (!hasFocus) {
+                    if (!enabled && !hasValue) { //init state, blur without change
+                        Y.log(this + '._updateTypeInvite() - StringField - enable & set to typeInvite', 'warn', 'dev');
+                        el.addClass('inputEx-typeInvite')
+                        inputEl.set('value', this.get('typeInvite'))
+                    } else if (!enabled && hasValue) { //entered some value
+                        Y.log(this + '._updateTypeInvite() - StringField - disable', 'warn', 'dev');
+                        el.removeClass('inputEx-typeInvite')
+                    }
+                } else {
+                    if (enabled && !hasValue) { //focused on field without value
+                        Y.log(this + '._updateTypeInvite() - StringField - disable & set to value', 'warn', 'dev');
+                        el.removeClass('inputEx-typeInvite')
+                        inputEl.set('value', this.get('value'))
+                    }
                 }
             },
-            
-            _inputElOnChange:function() {
-                var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
-                var isChanged = oldVal !== newVal
-                Y.log(this + '._inputElOnChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
-                if (isChanged && !this._typeInviteOn) { this.set('value', newVal) }
+            _updateFromInputEl:function() {
+                var inputEl = this._getInputEl();
+                var typeInviteEnabled = this.get('contentBox').hasClass('inputEx-typeInvite')
+                var typeInviteMatched = (this.get('typeInvite') && inputEl.get('value') === this.get('typeInvite'))
+                Y.log(this + '._updateFromInputEl() - StringField - typeInviteEnabled: ' + typeInviteEnabled + ', typeInviteMatched: ' + typeInviteMatched, 'warn', 'inputEx');
+                if (typeInviteMatched) {
+                    this.set('value', null)
+                } else if (inputEl && inputEl.get('value') !== this.get('value')) {
+                    Y.log(this + '._updateFromInputEl() - StringField - update value from "' + this.get('value') + '" to "' + inputEl.get('value') + '"', 'debug', 'inputEx');
+                    this.set('value', inputEl.get('value'))
+                }
             },
+            /*_inputElOnChange:function() {
+             var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
+             var isChanged = oldVal !== newVal
+             Y.log(this + '._inputElOnChange() - StringField - from "' + oldVal + '" to "' + newVal + '", isChanged: ' + isChanged + ', _typeInviteOn:' + this._typeInviteOn, 'debug', 'inputEx')
+             if (isChanged && !this._typeInviteOn) { this.set('value', newVal) }
+             },*/
             /*
              _onFocus:function() {
              StringField.superclass._onFocus.apply(this, arguments);

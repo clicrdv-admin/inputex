@@ -106,7 +106,7 @@
                     }
 
                     // when value is updated by API, sync the value to the inputEl; it shall be set b4 any change event
-                    if (this.get('rendered') === true) { this._updateInputEl(newVal) }
+                    if (this.get('rendered') === true) { this._updateToInputEl(newVal) }
 
                     this.fire(EV_CHANGE, null, newVal, this.get('value'));//workarounded with the null argument
                     return newVal;
@@ -167,7 +167,7 @@
              * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
              * @type String
              */
-            elClass:{
+            boundingBoxClass:{
                 value:'inputEx-fieldWrapper'//,writeOnce:true cannot use writeOnce https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2378327&group_id=165715
             },
 
@@ -183,15 +183,6 @@
             className:{
                 value:'inputEx-Field'//,writeOnce:true
             },
-
-            /**
-             * @deprecated use validator:{required:true}
-             * @attribute required
-             * @description for validation, true if the field is mandatory and cannot be null or empty string. It will
-             * be replaced with a validator implementation in future version
-             * @type Boolean
-             */
-            required:{value:false},
 
             /**
              * @attribute showMsg
@@ -256,11 +247,11 @@
                 get:function() {return this._inputEl},
                 readOnly:true
             }
-
-
         };
 
         Y.extend(Field, Y.Widget, {
+            CONTENT_TEMPLATE:'<div class="inputEx-content"></div>',
+
             /**
              * The Node of the Input Wrapper. by default, it's a <div>. Notice that an inputElement may have more than
              * one wrapper. e.g. for StringField, it has two wrappers. This el reference to the outer wrapper. The
@@ -294,13 +285,42 @@
 
             initializer : function(cfg) {
                 this.on(EV_CHANGE, this.syncUI, this);
+                //remarks: the following hasFocusChange handling override the widget default, and no yui-xxx-focus class will be set
+                /*
+                 this.on('hasFocusChange', function(evt) {
+                 if (evt.prevVal !== evt.newVal && evt.newVal === true) {
+                 var inputEl = this._getInputEl()
+                 if (inputEl) inputEl.focus();
+                 }
+                 return true;
+                 }, this)
+                 */
                 Y.log(this + '.initializer() - Field - Field initialized', 'debug', 'inputEx');
+            },
+            /**
+             * YUI Widget protected method
+             */
+            _renderBoxClassNames:function() {
+                Field.superclass._renderBoxClassNames.apply(this, arguments);
+                this.get('boundingBox').addClass(this.get('boundingBoxClass'))
+            },
+            /**
+             * YUI Widget protected method
+             */
+            _bindDOMListeners : function() {
+                Y.log(this + '._bindDOMListener() - _inputEl: ' + this._inputEl, 'debug', 'inputEx');
+                this.get('boundingBox').on('focus', Y.bind(function() {
+                    if (this._inputEl) {
+                        this.blur();
+                        this._inputEl.focus();
+                    }
+                }, this))
             },
 
             renderUI:function() {
                 try {
                     var el = this.get('contentBox'), id = el.get('id');
-                    el.addClass(this.get('elClass'))
+                    el.addClass(this.get('boundingBoxClass'))
 
                     if (this.get('required')) el.addClass('inputEx-required')
 
@@ -337,13 +357,23 @@
                 }
             },
 
-            renderComponent:function() {
-                // override me
-                Y.log(this + '.renderComponent() - Field - method should have been overidden!', 'warn', 'inputEx');
+            /**
+             * @abstract
+             */
+            renderComponent:function(container) {
+                Y.fail(this + '.renderComponent() - Field - Abstract renderComponent method shall be implemented');
+                //a simple text field is created for development
+                /*var field = Y.Node.create('<input id="' + this.getID() + '-field" type="text"/>')
+                 if (this.get('name')) field.set('name', this.get('name'))
+                 if (this.get('value')) field.set('value', this.get('value'))
+                 container.appendChild(field)*/
             },
 
             bindUI:function() {
                 if (this._eventInitialized) return;
+                this._inputEl.on('focus', Y.bind(this._onFocus, this));
+                this._inputEl.on('blur', Y.bind(this._onBlur, this));
+
                 if (this._getInputEl()) {
                     this._getInputEl().on('change', Y.bind(this._inputElOnChange, this));
                     this._getInputEl().on('focus', Y.bind(this._inputElOnFocus, this));
@@ -416,25 +446,6 @@
                 msgDiv.set('innerHTML', htmlMsg)
             },
 
-            /**
-             * Method for synchronizing 'value' attribute to the inputEl
-             * @param v
-             */
-            _updateInputEl:function(v) {
-                var inputEl = this._getInputEl();
-                if (inputEl && v !== inputEl.get('value')) {
-                    Y.log(this + '.set("value") - Field - inputEl is updated from "' + this._getInputEl().get('value') + '" to "' + v + '"', 'debug', 'inputEx');
-                    this._getInputEl().set('value', v)
-                }
-            },
-
-            focus:function() {
-                Field.superclass.focus.apply(this, arguments);
-                var inputEl = this._getInputEl()
-                if (inputEl) inputEl.focus();
-                return this;
-            },
-
             getID:function() {
                 return this.get('id') || this.get('contentBox').get('id');
             },
@@ -449,23 +460,27 @@
                 return this._inputEl;
             },
 
+            /*
+             focus:function() {
+             Y.log(this + '.focus() - Field - hasFocus: ' + this.get('hasFocus'), 'warn', 'inputEx')
+             Field.superclass.focus.apply(this, arguments);
+             Y.log(this + '.focus() - Field - hasFocus: ' + this.get('hasFocus'), 'warn', 'inputEx')
+             var inputEl = this._getInputEl()
+             if (inputEl) inputEl.focus();
+             Y.log(this + '.focus() - Field - hasFocus: ' + this.get('hasFocus'), 'warn', 'inputEx')
+             return this;
+             },
+             */
+
             _inputElOnFocus:function() {
                 this.get('contentBox').removeClass('inputEx-empty')
                 this.get('contentBox').addClass('inputEx-focused')
-                Y.log(this + '._inputElOnFocus() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
+                Y.log(this + '._inputElOnFocus() - Field - hasFocus: ' + this.get('hasFocus'), 'debug', 'inputEx');
                 this.fire(EV_FOCUS, null, this.get('contentBox'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
 
             _inputElOnBlur:function() {
                 this.get('contentBox').removeClass('inputEx-focused')
-                if (!this._validated) {// for the case that the field is focused then blurred without onchange
-                    this.validate();
-                    this.syncUI();
-                }
-
-                if (this.get('value') !== this._getInputEl().get('value') && this._inputElToValueUpdateEnabled) {
-                    this.set('value', this._getInputEl().get('value'))
-                }
                 Y.log(this + '._inputElOnBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
                 this.fire(EV_BLUR, null, this.get('contentBox'));//workarounded this.fire(EV_UPDATE, this.get('value'));
             },
@@ -473,7 +488,31 @@
             _inputElOnChange:function() {
                 var oldVal = this.get('value'), newVal = this._getInputEl().get('value');
                 Y.log(this + '._inputElOnChange() - Field - from "' + oldVal + '" to "' + newVal + '"', 'debug', 'inputEx')
-                if (oldVal !== newVal) { this.set('value', newVal)}
+                this._updateFromInputEl();
+            },
+
+            /**
+             * Synchronize inputEl from value. This method is called before 'value' is actually updated, so a newVal
+             * argument is required.
+             * @param newVal
+             */
+            _updateToInputEl:function(newVal) {
+                var inputEl = this._getInputEl();
+                if (inputEl && newVal !== inputEl.get('value')) {
+                    Y.log(this + '._updateToInputEl() - Field - update inputEl from "' + this._getInputEl().get('value') + '" to "' + newVal + '"', 'debug', 'inputEx');
+                    this._getInputEl().set('value', newVal)
+                }
+            },
+
+            /**
+             * Synchronize value from inputEl
+             */
+            _updateFromInputEl:function() {
+                var inputEl = this._getInputEl();
+                if (inputEl && inputEl.get('value') !== this.get('value')) {
+                    //Y.log(this + '._updateFromInputEl() - Field - update value from "' + this.get('value') + '" to "' + inputEl.get('value') + '"', 'debug', 'inputEx');
+                    this.set('value', inputEl.get('value'))
+                }
             },
 
             /**
@@ -549,28 +588,6 @@
                  } else {
                  return '';
                  }*/
-            },
-
-            show:function() {
-                this.get('contentBox').setStyle('display', '')
-                return this;
-            },
-
-            hide:function() {
-                this.get('contentBox').setStyle('display', 'none')
-                return this;
-            },
-
-            enable:function() {
-                var field = this._getInputEl();
-                if (field) field.set('disabled', false);
-                return this;
-            },
-
-            disable:function() {
-                var field = this._getInputEl();
-                if (field) field.set('disabled', true);
-                return this;
             },
 
             /**
@@ -664,6 +681,40 @@
                 var result = this._getInputEl().get('value') === '';
                 //Y.log(this + '.isEmpty() - ' + result, 'debug', 'inputEx')
                 return result;
+            },
+
+            /**
+             * YUI Widget public method
+             */
+            show:function() {
+                this.get('boundingBox').setStyle('display', '')
+                return Field.superclass.show.apply(this, arguments);
+            },
+
+            /**
+             * YUI Widget public method
+             */
+            hide:function() {
+                this.get('boundingBox').setStyle('display', 'none')
+                return Field.superclass.hide.apply(this, arguments);
+            },
+
+            /**
+             * YUI Widget public method
+             */
+            enable:function() {
+                var field = this._getInputEl();
+                if (field) field.set('disabled', false);
+                return Field.superclass.enable.apply(this, arguments);
+            },
+
+            /**
+             * YUI Widget public method
+             */
+            disable:function() {
+                var field = this._getInputEl();
+                if (field) field.set('disabled', true);
+                return Field.superclass.disable.apply(this, arguments);
             },
 
             destructor : function() {

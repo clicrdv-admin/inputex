@@ -51,7 +51,7 @@
              * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
              * @type String
              */
-            elClass:{
+            boundingBoxClass:{
                 value:'inputEx-Form inputEx-Group' //,writeOnce:true cannot use writeOnce 
             },
 
@@ -75,7 +75,7 @@
             renderUI:function() {
                 try {
                     var el = this.get('contentBox'), id = el.get('id');
-                    el.addClass(this.get('elClass'))
+                    el.addClass(this.get('boundingBoxClass'))
 
                     this._formEl = Y.Node.create('<form id="' + id + '-form"></form>')
                     if (this.get('name')) this._formEl.set('name', this.get('name'))

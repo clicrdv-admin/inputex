@@ -194,7 +194,7 @@
              * Method for synchronizing 'value' attribute to the inputEl
              * @param v
              */
-            _updateInputEl:function(v) {
+            _updateToInputEl:function(v) {
                 this._inputEl.set('checked', v === this.get('checkedValue'));
                 this._inputEl.set('value', v);
                 if (this.get('hiddenField')) this._hiddenInputEl.set('value', v);

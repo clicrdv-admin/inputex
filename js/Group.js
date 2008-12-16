@@ -60,7 +60,7 @@
              * @description for overriding the class of the outer element, default as 'inputEx-fieldWrapper' for Field
              * @type String
              */
-            elClass:{
+            boundingBoxClass:{
                 value:'inputEx-Group' //,writeOnce:true cannot use writeOnce 
             }
 
@@ -104,7 +104,7 @@
                 try {
                     Y.log(this + '.renderUI() - Group', 'info', 'inputEx');
                     var el = this.get('contentBox'), id = el.get('id');
-                    el.addClass(this.get('elClass'))
+                    el.addClass(this.get('boundingBoxClass'))
 
                     this._renderFields(el);
 

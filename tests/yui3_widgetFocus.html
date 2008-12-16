@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>YUI3 Issue - [#] </title>
+    <script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui-skin-sam">
+<h1>
+    <script>document.write(document.title)</script>
+</h1>
+
+<div id="container"></div>
+
+<script type="text/javascript">
+    YUI({base:'../lib/yui3/'}).use('node', 'widget', 'json', 'yuitest', 'console', function(Y) {
+        function SimpleField() {
+            SimpleField.superclass.constructor.apply(this, arguments);
+        }
+        SimpleField.NAME = 'simplefield'
+        Y.extend(SimpleField, Y.Widget, {
+            _inputEl:null,
+            initializer:function() {
+                this._inputEl = Y.Node.create('<input type="text"/>')
+            },
+            _bindDOMListeners : function() {
+                this.get('boundingBox').on('focus', Y.bind(function() {
+                    this.blur();
+                    this._inputEl.focus();
+                }, this))
+                this._inputEl.on('focus', Y.bind(this._onFocus, this));
+                this._inputEl.on('blur', Y.bind(this._onBlur, this));
+            },
+            renderUI:function() {
+                //TODO add checking
+                this.get('contentBox').appendChild(this._inputEl)
+            },
+            bindUI:function() {
+                //logging only
+                this._inputEl.on('focus', function() { Y.log('_inputEl.onFocus', 'info', 'Test')}, this)
+                this._inputEl.on('blur', function() { Y.log('_inputEl.onBlur', 'info', 'Test')}, this)
+                this.on('hasFocusChange', Y.bind(function(evt) {
+                    var hasFocus = evt.newVal
+
+                    if (hasFocus === true) {
+                        Y.log('field.hasFocusChange - hasFocus:' + hasFocus + ', to focus on _inputEl', 'info', 'Test')
+                        //this._inputEl.focus()
+                    } else {
+                        Y.log('field.hasFocusChange - hasFocus:' + hasFocus + ', to blur from _inputEl', 'info', 'Test')
+                        //this._inputEl.blur()
+                    }
+                    return true;
+
+                }, this), this)
+            }
+        })
+
+        Y.InputElFocusTest = new Y.Test.Case({
+            name: 'InputElFocusTest',
+            testFocus:function() {
+                var f = new SimpleField();
+                f.render('#container')
+            }
+        })
+
+        var console = new Y.Console()
+        console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
+        console.render()
+        console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
+
+
+        Y.Test.Runner.add(Y.InputElFocusTest);
+        Y.Test.Runner.run();
+    })
+</script>
+</body>
+
+</html>
