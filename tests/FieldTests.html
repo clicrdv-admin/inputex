@@ -86,6 +86,73 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
         },
 
         /**
+         * boundingBox
+         *   contentBox
+         *     labelBox
+         *       label
+         *     inputBox
+         *       {renderComponent}
+         *       description div
+         *     message div
+         *     lineBreak
+         *
+         * Remarks: this method doesn't test classes set by state, e.g. invalid, focus, typeInvite etc.
+         */
+        testDOMStructureAndClasses:function() {
+            var container = Y.Node.create('<div id="testDOMStructureAndClasses"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({id:'field0',value:'value',label:'label',
+                message:'message',description:'description',
+                validator:[{minLength:20,message:'min length is {minLength}'}],
+                showMsg:true,
+                boundingBoxClass:'boundingBoxClass',contentBoxClass:'contentBoxClass'})
+            field.renderComponent = this.data.createTextField;
+            field.render(container);
+
+            var id = field.get('id')
+
+            //boundingBox
+            Y.Assert.isInstanceOf(Y.Node, container.query('div'))
+            Y.Assert.areEqual(id, container.query('div').getAttribute('id'))
+            Y.Assert.isTrue(container.query('div').hasClass('yui-widget'))
+            Y.Assert.isTrue(container.query('div').hasClass('yui-field'))
+            Y.Assert.isTrue(container.query('div').hasClass('boundingBoxClass'))
+            //TODO add another test case for state classes
+
+            //contentBox
+            var contentBox = container.query('div.boundingBoxClass > div')
+            Y.Assert.isInstanceOf(Y.Node, contentBox)
+            Y.Assert.areEqual(id + '-content', contentBox.getAttribute('id'))
+            Y.Assert.isTrue(contentBox.hasClass('yui-field-content'), 'shall have class "yui-field-content"')
+            Y.Assert.isTrue(contentBox.hasClass('contentBoxClass'), 'shall have class "contentBoxClass"')
+
+            //label: div.class, label.id, label.for, label.text
+            var labelBox = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-label')
+            Y.Assert.isInstanceOf(Y.Node, labelBox)
+            Y.Assert.isTrue(labelBox.hasClass('inputEx-label'), 'shall have class "inputEx-label"')
+            Y.Assert.isInstanceOf(Y.Node, labelBox.query('label'))
+            Y.Assert.areEqual(id + '-label', labelBox.query('label').getAttribute('id'))
+            Y.Assert.areEqual(id + '-field', labelBox.query('label').getAttribute('for'))
+            Y.Assert.areEqual(field.get('label'), labelBox.query('label').get('text'))
+
+            // field
+            // Remarks: renderComponent is a dummy implementation to avoid error, DOM structure shall not be tested
+
+            var fieldBox = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-Field')
+            Y.Assert.isInstanceOf(Y.Node, fieldBox, 'fieldBox is not a Node')
+            Y.Assert.isTrue(fieldBox.hasClass('inputEx-Field'), 'shall have class "inputEx-Field"')
+            Y.Assert.isInstanceOf(Y.Node, fieldBox.query('div.inputEx-description'), 'description is not a Node')
+            Y.Assert.areEqual(id + '-description', fieldBox.query('div.inputEx-description').getAttribute('id'))
+            Y.Assert.isTrue(fieldBox.query('div.inputEx-description').hasClass('inputEx-description'))
+
+            //message
+            var message = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-message')
+            Y.Assert.isInstanceOf(Y.Node, message, 'message element is not a Node')
+            Y.Assert.isTrue(message.hasClass('inputEx-message'), 'shall have class "inputEx-message"')
+            Y.Assert.areEqual('min length is 20', message.get('text'))
+        },
+
+        /**
          * This test is to ensure widget behavior is correctly inherited
          */
         testWidgetAttributes:function() {
@@ -253,72 +320,6 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             delete this.data;
         },
 
-        /**
-         * boundingBox
-         *   contentBox
-         *     labelBox
-         *       label
-         *     inputBox
-         *       {renderComponent}
-         *       description div
-         *     message div
-         *     lineBreak
-         *
-         * Remarks: this method doesn't test classes set by state, e.g. invalid, focus, typeInvite etc.
-         */
-        testDOMStructureAndClasses:function() {
-            var container = Y.Node.create('<div id="testDOMStructureAndClasses"></div>')
-            Y.get('#test').appendChild(container)
-            var field = new Y.inputEx.Field({id:'field0',value:'value',label:'label',
-                message:'message',description:'description',
-                validator:[{minLength:20,message:'min length is {minLength}'}],
-                showMsg:true,
-                boundingBoxClass:'boundingBoxClass',contentBoxClass:'contentBoxClass'})
-            field.renderComponent = this.data.createTextField;
-            field.render(container);
-
-            var id = field.get('id')
-
-            //boundingBox
-            Y.Assert.isInstanceOf(Y.Node, container.query('div'))
-            Y.Assert.areEqual(id, container.query('div').getAttribute('id'))
-            Y.Assert.isTrue(container.query('div').hasClass('yui-widget'))
-            Y.Assert.isTrue(container.query('div').hasClass('yui-field'))
-            Y.Assert.isTrue(container.query('div').hasClass('boundingBoxClass'))
-            //TODO add another test case for state classes
-
-            //contentBox
-            var contentBox = container.query('div.boundingBoxClass > div')
-            Y.Assert.isInstanceOf(Y.Node, contentBox)
-            Y.Assert.areEqual(id + '-content', contentBox.getAttribute('id'))
-            Y.Assert.isTrue(contentBox.hasClass('yui-field-content'), 'shall have class "yui-field-content"')
-            Y.Assert.isTrue(contentBox.hasClass('contentBoxClass'), 'shall have class "contentBoxClass"')
-
-            //label: div.class, label.id, label.for, label.text
-            var labelBox = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-label')
-            Y.Assert.isInstanceOf(Y.Node, labelBox)
-            Y.Assert.isTrue(labelBox.hasClass('inputEx-label'), 'shall have class "inputEx-label"')
-            Y.Assert.isInstanceOf(Y.Node, labelBox.query('label'))
-            Y.Assert.areEqual(id + '-label', labelBox.query('label').getAttribute('id'))
-            Y.Assert.areEqual(id + '-field', labelBox.query('label').getAttribute('for'))
-            Y.Assert.areEqual(field.get('label'), labelBox.query('label').get('text'))
-
-            // field
-            // Remarks: renderComponent is a dummy implementation to avoid error, DOM structure shall not be tested
-
-            var fieldBox = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-Field')
-            Y.Assert.isInstanceOf(Y.Node, fieldBox, 'fieldBox is not a Node')
-            Y.Assert.isTrue(fieldBox.hasClass('inputEx-Field'), 'shall have class "inputEx-Field"')
-            Y.Assert.isInstanceOf(Y.Node, fieldBox.query('div.inputEx-description'), 'description is not a Node')
-            Y.Assert.areEqual(id + '-description', fieldBox.query('div.inputEx-description').getAttribute('id'))
-            Y.Assert.isTrue(fieldBox.query('div.inputEx-description').hasClass('inputEx-description'))
-
-            //message
-            var message = container.query('div.boundingBoxClass > div.contentBoxClass > div.inputEx-message')
-            Y.Assert.isInstanceOf(Y.Node, message, 'message element is not a Node')
-            Y.Assert.isTrue(message.hasClass('inputEx-message'), 'shall have class "inputEx-message"')
-            Y.Assert.areEqual('min length is 20', message.get('text'))
-        },
 
         XtestNth:function() {}
 
@@ -333,7 +334,7 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
     console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
     console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
 
-    //    Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
+    Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
     Y.Test.Runner.add(Y.inputEx.tests.FieldDevTests);
     Y.Test.Runner.run();
 
