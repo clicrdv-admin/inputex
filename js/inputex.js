@@ -228,7 +228,6 @@
                                 return true;
                             }
                         }
-                        return false;
                     } else if (Y.Lang.isObject(items)) {
                         for (var k in items) {
                             if (fn(items[k], k, items)) {
@@ -236,8 +235,9 @@
                             }
                         }
                     } else {
-                        throw new Error('only array or object are supported')
+                        Y.fail('only array or object are supported')
                     }
+                    return false;
                 },
                 Y.inputEx.find = function(items, fn) {
                     if (Y.Lang.isArray(items)) {
@@ -248,7 +248,7 @@
                         return false;
                     } else if (Y.Lang.isObject(items)) {
                         for (var k in items) {
-                               var result = fn(items[k], k, items)
+                            var result = fn(items[k], k, items)
                             if (!Y.Lang.isUndefined(result)) { return result; }
                         }
                     } else {

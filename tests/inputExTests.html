@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>inputEx Test Suite</title>
+    <script type="text/javascript" src="../js/inputex-loader.js"></script>
+</head>
+<body class="yui-skin-sam">
+<h1>
+    <script>document.write(document.title)</script>
+</h1>
+
+<div id="test"></div>
+
+<script type="text/javascript">
+    inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yuitest', 'inputex', function(Y) {
+        Y.namespace('inputEx.tests')
+        Y.inputEx.tests.inputExTests = new Y.Test.Case({
+            name: 'inputEx Tests',
+            setUp:function() { this.data = {} },
+            tearDown:function() { delete this.data; },
+
+            testAny:function() {
+                var fn, data = {key0:'value0', key1:'value1'}
+
+                // object literal - one match
+                fn = function(v, k) { return k == 'key1'}
+                //Y.Assert.isTrue(Y.inputEx.any(data, fn), 'object literal data with one match case failed')
+
+                // object literal - no match
+                fn = function(v, k) { return false}
+                Y.Assert.isFalse(Y.inputEx.any(data, fn), 'object literal data with no match case failed')
+
+                var data = [{key:0,value:'v0'},{key:1,value:'v1'}]
+                // array - one match
+                fn = function(v, k) { return k == 1 && v.value == 'v1'}
+                Y.Assert.isTrue(Y.inputEx.any(data, fn))
+
+                // array - no match
+                fn = function(v, k) { return false }
+                Y.Assert.isFalse(Y.inputEx.any(data, fn))
+            },
+
+            XtestYUIEach:function() {
+                var data = [{key:0,value:'v0'},{key:1,value:'v1'}]
+                var fn = function(v, k, o) { Y.log('k: ' + k + ', v: ' + v + ', o: ' + Y.JSON.stringify(o), 'warn', 'Test')}
+                Y.each(data, fn)
+            },
+
+            XLastFunction:{}
+        })
+
+        Y.inputEx.tests.DevTests = new Y.Test.Case({
+            name: 'Development Tests',
+            setUp:function() { this.data = {} },
+            tearDown:function() { delete this.data; },
+            XLastFunction:function() {}
+        })
+
+
+        //TODO: https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2431381&group_id=165715
+        var console = new Y.Console()
+        console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
+        console.render()
+        console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
+        console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
+
+        Y.Test.Runner.add(Y.inputEx.tests.DevTests);
+        Y.Test.Runner.add(Y.inputEx.tests.inputExTests);
+        Y.Test.Runner.run();
+
+    })
+</script>
+</body>
+
+</html>
