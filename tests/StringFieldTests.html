@@ -48,11 +48,6 @@
                 Y.Assert.isNotUndefined(container.query('input'))
             },
 
-            /**
-             * Create a test field with label and message, check the created DOM:
-             * 1. Verify boundingBox and there shall be nth outside the boundingBox
-             * 2. Verify contextBox
-             */
             XtestStringFieldDOMStructure:function() {
                 var container = Y.Node.create('<div id="testStringFieldDOMStructure"></div>')
                 Y.get('#test').appendChild(container)
@@ -69,16 +64,26 @@
                 field.render(container);
 
                 //type invite shall be shown on render as value is null
-                Y.Assert.isTrue(field.get('contentBox').hasClass('inputEx-typeInvite'), 'contentBox has no inputEx-typeInvite class')
+                Y.Assert.isTrue(field.get('boundingBox').hasClass('inputEx-typeInvite'), 'contentBox has no inputEx-typeInvite class')
                 Y.Assert.areEqual('typeInvite', field._getInputEl().get('value'))
 
                 //update value
-                field.set('value', 'true')
-                Y.Assert.isFalse(field.get('contentBox').hasClass('inputEx-typeInvite'), 'inputEx-typeInvite shall be removed')
+                field.set('value', 'value is not empty')
+                Y.Assert.isFalse(field.get('boundingBox').hasClass('inputEx-typeInvite'), 'inputEx-typeInvite shall be removed')
                 Y.Assert.areEqual(field.get('value'), field._getInputEl().get('value'))
             }
 
 
+        })
+
+        Y.inputEx.tests.DevTests = new Y.Test.Case({
+            name: 'Development Tests',
+            setUp:function() { this.data = {} },
+            tearDown:function() { delete this.data; },
+
+
+
+            XLastFunction:function() {}
         })
 
 
@@ -89,7 +94,11 @@
         console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
         console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
 
-        Y.Test.Runner.add(Y.inputEx.tests.StringFieldTests);
+        Y.Test.Runner.add(Y.inputEx.tests.DevTests);
+        if (!Y.inputEx.any(Y.inputEx.tests.DevTests, function(v, k) { return /^test/.test(k) })) {
+            // if there are any development tests, normal test won't run
+            Y.Test.Runner.add(Y.inputEx.tests.StringFieldTests);
+        }
         Y.Test.Runner.run();
 
     })

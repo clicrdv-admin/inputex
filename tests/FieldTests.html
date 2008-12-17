@@ -233,6 +233,29 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             Y.Assert.areEqual(0, field._violations.length); //onchange validation is disabled
         },
 
+        testFocusBlur:function() {
+            var container = Y.Node.create('<div id="testFocusBlur"></div>')
+            Y.get('#test').appendChild(container)
+            var field = new Y.inputEx.Field({value:'oldValue'})
+            field.renderComponent = this.data.createTextField;
+            field.render(container)
+
+            // init state
+            Y.Assert.isFalse(field.get('hasFocus'))
+            Y.Assert.isTrue(field.get('boundingBox').hasClass('inputEx-empty'), 'boundingBox shall have inputEx-empty class after rendered')
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('inputEx-focused'), 'boundingBox shall NOT have inputEx-focused class after rendered')
+
+            field.focus();
+            Y.Assert.isTrue(field.get('hasFocus'))
+            Y.Assert.isTrue(field.get('boundingBox').hasClass('inputEx-focused'), 'boundingBox shall have inputEx-focused class after focused')
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('inputEx-empty'), 'boundingBox shall NOT have inputEx-empty class after focused')
+
+            field.blur();
+            Y.Assert.isFalse(field.get('hasFocus'))
+            Y.Assert.isFalse(field.get('boundingBox').hasClass('inputEx-focused'), 'boundingBox shall NOT have inputEx-focused class after blured')
+            Y.Assert.isTrue(field.get('boundingBox').hasClass('inputEx-empty'), 'boundingBox shall have inputEx-empty class after blured')
+        },
+
         testHideShow:function() {
             var container = Y.Node.create('<div id="testHideShow"></div>')
             Y.get('#test').appendChild(container)
@@ -298,12 +321,11 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             Y.Assert.areEqual('setByInputEl', field.get('value'))
         },
 
-        //TODO add test case for focus
         XLastFunction:{}
     })
 
-    Y.inputEx.tests.FieldDevTests = new Y.Test.Case({
-        name: 'Field Tests under Development',
+    Y.inputEx.tests.DevTests = new Y.Test.Case({
+        name: 'Development Tests',
         setUp:function() {
             this.data = {
                 createTextField:  function(container) {
@@ -316,12 +338,9 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             }
             Y.get('#test').set('innerHTML', '')
         },
-        tearDown:function() {
-            delete this.data;
-        },
+        tearDown:function() { delete this.data; },
         XLastFunction:function() {}
     })
-
 
     //TODO: https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2431381&group_id=165715
     var console = new Y.Console()
@@ -330,10 +349,13 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
     console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
     console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
 
-    Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
-    Y.Test.Runner.add(Y.inputEx.tests.FieldDevTests);
-    Y.Test.Runner.run();
 
+    Y.Test.Runner.add(Y.inputEx.tests.DevTests);
+    if (!Y.inputEx.any(Y.inputEx.tests.DevTests, function(v, k) { return /^test/.test(k) })) {
+        // if there are any development tests, normal test won't run
+        Y.Test.Runner.add(Y.inputEx.tests.FieldTests);
+    }
+    Y.Test.Runner.run();
 })
 </script>
 </body>
