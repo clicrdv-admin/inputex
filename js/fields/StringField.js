@@ -104,21 +104,24 @@
             _updateTypeInvite: function() {
                 if (!this.get('typeInvite')) return;
                 //TODO: if user enter exactly the same text as typeInvite, it's treated as typeInvite but not entered text
-                var el = this.get('contentBox'), inputEl = this._getInputEl(), inputValue = Y.Lang.trim(inputEl.get('value'))
-                var enabled = el.hasClass('inputEx-typeInvite'), hasFocus = this.get('hasFocus'), hasValue = (inputValue !== '' && inputValue !== this.get('typeInvite'))
-                //Y.log(this + '._updateTypeInvite() - StringField - hasFocus: ' + hasFocus + ', enabled: ' + enabled + ', hasValue: ' + hasValue, 'warn', 'dev');
+                var el = this.get('boundingBox'), inputEl = this._getInputEl(), inputValue = Y.Lang.trim(inputEl.get('value'))
+                var typeInvite = el.hasClass('inputEx-typeInvite'), hasFocus = this.get('hasFocus'), hasValue = (inputValue !== '' && inputValue !== this.get('typeInvite'))
+
+                Y.log(this + '._updateTypeInvite() - StringField - hasFocus: ' + hasFocus + ', typeInvite: ' + typeInvite + ', hasValue: ' + hasValue, 'debug', 'inputEx');
 
                 if (!hasFocus) {
-                    if (!enabled && !hasValue) { //init state, blur without change
+                    if (!typeInvite && !hasValue) { //init state, blur without change
                         //Y.log(this + '._updateTypeInvite() - StringField - enable & set to typeInvite', 'warn', 'dev');
                         el.addClass('inputEx-typeInvite')
                         inputEl.set('value', this.get('typeInvite'))
-                    } else if (!enabled && hasValue) { //entered some value
+                    } else if (!typeInvite && hasValue) { //entered some value
                         //Y.log(this + '._updateTypeInvite() - StringField - disable', 'warn', 'dev');
+                        el.removeClass('inputEx-typeInvite')
+                    } else if (typeInvite && hasValue){
                         el.removeClass('inputEx-typeInvite')
                     }
                 } else {
-                    if (enabled && !hasValue) { //focused on field without value
+                    if (typeInvite && !hasValue) { //focused on field without value
                         //Y.log(this + '._updateTypeInvite() - StringField - disable & set to value', 'warn', 'dev');
                         el.removeClass('inputEx-typeInvite')
                         inputEl.set('value', this.get('value'))

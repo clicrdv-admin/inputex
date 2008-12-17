@@ -64,13 +64,17 @@
                 field.render(container);
 
                 //type invite shall be shown on render as value is null
-                Y.Assert.isTrue(field.get('boundingBox').hasClass('inputEx-typeInvite'), 'contentBox has no inputEx-typeInvite class')
+                Y.Assert.isTrue(field.get('boundingBox').hasClass('inputEx-typeInvite'), 'boundingBox has no inputEx-typeInvite class')
                 Y.Assert.areEqual('typeInvite', field._getInputEl().get('value'))
 
                 //update value
-                field.set('value', 'value is not empty')
-                Y.Assert.isFalse(field.get('boundingBox').hasClass('inputEx-typeInvite'), 'inputEx-typeInvite shall be removed')
+
+                field.set('value', 'value is not empty');
+                Y.log('to sync UI', 'warn','Test')
+                field.syncUI();
                 Y.Assert.areEqual(field.get('value'), field._getInputEl().get('value'))
+                Y.Assert.isFalse(field.get('boundingBox').hasClass('inputEx-typeInvite'), 'inputEx-typeInvite shall have been removed')
+
             }
 
 
