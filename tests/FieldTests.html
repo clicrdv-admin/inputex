@@ -298,8 +298,8 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
             Y.Assert.areEqual('setByInputEl', field.get('value'))
         },
 
-        X:{}
         //TODO add test case for focus
+        XLastFunction:{}
     })
 
     Y.inputEx.tests.FieldDevTests = new Y.Test.Case({
@@ -319,15 +319,11 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
         tearDown:function() {
             delete this.data;
         },
-
-
-        XtestNth:function() {}
-
-
+        XLastFunction:function() {}
     })
 
 
-    //TODO: Y.Console{width:'600px'} won't work, simplify the following once the console height and width have been fixed
+    //TODO: https://sourceforge.net/tracker2/?func=detail&atid=836476&aid=2431381&group_id=165715
     var console = new Y.Console()
     console.get('contentBox').setStyle('width', (Y.get('body').get('docWidth') * 3 / 4) + 'px')
     console.render()
