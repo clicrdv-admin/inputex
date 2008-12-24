@@ -349,7 +349,6 @@ inputEx.YUI({base:'../lib/yui3/',inputExBase:'../'}).use('node', 'console', 'yui
     console.get('contentBox').query('div .yui-console-bd').setStyle('height', (Y.get('body').get('docHeight') * 4 / 5) + 'px')
     console.on('entry', function(e) {if (e.message.source !== 'TestRunner') { e.preventDefault()} })
 
-
     Y.Test.Runner.add(Y.inputEx.tests.DevTests);
     if (!Y.inputEx.any(Y.inputEx.tests.DevTests, function(v, k) { return /^test/.test(k) })) {
         // if there are any development tests, normal test won't run

@@ -308,6 +308,7 @@
             initializer : function(cfg) {
                 this._initIDAndClasses(this.get('id'))
                 this.on(EV_CHANGE, this.syncUI, this);
+                this.after('hasFocusChange', this.syncUI, this)
                 //remarks: the following hasFocusChange handling override the widget default, and no yui-xxx-focus class will be set
                 /*
                  this.on('hasFocusChange', function(evt) {
@@ -466,6 +467,15 @@
 
                 //TODO move the focus class to bounding box, and utilize the YUI Widget mechanism
 
+                // update focus states
+                if (this.get('hasFocus')) {
+                    this.get('boundingBox').removeClass('inputEx-empty')
+                    this.get('boundingBox').addClass('inputEx-focused')
+                } else {
+                    this.get('boundingBox').removeClass('inputEx-focused')
+                    this.get('boundingBox').addClass('inputEx-empty')
+                }
+
                 // remove previous class
                 if (this.previousState) {
                     // remove invalid className for both required and invalid fields
@@ -530,29 +540,14 @@
                 return this._inputEl;
             },
 
-            /*
-             focus:function() {
-             Y.log(this + '.focus() - Field - hasFocus: ' + this.get('hasFocus'), 'warn', 'inputEx')
-             Field.superclass.focus.apply(this, arguments);
-             Y.log(this + '.focus() - Field - hasFocus: ' + this.get('hasFocus'), 'warn', 'inputEx')
-             var inputEl = this._getInputEl()
-             if (inputEl) inputEl.focus();
-             Y.log(this + '.focus() - Field - hasFocus: ' + this.get('hasFocus'), 'warn', 'inputEx')
-             return this;
-             },
-             */
-
             _inputElOnFocus:function() {
-                this.get('contentBox').removeClass('inputEx-empty')
-                this.get('contentBox').addClass('inputEx-focused')
-                Y.log(this + '._inputElOnFocus() - Field - hasFocus: ' + this.get('hasFocus'), 'debug', 'inputEx');
-                this.fire(EV_FOCUS, null, this.get('contentBox'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+                Y.log(this + '.inputEl.focus - Field - value: ' + this.get('value'), 'debug', 'inputEx');
+                this.fire(EV_FOCUS, null, this.get('inputEl'), this.get('contentBox'));//TODO workarounded with the null argument
             },
 
             _inputElOnBlur:function() {
-                this.get('contentBox').removeClass('inputEx-focused')
-                Y.log(this + '._inputElOnBlur() - Field - value: ' + this.get('value'), 'debug', 'inputEx');
-                this.fire(EV_BLUR, null, this.get('contentBox'));//workarounded this.fire(EV_UPDATE, this.get('value'));
+                Y.log(this + '.inputEl.blur - Field - value: ' + this.get('value'), 'debug', 'inputEx');
+                this.fire(EV_BLUR, null, this.get('inputEl'), this.get('contentBox'));//TODO workarounded with the null argument
             },
 
             _inputElOnChange:function() {

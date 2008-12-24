@@ -80,3 +80,8 @@ To developer
 
 
 3. please create test cases, check the /tests/*Tests.html
+
+4. focus
+    - focus and blur events are 'bubbled' to the Field's onFocusChange event.
+    - functions that are previously rely on listening the focus and blur events of the input element, e.g. typeInvite,
+      are now implemented in the syncUI event, which is triggered by any change to the hasFocusChange event.
