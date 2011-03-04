@@ -113,8 +113,8 @@ lang.extend(inputEx.ListField,inputEx.Field, {
       // Validate all the sub fields
       for (var i = 0 ; i < l && response; i++) {
          var input = this.subFields[i];
-         input.setClassFromState(); // update field classes (mark invalid fields...)
          var state = input.getState();
+         input.setClassFromState(state); // update field classes (mark invalid fields...)
          if( state == inputEx.stateRequired || state == inputEx.stateInvalid ) {
             response = false; // but keep looping on fields to set classes
          }
