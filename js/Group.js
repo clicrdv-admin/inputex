@@ -186,8 +186,8 @@ lang.extend(inputEx.Group, inputEx.Field, {
       for (var i = 0; i < this.inputs.length; i++) {
          var input = this.inputs[i];
          if (!input.isDisabled()) {
-            input.setClassFromState(); // update field classes (mark invalid fields...)
             var state = input.getState();
+            input.setClassFromState(state); // update field classes (mark invalid fields...)
             if (state == inputEx.stateRequired || state == inputEx.stateInvalid) {
                response = false; // but keep looping on fields to set classes
             }
