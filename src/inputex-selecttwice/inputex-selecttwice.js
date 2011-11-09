@@ -3,7 +3,7 @@
  */
 (function () {
 
-	var Event = YAHOO.util.Event, lang = Y.Lang;
+	var lang = Y.Lang;
 
 	/**
 	 * Create a select field
