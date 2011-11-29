@@ -244,7 +244,7 @@ YUI().use(function(Y) {
 						ix_provides: 'ratingstarsform'
 					},
 					'inputex-menu': {
-					   requires: ['inputex-field','yui2-menu'],
+					   requires: ['inputex-field', 'node-event-delegate', 'node-menunav', 'substitute'],
 						ix_provides: 'menu'
 					},
 					'inputex-file': {
