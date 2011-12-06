@@ -153,9 +153,6 @@ Y.extend(inputEx.ColorField, inputEx.Field, {
       this.colorGrid = this.renderColorGrid();
       this.oOverlay.set('bodyContent', this.colorGrid);
 
-      // Unsubscribe the event so this function is called only once
-      this.button.unsubscribe("click", this.renderPalette); 
-
       this.paletteRendered = true;
       
       // Select the square in the created palette from the value
@@ -253,7 +250,9 @@ Y.extend(inputEx.ColorField, inputEx.Field, {
 	 * Call overlay when field is removed
 	 */
 	close: function() {
-	  this.oOverlay.hide();
+      if (this.oOverlay) {
+         this.oOverlay.hide();
+      }
 	},
 	
 	/**
