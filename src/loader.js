@@ -122,7 +122,7 @@ YUI().use(function(Y) {
 						ix_provides: 'date'
 					},
 					'inputex-datepicker': {
-						requires: ['inputex-date','node-event-delegate','overlay','calendar'],
+						requires: ['inputex-date','event-outside', 'node-event-delegate','overlay','calendar'],
 						ix_provides: 'datepicker'
 					},
 					'inputex-dateselectmonth': {

@@ -271,11 +271,13 @@ div.inputEx-PickerField .yui-overlay {
 * Date Picker
 */
 div.inputEx-DatePickerField  button {
-    background-image: url(images/calendar.gif);
-    
-    background-position: 1px -1px;
-    background-repeat: no-repeat;
-    margin-left: 2px;
+   background-image: url(images/calendar.gif);
+   background-repeat: no-repeat;
+   background-position: -1px -1px;
+   margin: 0 0 0 2px;
+   width: 22px;
+   height: 22px;
+   padding: 0;
 }
 
 
