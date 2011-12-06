@@ -153,6 +153,10 @@ YUI().use(function(Y) {
 						requires: ['inputex-combine', 'inputex-select'],
 						ix_provides: 'timeinterval'
 					},
+					'inputex-timerange': {
+						requires: ['inputex-combine', 'inputex-select'],
+						ix_provides: 'timerange'
+					},
 					'inputex-dsselect': {
 						requires: ['inputex-select', 'datasource'],
 						ix_provides: 'dsselect'

@@ -1,4 +1,12 @@
 /**
+ * @module inputex-timerange
+ */
+YUI.add("inputex-timerange", function(Y){
+
+   var lang = Y.Lang,
+       inputEx = Y.inputEx;
+
+/**
  * Tweaking the TimeField to make a Time Range (two TimeFields)
  *    - doesn't show seconds
  *    - Minutes by group of 5
@@ -90,3 +98,7 @@ Y.extend(inputEx.TimeRange, inputEx.CombineField, {
 });
 
 inputEx.registerType("timerange", inputEx.TimeRange);
+
+}, '3.0.0a',{
+requires: ['inputex-combine', 'inputex-select']
+});
