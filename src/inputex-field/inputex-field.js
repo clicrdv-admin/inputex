@@ -113,8 +113,8 @@ YUI.add("inputex-field",function(Y) {
 	     
 	     // Label element
 	     if (lang.isString(this.options.label)) {
-	        this.labelDiv = inputEx.cn('div', {id: this.divEl.id+'-label', className: 'inputEx-label', 'for': this.divEl.id+'-field'});
-	        this.labelEl = inputEx.cn('label', null, null, this.options.label === "" ? "&nbsp;" : this.options.label);
+          this.labelDiv = inputEx.cn('div', {id: this.divEl.id+'-label', className: 'inputEx-label'});
+          this.labelEl = inputEx.cn('label', {'for': this.divEl.id+'-field'}, null, this.options.label === "" ? "&nbsp;" : this.options.label);
 	        this.labelDiv.appendChild(this.labelEl);
 	        this.divEl.appendChild(this.labelDiv);
         }
