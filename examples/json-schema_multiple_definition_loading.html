@@ -1,0 +1,97 @@
+<!DOCTYPE html> 
+<html> 
+ <head> 
+  <title>inputEx - Load inputex modules from multiple Json schemas</title> 
+ 
+<link rel="stylesheet" href="http://yui.yahooapis.com/combo?3.4.0/build/cssreset/reset-min.css&3.4.0/build/cssfonts/fonts-min.css"> 
+<link rel="stylesheet" href="../res/demo.css"> 
+<link rel="stylesheet" href="../res/syntaxhighlighter/styles/shCore.css"> 
+<link rel="stylesheet" href="../res/syntaxhighlighter/styles/shThemeDefault.css"> 
+<script src="http://yui.yahooapis.com/3.4.0/build/yui/yui.js"></script> 
+<script src="../res/syntaxhighlighter/scripts/shCore.js"  type='text/javascript'></script> 
+<script src="../res/syntaxhighlighter/scripts/shBrushJScript.js"  type='text/javascript'></script> 
+ 
+ </head> 
+ 
+<body class="yui-skin-sam"> 
+    
+<!-- Example 1 --> 
+<div class='exampleDiv'> 
+	<h2>Creating multiple forms from unrelated json-schemas - autoloading required dependencies</h2> 
+	<p></p> 
+	<div class='demoContainer' id='container1'></div> 
+	<div class='codeContainer'> 
+		<pre class="brush:js"> 
+			var schemaIdentifierMap = {
+				// Person definition
+				"Person": {
+				"id": "Person",
+				"description":"A person",
+				 "type":"object",
+				 "properties": {
+				  	"name": { "type":"string"},
+					"born" : { "type":"string", "format":"date", "optional":true},
+					"gender" : { "type":"string", "choices": [ {"value":"male","label":"Guy"}, {"value":"female","label":"Girl"} ]},
+					"grownup": { "type": "boolean" },
+					"favoritecolors": { "type": "array" },
+					"address": { 
+						"type":"object",
+				  		"properties":{
+				  			"street":{"type":"string"},
+				    		"city":{"type":"string"},
+				    		"state":{"type":"string"}
+				  		}
+					}
+				  }
+				},
+				// Label definition - not a particularly meaningful example.
+				"Label": {
+					id: 'label',
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string",
+							"optional": false
+						},
+						"color": {
+							"type": "string",
+							"_inputex": {
+								"_type": "color"
+							}
+						}
+					}
+				}
+			};
+			
+			var builder = new Y.inputEx.JsonSchema.Builder({
+				'schemaIdentifierMap': schemaIdentifierMap,
+			  'defaultOptions':{
+			     'showMsg':true
+			  }
+		  });
+			var person = builder.schemaToInputEx(schemaIdentifierMap.Person);
+			var label  = builder.schemaToInputEx(schemaIdentifierMap.Label);
+			 Y.inputEx.use([person, label], function() {
+				person.parentEl = 'container1';
+				var p = inputEx(person);
+				label.parentEl = 'container2';
+				var f = inputEx(label);
+			});
+		</pre> 
+	</div>
+	<div class='demoContainer' id='container2'></div>
+</div> 
+	
+<!-- json schema to load --> 
+<script src="base-schema.js"></script> 
+ 
+<script src="../src/loader.js"  type='text/javascript'></script> 
+<script src="../res/inputex-examples.js"  type='text/javascript'></script> 
+<script> 
+YUI_config.groups.inputex.base = '../src/';
+YUI({filter: 'raw'}).use('inputex', 'inputex-jsonschema', 'inputex-examples');
+</script> 
+ 
+ 
+ </body> 
+</html>

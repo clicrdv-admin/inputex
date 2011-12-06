@@ -189,16 +189,20 @@ YUI.add("inputex", function(Y){
         
         var type = inputexDef.type || 'string',
             module = YUI_config.groups.inputex.modulesByType[type],
-            modules = [module || type];
+            modules = [module || type],
+            //set fields if they exist
+            fields = inputexDef.fields ||
+            //else see if we have elementType for lists - if neither then we end up with null
+            inputexDef.elementType && inputexDef.elementType.fields;
+        
         
         // recursive for group,forms,list,combine, etc...
-        if(inputexDef.fields) {
-           Y.Array.each(inputexDef.fields, function(field) {
+        if(fields) {
+           Y.Array.each(fields, function(field) {
                 modules = modules.concat( this.getModulesFromDefinition(field) );
            }, this);
         }
         
-        // TODO: list elementType
         // TODO: inplaceedit  editorField
         
         return modules;
@@ -216,7 +220,13 @@ YUI.add("inputex", function(Y){
       * Load the modules from an inputEx definition
       */
      use: function(inputexDef, cb) {
-        var modules = this.getModulesFromDefinition(inputexDef);
+        var defs, modules = [];
+        if (!Y.Array.test(inputexDef)){ defs = [inputexDef];}
+        else {defs = inputexDef;}
+        
+        Y.each(defs, function(def){
+            modules = modules.concat( this.getModulesFromDefinition(def));
+        },this);
         modules.push(cb);
 		  Y.use.apply( Y, modules);
      },
