@@ -28,35 +28,35 @@
 
 	<div class='codeContainer'>
 		<pre class="brush:js">
-		  
-			var field = inputEx({
-				type: "autocomplete",
-				parentEl: 'container1', 
-				label: 'Search US state',
+        
+         var field = inputEx({
+            type: "autocomplete",
+            parentEl: 'container1', 
+            label: 'Search US state',
 
-				// Format the hidden value (value returned by the form)
-				returnValue: function(oResultItem) {
-					return oResultItem.value;
-				},
-				autoComp: {// options of the YUI3 autocompleter (see http://developer.yahoo.com/yui/3/autocomplete/#config)
-					minQueryLength: 2,
-					maxResults: 50,
-					resultTextLocator: 'label',
-					source:
-				    [{label: "Massachusets", value: "MA"},
-				    {label: "state2", value: 2},
-				    {label: "state3", value:3}]
-					
-				}
-			});
+            // Format the hidden value (value returned by the form)
+            returnValue: function(oResultItem) {
+               return oResultItem.value;
+            },
+            autoComp: {// options of the YUI3 autocompleter (see http://developer.yahoo.com/yui/3/autocomplete/#config)
+               minQueryLength: 2,
+               maxResults: 50,
+               resultTextLocator: 'label',
+               source:
+                [{label: "Massachusets", value: "MA"},
+                {label: "state2", value: 2},
+                {label: "state3", value:3}]
+
+            }
+         });
 
       Y.Node.create("<button>Get Value</button>").appendTo('#container1').on( 'click', function() {
-				alert( field.getValue() );
-			});
+            alert( field.getValue() );
+         });
 
-			field.on("updated", function(value) {
-			  Y.one('#container1').append("<div>Updated at "+(new Date())+" with value '"+value+"'</div>");
-			});
+         field.on("updated", function(value) {
+           Y.one('#container1').append("<div>Updated at "+(new Date())+" with value '"+value+"'</div>");
+         });
 		</pre>
 	</div>
 
@@ -69,75 +69,45 @@
 
 	<h2>Delicious Autocompleter</h2>
 	
-	<p>Uses the <a href="http://del.icio.us/help/json/posts">del.icio.us json API</a> to search within posts</p>
+	<p>Uses the <a href=ehttp://feeds.delicious.com/help/feeds">del.icio.us json API</a> to search within posts</p>
 
 	<div class='demoContainer' id='container2'></div>
 
 	<div class='codeContainer'>
 		<pre class="brush:js">
-			
-			// Example 2: Delicious autocompleter
 
-			// Delicious DataSource using a JSFunction
-			// Delicious.posts is set by the http://feeds.delicious.com/feeds/json/neyric?count=100 script included in the page
-			
-			var deliciousAC = new Y.inputEx.AutoComplete({
-			  
-				label: 'Search my delicious bookmarks',
-				description: 'Try "javascript" or "rails"',
-				parentEl: 'container2', 
-				name: 'chosen_url',
-			
-				// Format the hidden value (value returned by the form)
-				returnValue: function(oResultItem) {
-					var post = oResultItem[1];
-					return post.u;
-				},
-				// Autocompleter options
-				autoComp: {
-			  	source: new Y.DataSource.Function({
-			  	  source: function(sQuery) {
-			  	    if (!sQuery || sQuery.length == 0) {
-  						  return false;
-  					  }
-  					  var query = sQuery.toLowerCase();
-  				    var aResults = [];
-  					  for(var i = 0 ; i != Delicious.posts.length-1 ; i++) {
-  					    var post = Delicious.posts[i];
-  						  var desc = post.d.toLowerCase();
-  						  if( desc.indexOf(query) != -1) {
-  							  aResults.push(post);
-  						  }
-  					  }
-  					  return aResults;
-			  	  }
-		  	  }),
-			  	
-					forceSelection: true,
-					minQueryLength: 2,
-					maxResultsDisplayed: 50,
-					
-					resultFormatter: function(sQuery, results) {
-					  return Y.Array.map(results, function (result) {
-					    console.log("format", result);
-  						var post = result.raw;
+         // Example 2: Delicious autocompleter
 
-  						// NOTE: we use String.fromCharCode(60) and String.fromCharCode(62) for tags
-         			return String.fromCharCode(60)+'a href="'+post.u+'" target="_new"'+
-         			          String.fromCharCode(62)+'visit'+String.fromCharCode(60)+'/a'+String.fromCharCode(62)+
-         			          ' '+String.fromCharCode(60)+'span target="_new"'+String.fromCharCode(62)+post.d+
-         			          String.fromCharCode(60)+'/span'+String.fromCharCode(62);
-         			
-       			});
-          }
-          
-				}
-			});
-			
-			Y.Node.create("<button>GetValue</button>").appendTo('#container2').on('click', function() {
-				alert( deliciousAC.getValue() );
-			});
-			
+         // Delicious DataSource using a JSFunction
+         // Delicious.posts is set by the http://feeds.delicious.com/v2/json/neyric?count=50 script included in the page
+
+         var deliciousAC = new Y.inputEx.AutoComplete({
+
+            label: 'Search my delicious bookmarks',
+            description: 'Try "javascript" or "rails"',
+            parentEl: 'container2', 
+            name: 'chosen_url',
+
+            // Format the hidden value (value returned by the form)
+            returnValue: function(post) {
+               return post.u; // return post URL
+            },
+            // Autocompleter options
+            autoComp: {
+               source: 'http://feeds.delicious.com/v2/json/neyric?count=50&callback={callback}',
+               forceSelection: true,
+               minQueryLength: 2,
+               maxResultsDisplayed: 50,
+               resultFilters: 'subWordMatch',
+               resultHighlighter: 'subWordMatch',
+               resultTextLocator: 'd'
+            }
+         });
+
+         Y.Node.create("<button>GetValue</button>").appendTo('#container2').on('click', function() {
+            alert( deliciousAC.getValue() );
+         });
+
 		</pre>
 	</div>
 
@@ -146,13 +116,11 @@
 <!-- For the state autocompleter -->
 <script src="http://developer.yahoo.com/yui/examples/autocomplete/assets/js/states_jsfunction.js" type='text/javascript'></script>
 
-<script src="http://feeds.delicious.com/feeds/json/neyric?count=100" type='text/javascript'></script>
-
 <script src="../src/loader.js"  type='text/javascript'></script>
 <script src="../res/inputex-examples.js"  type='text/javascript'></script>
 <script>
 YUI_config.groups.inputex.base = '../src/';
-YUI({filter: 'raw'}).use('inputex-autocomplete','inputex-examples');
+YUI({filter: 'raw'}).use('inputex-autocomplete','inputex-examples', 'autocomplete-filters', 'autocomplete-highlighters');
 </script>
 
  </body>

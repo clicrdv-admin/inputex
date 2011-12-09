@@ -100,7 +100,7 @@ YUI().use(function(Y) {
 						ix_provides: 'uppercase'
 					},
 					'inputex-autocomplete': {
-						requires: ['inputex-string','autocomplete', 'autocomplete-filters', 'autocomplete-highlighters','datasource'],
+						requires: ['inputex-string','autocomplete'],
 						ix_provides: 'autocomplete'
 					},
 					'inputex-checkbox': {
