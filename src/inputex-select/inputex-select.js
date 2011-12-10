@@ -221,7 +221,7 @@ YUI.add("inputex-select",function(Y){
 			
 			// Insert in DOM
 			if (domPosition < this.el.childNodes.length) {
-				Y.one(this.el).insert(node,domPosition)
+				Y.one(this.el).insert(node,domPosition);
 			} else {
 				
 				this.el.appendChild(node);
@@ -231,7 +231,7 @@ YUI.add("inputex-select",function(Y){
 		// Add stringField setFieldName for classic form in group in listField
 		setFieldName: function(name) {
 			this.el.name = name;
-    },
+    }
 		
 	});
 	

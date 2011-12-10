@@ -65,7 +65,8 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     * Render the editor
     */
    renderEditor: function() {
-      
+      var i;
+
       this.editorContainer = inputEx.cn('div', {className: CSS_PREFIX+'editor'}, {display: 'none'});
       
       // Render the editor field
@@ -75,7 +76,7 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
       this.editorContainer.appendChild( editorFieldEl );
       Y.one(editorFieldEl).addClass(CSS_PREFIX+'editorDiv');
       this.buttons = [];
-      for (var i = 0; i < this.options.buttonConfigs.length ; i++){
+      for (i = 0; i < this.options.buttonConfigs.length ; i++){
         var config = this.options.buttonConfigs[i];
         config.parentEl = this.editorContainer;
         this.buttons.push(new inputEx.widget.Button(config));
@@ -94,7 +95,9 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     */
    onVisuMouseOver: function(e) {
       // to totally disable the visual effect on mouse enter, you should change css options inputEx-InPlaceEdit-visu:hover
-      if(this.disabled) return;
+      if(this.disabled) {
+         return;
+      }
       
       if(this.colorAnim) {
          this.colorAnim.stop(true);
@@ -108,26 +111,31 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     */
    onVisuMouseOut: function(e) {
       var optionsAnim;
-      if(this.disabled) return;
+      if(this.disabled) {
+         return;
+      }
       
       // Start animation
       if(this.colorAnim) {
          this.colorAnim.stop(true);
       }
-      if(!this.options.animColors) return;
+      if(!this.options.animColors) {
+         return;
+      }
 
       optionsAnim =  {
-        node: this.formattedContainer, 
-      }
+        node: this.formattedContainer
+      };
+
       if(this.options.animColors.from){
         optionsAnim.from = {
           backgroundColor : this.options.animColors.from
-        }
+        };
       }
       if(this.options.animColors.from){
         optionsAnim.to = {
           backgroundColor : this.options.animColors.to
-        }
+        };
       }
       this.colorAnim = new Y.Anim(optionsAnim);
       var that = this;
@@ -184,11 +192,11 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     */
    onKeyUp: function(e) {
       // Enter
-      if( e.keyCode == 13) {
+      if( e.keyCode === 13) {
          this.onOkEditor(e);
       }
       // Escape
-      if( e.keyCode == 27) {
+      if( e.keyCode === 27) {
          this.onCancelEditor(e);
       }
    },
@@ -199,7 +207,7 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     */
    onKeyDown: function(e) {
       // Tab
-      if(e.keyCode == 9) {
+      if(e.keyCode === 9) {
          this.onOkEditor(e);
       }
    },
@@ -209,8 +217,9 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     */
    onOkEditor: function(e) {
 
-      if(e)
+      if(e) {
          e.halt();
+      }
       
       var newValue = this.editorField.getValue();
       this.setValue(newValue);
@@ -226,8 +235,9 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     * @param {Event} e The original event (click, blur or keydown)
     */
    onCancelEditor: function(e) {
-      if(e)
+      if(e) {
          e.halt();
+      }
       this.closeEditor();
    },
    /**
@@ -237,7 +247,7 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
    closeEditor: function() {
       this.editorContainer.style.display = 'none';
       this.formattedContainer.style.display = '';
-      this.fire("closeEditor")
+      this.fire("closeEditor");
    },      
   /**
     * Override enable to Enable openEditor
@@ -257,7 +267,10 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     * Display the editor
     */
    openEditor: function() {
-      if(this.disabled) return;
+      if(this.disabled) {
+         return; 
+      }
+
       var value = this.getValue();
       this.editorContainer.style.display = '';
       this.formattedContainer.style.display = 'none';
@@ -281,8 +294,8 @@ Y.extend(inputEx.InPlaceEdit, inputEx.Field, {
     * @return {Any} The value of the subfield
     */
    getValue: function() {
-      var editorOpened = (this.editorContainer.style.display == '');
-     return editorOpened ? this.editorField.getValue() : this.value;
+      var editorOpened = (this.editorContainer.style.display === '');
+      return editorOpened ? this.editorField.getValue() : this.value;
    },
 
    /**
@@ -327,4 +340,4 @@ inputEx.registerType("inplaceedit", inputEx.InPlaceEdit, [
 
 }, '3.0.0a', {
   requires:['inputex-field', 'inputex-button', 'anim','inputex-visus']
-})
+});
