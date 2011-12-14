@@ -17,6 +17,7 @@ YUI.add("inputex-color",function(Y){
  *   <li>palette: default palette to be used (if colors option not provided)</li>
  *   <li>cellPerLine: how many colored cells in a row on the palette</li>
  *   <li>ratio: screen-like ratio to display the palette, syntax: [with,height], default: [16,9] (if cellPerLine not provided)</li>
+ *   <li>zIndex: zIndex of the overlay</li>
  * </ul>
  */
 inputEx.ColorField = function(options) {
@@ -33,6 +34,7 @@ Y.extend(inputEx.ColorField, inputEx.Field, {
    	
    	// Overwrite options
    	this.options.className = options.className ? options.className : 'inputEx-Field inputEx-ColorField inputEx-PickerField';
+      this.options.zIndex = options.zIndex || 4;
    	
    	// Added options
    	this.options.palette = options.palette;
@@ -48,7 +50,7 @@ Y.extend(inputEx.ColorField, inputEx.Field, {
 	   // Create overlay
       this.oOverlay = new Y.Overlay({
          visible:false,
-         zIndex: 4
+         zIndex: this.options.zIndex
       });
       this.oOverlay.render();
       
