@@ -13,20 +13,34 @@ YUI.add("inputex-datetime", function(Y) {
  * @constructor
  * @param {Object} options Added options
  * <ul>
- *    <li>dateFormat: same as DateField</li>
+ *    <li>dateFormat: same as DateField (deprecated, use "dateFieldOptions.dateFormat" instead)</li>
+ *    <li>dateFieldOptions: options passed to the datepicker field</li>
+ *    <li>timeFieldOptions: options passed to the time field</li>
  * </ul>
  */
 inputEx.DateTimeField = function(options) {
-   options.fields = [
-      {type: 'datepicker'},
-      {type: 'time'}
-   ];
-   if(options.dateFormat) {
-      options.fields[0].dateFormat = options.dateFormat;
+
+   var datefield = {type: 'datepicker'},
+       timefield = {type: 'time'};
+
+   if(options.dateFieldOptions) {
+      Y.mix (datefield, options.dateFieldOptions, true);
    }
+
+   if(options.timeFieldOptions) {
+      Y.mix (timefield, options.timeFieldOptions, true);
+   }
+
+   if(options.dateFormat) { // backward compatibility
+      datefield.dateFormat = options.dateFormat;
+   }
+
+   options.fields = [datefield, timefield];
+
    options.separators = options.separators || [false, "&nbsp;&nbsp;", false];
    inputEx.DateTimeField.superclass.constructor.call(this,options);
 };
+
 Y.extend(inputEx.DateTimeField, inputEx.CombineField, {   
    /**
     * Concat the values to return a date
