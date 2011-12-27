@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>inputEx - DDListField Usage</title>
+   <link rel="stylesheet" href="http://yui.yahooapis.com/combo?3.4.1/build/cssreset/reset-min.css&3.4.1/build/cssfonts/fonts-min.css">
+   <link rel="stylesheet" href="../res/demo.css">
+   <link rel="stylesheet" href="../res/syntaxhighlighter/styles/shCore.css">
+   <link rel="stylesheet" href="../res/syntaxhighlighter/styles/shThemeDefault.css">
+   <script src="http://yui.yahooapis.com/3.4.1/build/yui/yui.js"></script>
+   <script src="../res/syntaxhighlighter/scripts/shCore.js"  type='text/javascript'></script>
+   <script src="../res/syntaxhighlighter/scripts/shBrushJScript.js"  type='text/javascript'></script>
+   <script src="../src/loader.js"  type='text/javascript'></script>
+   <script src="../res/inputex3-examples.js" type='text/javascript'></script>
+</head>
+
+<body>
+
+   <h1>inputEx - DDListField Usage</h1>
+
+   <div id="demo1" class="exampleDiv">
+      <h2>Basic example</h2>
+      <div class="demoContainer"></div>
+      <pre class="codeContainer"></pre>
+   </div>
+
+   <script id="demo1-source">
+      YUI(YUI_config).use('inputex-ddlist', function (Y) {
+         var data = [
+           {
+             id: 'book_1',
+             title: 'Book 1 title'
+           },
+           {
+             id: 'book_2',
+             title: 'Book 2 title'
+           },
+           {
+             id: 'book_3',
+             title: 'Book 3 title'
+           },
+           {
+             id: 'book_4',
+             title: 'Book 4 title'
+           },
+           {
+             id: 'book_5',
+             title: 'Book 5 title'
+           }
+         ];
+
+         var container = Y.one('#demo1 .demoContainer');
+
+         // Instantiate field
+         var field = new Y.inputEx.DDListField({
+           name: 'books', 
+           valueKey: "id", 
+           labelKey: "title", 
+           parentEl: container,
+           items: data
+         });
+
+         Y.Node.create("<button>Get Value</button>").appendTo(container).on( 'click', function() {
+            alert( field.getValue().join(', ') );
+         });
+      });
+   </script>
+
+ </body>
+</html>
+

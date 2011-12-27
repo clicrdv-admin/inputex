@@ -7,7 +7,7 @@ YUI().use(function(Y) {
 				combine: false,
 				modules: {
 				   'inputex': {
-				      requires: ['node','intl'],
+				      requires: ['intl', 'pluginhost-base', 'pluginhost-config', 'base-pluginhost', 'node-pluginhost', 'plugin', 'node'],
 				      skinnable: true,
 				      lang: ['en','fr','de','es','fr','it','nl']
 				   },
@@ -41,6 +41,9 @@ YUI().use(function(Y) {
 					},
 					'inputex-datatable': {
 						requires: ['inputex-group', 'inputex-panel','datatable']
+					},
+					'inputex-ddlist': {
+						requires: ['inputex-field', 'array-extras', 'sortable', 'substitute']
 					},
 					/*'inputex-dtinplaceedit': {
 						requires: ['inputex-datatable']

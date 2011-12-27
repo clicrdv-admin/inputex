@@ -386,5 +386,5 @@ YUI.add("inputex", function(Y){
      
   });
 }, '3.0.0a',{
-  requires: ['node','intl']
+  requires: ['pluginhost-base', 'pluginhost-config', 'base-pluginhost', 'node-pluginhost', 'plugin', 'node','intl']
 });
