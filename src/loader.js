@@ -265,6 +265,10 @@ YUI().use(function(Y) {
 					'inputex-tinymce': {
 					   requires: ['inputex-field'],
 						ix_provides: 'tinymce'
+					},
+					'inputex-stringavailability' : {
+							requires : ["inputex-string","event-key","io","json-parse"],
+							skinnable: true
 					}
 					/*,
 					// Piercus widgets

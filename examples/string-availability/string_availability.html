@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>inputEx - String Availability Usage</title>
+
+<link rel="stylesheet" href="http://yui.yahooapis.com/combo?3.4.0/build/cssreset/reset-min.css&3.4.0/build/cssfonts/fonts-min.css">
+<link rel="stylesheet" href="../../res/demo.css">
+<link rel="stylesheet" href="../../res/syntaxhighlighter/styles/shCore.css">
+<link rel="stylesheet" href="../../res/syntaxhighlighter/styles/shThemeDefault.css">
+<script src="http://yui.yahooapis.com/3.4.0/build/yui/yui.js"></script>
+<script src="../../res/syntaxhighlighter/scripts/shCore.js"  type='text/javascript'></script>
+<script src="../../res/syntaxhighlighter/scripts/shBrushJScript.js"  type='text/javascript'></script>
+
+ </head>
+
+ <body class="yui3-skin-sam">
+
+<h1>inputEx - String Availability Usage</h1>
+
+<!-- Example 1 -->
+<div class='exampleDiv'>
+
+   <h2>Basic String Availability creation</h2>
+   
+   <p>Use the following code to create a basic inputEx String Availability.</p>
+
+   <div class='demoContainer' id='container1'></div>
+    <div class='demoContainer' id='container2'></div>
+      
+   
+   
+
+   <div class='codeContainer'>
+      <pre class="brush:js">
+        
+
+// Customize you answer : 
+var field2 = new Y.inputEx.SelectField({
+    label : "Customize the web service response :",
+    name: 'answer',
+    choices: [        
+        { value: 'True' }, 
+        { value: 'False' },
+        { value: 'Error during request'}  
+    ],                      
+    parentEl: 'container2'
+});
+
+field2.on("updated",function(value) {
+  availabilityField.options.uri = "answer"+field2.getValue();
+});
+
+
+
+// String availability field
+var availabilityField = new Y.inputEx.StringAvailability({
+    parentEl : "container1",  
+    // please give a real URI
+    uri : "answerTrue"
+  });
+         
+      </pre>
+   </div>
+
+</div>
+
+<script src="../../src/loader.js"  type='text/javascript'></script>
+<script src="../../res/inputex-examples.js"  type='text/javascript'></script>
+<script>
+YUI_config.groups.inputex.base = '../../src/';
+YUI({filter: 'raw'}).use('inputex-stringavailability','inputex-select','inputex-examples');
+</script>
+
+ </body>
+</html>

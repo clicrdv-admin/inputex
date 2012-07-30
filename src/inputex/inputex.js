@@ -375,15 +375,7 @@ YUI.add("inputex", function(Y){
 	   */
 	  htmlEntities: function (str) {
 	     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-	  },
-	  
-	  _id_counter: 0,
-	  generateId: function() {
-	     this._id_counter++;
-	     return "_inputex_"+this._id_counter;
-	  }
-	  
-     
+	  }, 
   });
 }, '3.0.0a',{
   requires: ['pluginhost-base', 'pluginhost-config', 'base-pluginhost', 'node-pluginhost', 'plugin', 'node','intl']

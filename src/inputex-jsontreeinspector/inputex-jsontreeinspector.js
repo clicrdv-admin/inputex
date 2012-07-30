@@ -63,7 +63,7 @@ inputEx.widget.JsonTreeInspector.prototype = {
          if(obj.hasOwnProperty(key)) {
             var value = obj[key];
             
-            var id = inputEx.generateId();
+            var id = Y.guid();
             var li = inputEx.cn('li', {id: id}, null, key+':');
             li.id = id;
             this.hash[id] = {value: value, expanded: false};
