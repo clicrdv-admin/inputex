@@ -9,8 +9,8 @@
 Release Notes:
 ==============
 
-3.0.1:  not released yet
-------
+3.0.1 :  not released yet
+-------
   * features:
     * email field: add option to exclude emails with disposable domains (@trashmail.net, a.s.o)
     * new image cropper field
@@ -23,6 +23,15 @@ Release Notes:
     * form ajax headers
     * inputEx.use : using "type" as default module name
     * css fixes to use unprefixed "border-radius" and "box-shadow" rules (firefox 13)
+    * background-position on the ColorField button
+
+  * migration YUI2 --> YUI3
+    * id's generation fixed by using Y.guid instead of YAHOO.util.Dom.generateId
+    * string-availability module has been added with example
+
+  * deleted item(s)
+    * inputex-colorpicker
+
 
 
 3.0.0a : August, 19th 2011

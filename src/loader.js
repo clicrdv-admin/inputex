@@ -6,11 +6,11 @@ YUI().use(function(Y) {
 				base: 'inputex/src/',
 				combine: false,
 				modules: {
-				   'inputex': {
-				      requires: ['intl', 'pluginhost-base', 'pluginhost-config', 'base-pluginhost', 'node-pluginhost', 'plugin', 'node'],
-				      skinnable: true,
-				      lang: ['en','fr','de','es','fr','it','nl']
-				   },
+					'inputex': {
+						requires: ['intl', 'pluginhost-base', 'pluginhost-config', 'base-pluginhost', 'node-pluginhost', 'plugin', 'node'],
+						skinnable: true,
+						lang: ['en','fr','de','es','fr','it','nl']
+					},
 					// inputEx base
 					'inputex-field': {
 						requires: ['inputex']
@@ -49,11 +49,11 @@ YUI().use(function(Y) {
 						requires: ['inputex-datatable']
 					},*/
 					'inputex-jsontreeinspector': {
-					  	requires: ['inputex'],
-					  	skinnable: true
+						requires: ['inputex'],
+						skinnable: true
 					},
 					'inputex-button': {
-					   requires: ['inputex']
+						requires: ['inputex']
 					},
 					// MetaFields
 					'inputex-group': {
@@ -86,11 +86,11 @@ YUI().use(function(Y) {
 						ix_provides: 'lens'
 					},
 					'inputex-serialize': {
-					   requires: ['inputex-string','json'],
+						requires: ['inputex-string','json'],
 						ix_provides: 'serialize'
 					},
 					'inputex-object': {
-   					requires: ['inputex-list','inputex-combine','inputex-string'],
+						requires: ['inputex-list','inputex-combine','inputex-string'],
 						ix_provides: 'object'
 					},
 					// Fields
@@ -115,11 +115,6 @@ YUI().use(function(Y) {
 						skinnable: true,
 						ix_provides: 'color'
 					},
-					'inputex-colorpicker': {
-						requires: ['inputex-field','yui2-colorpicker','yui2-container','yui2-menu','yui2-button'],
-						skinnable: true,
-						ix_provides: 'colorpicker'
-					},
 					'inputex-date': {
 						requires: ['inputex-string'],
 						ix_provides: 'date'
@@ -127,10 +122,6 @@ YUI().use(function(Y) {
 					'inputex-datepicker': {
 						requires: ['inputex-date','event-outside', 'node-event-delegate','overlay','calendar'],
 						ix_provides: 'datepicker'
-					},
-					'inputex-dateselectmonth': {
-						requires: ['inputex-combine'],
-						ix_provides: 'dateselectmonth'
 					},
 					'inputex-imagecropper': {
 						requires: ['inputex-field'],
@@ -255,15 +246,15 @@ YUI().use(function(Y) {
 						ix_provides: 'ratingstarsform'
 					},
 					'inputex-menu': {
-					   requires: ['inputex-field', 'node-event-delegate', 'node-menunav', 'substitute'],
+						requires: ['inputex-field', 'node-event-delegate', 'node-menunav', 'substitute'],
 						ix_provides: 'menu'
 					},
 					'inputex-file': {
-					   requires: ['inputex-field'],
+						requires: ['inputex-field'],
 						ix_provides: 'file'
 					},
 					'inputex-tinymce': {
-					   requires: ['inputex-field'],
+						requires: ['inputex-field'],
 						ix_provides: 'tinymce'
 					},
 					'inputex-stringavailability' : {
