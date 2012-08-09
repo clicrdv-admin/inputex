@@ -16,6 +16,8 @@
 function inputExBase(config) {
     Y.after(this._renderUIInputEx, this, 'renderUI');
 
+    Y.after(this._bindUIInputEx, this, 'bindUI');
+
     if (this.get("rendered")) {
         this._renderUIInputEx();
     }
@@ -43,7 +45,17 @@ inputExBase.prototype = {
      Y.mix(config, this.get('inputEx') );
      config.parentEl = this.get('contentBox');
      this.set('field', Y.inputEx(config));
+   },
+
+   _bindUIInputEx: function() {
+      // Closing all fields when the widget is hidden
+      this.on('visibleChange', function(e) {
+        if(e.newVal === false) {
+          this.get('field').close();
+        }
+      }, this);
    }
+
 };
 
 

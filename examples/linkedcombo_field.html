@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-  <title>inputEx - SelectTwiceField Usage</title>
+  <title>inputEx - LinkedComboField Usage</title>
 
 <link rel="stylesheet" href="http://yui.yahooapis.com/combo?3.4.0/build/cssreset/reset-min.css&3.4.0/build/cssfonts/fonts-min.css">
 <link rel="stylesheet" href="../res/demo.css">
@@ -15,7 +15,7 @@
 
  <body>
 
-<h1>inputEx - SelectTwiceField Usage</h1>
+<h1>inputEx - LinkedComboField Usage</h1>
 
 
 <!-- Example 1 -->
@@ -23,11 +23,13 @@
 	<h2>Updated event</h2>
 	<p>How to listen to the updated event :</p>
 	<div class='demoContainer' id='container1'></div>
+	<div class='demoContainer' id='container2'></div>
 	<div class='codeContainer'>
 		<pre class="brush:js">
 		var el = Y.one('#container1');
+		var el2 = Y.one('#container2');
 		
-		var field1 = new Y.inputEx.SelectTwiceField({
+		var field1 = new Y.inputEx.LinkedComboField({
 			name: 'car',
 			label: 'Which car ?',
 			choices: [
@@ -46,7 +48,9 @@
 		});
 		
 		var logDiv = inputEx.cn('div', null, null, "Log :");
-		el.appendChild(logDiv);
+		el2.appendChild(logDiv);
+		
+		logDiv.appendChild(inputEx.cn('br'));
 		field1.on('updated', function(value) {
 			logDiv.innerHTML += "Updated at "+(new Date())+" with value "+value;
 			logDiv.appendChild(inputEx.cn('br'));
@@ -60,7 +64,7 @@
 <script src="../res/inputex-examples.js"  type='text/javascript'></script>
 <script>
 YUI_config.groups.inputex.base = '../src/';
-YUI({filter: 'raw'}).use('inputex-selecttwice','inputex-examples');
+YUI({filter: 'raw'}).use('inputex-linkedcombo','inputex-examples');
 </script>
 
  </body>

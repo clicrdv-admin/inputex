@@ -66,7 +66,11 @@ Y.extend(inputEx.DatePickerField, inputEx.DateField, {
          }
          else { // hide
             this.calendar.hide();
-            this.outsideHandler.detach();
+            
+            if(this.outsideHandler){
+              this.outsideHandler.detach();
+            }
+            
          }
 
       }, this);
@@ -156,8 +160,8 @@ Y.extend(inputEx.DatePickerField, inputEx.DateField, {
          // check date to exclude empty values ('')
          if (valid && !!date) {
             this.calendar.set('date', date);
-            this.calendar._clearSelection(true);
-            this.calendar._renderSelectedDate(date);
+            this.calendar.deselectDates();
+            this.calendar.selectDates(date);
          }
       }
    },
@@ -166,6 +170,7 @@ Y.extend(inputEx.DatePickerField, inputEx.DateField, {
     * Call overlay when field is removed
     */
    close: function() {
+      console.log("DATEPICKER CLOSE", this.oOverlay);
       if (this.oOverlay) {
          this.oOverlay.hide();
       }

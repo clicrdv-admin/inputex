@@ -1,437 +1,381 @@
+YUI.add("inputex-datatable", function (Y) {
 /**
- * @module inputex-datatable
+ * The inputex-datatable module provides the inputEx.Plugin.InputExDataTable class which is a plugin.
+ * @namespace inputEx.Plugin.InputExDataTable
+ * @module inputex-datatable2
+ * @since 3.0.0
  */
-YUI.add("inputex-datatable", function(Y) {
 
- var MSGS = Y.inputEx.messages;
+    var inputEx = Y.inputEx,
+        MSGS = Y.inputEx.messages;
 
- function DatatableInputex() {
-     DatatableInputex.superclass.constructor.apply(this, arguments);
- }
+    // namespace definition
+    Y.namespace('inputEx.Plugin');
 
- /////////////////////////////////////////////////////////////////////////////
- //
- // STATIC PROPERTIES
- //
- /////////////////////////////////////////////////////////////////////////////
- Y.mix(DatatableInputex, {
 
-     /**
-  * The namespace for the plugin. This will be the property on the host which
-  * references the plugin instance.
-  *
-  * @property NS
-  * @type String
-  * @static
-  * @final
-  * @value "inputex"
-  */
-     NS: "inputex",
+  /**
+   * Provide add/modify/delete functionalities on a dataTable as a plugin
+   * @class inputEx.Plugin.InputExDataTable
+   * @extends Y.Plugin.Base
+   * @constructor
+   * @param {Object} configuration object
+   */
+   inputEx.Plugin.InputExDataTable = function (config) {
+      inputEx.Plugin.InputExDataTable.superclass.constructor.call(this, config);
+    };
 
-     /**
-  * Class name.
-  *
-  * @property NAME
-  * @type String
-  * @static
-  * @final
-  * @value "datatableInputex"
-  */
-     NAME: "datatableInputex",
+   inputEx.Plugin.InputExDataTable.NS = "InputExDataTable";
 
-     /////////////////////////////////////////////////////////////////////////////
-     //
-     // ATTRIBUTES
-     //
-     /////////////////////////////////////////////////////////////////////////////
-     ATTRS: {
-        
-        // The Y.inputEx.Panel instance to add/modify
-         panel: {
-            valueFn: '_initPanel',
-            lazyAdd: true
-         },
-         
-         inputEx: {
-            value: null
-         },
+    Y.extend(inputEx.Plugin.InputExDataTable, Y.Plugin.Base, {
+        initializer: function () {
 
-         mode: {
-            value: null,
-         },
+            var host = this.get("host");
 
-         modifyColumnLabel: {
-             value: MSGS.modifyText
-         },
-         
-         deleteColumnLabel: {
-             value: MSGS.deleteText
-         },
-
-         deleteColumn: {
-             value: null
-         },
-
-         confirmDelete: {
-             value: true
-         },
-         
-         // a pointer to the record being modified
-         modifyRecord: {
+            // enrich data (Model instance) with modify and delete attributs
+            this.enrichData();
+            // enrich DataTable with modify and delete columns
+            this.enrichColumns();
+            // add a button called "add" in order to add record in the DataTable
+            this.addAddButton();
             
-         },
-         
-         deleteTemplate: {
-            // TODO
-         }
-     },
+            if(!this.get("disableModifyFunc")){
+                // handle row modification
+                host.delegate("click",this.modifyRecord,"td.inputEx-DataTable-modify", this);
+            }
+            if(!this.get("disableDeleteFunc")){
+                // handle row removal
+                host.delegate("click",this.deleteRecord, "td.inputEx-DataTable-delete", this);
+            }
+        },
+        /**
+         * add Attributes on the data model depending on the plugin configuration
+         *
+         * @method enrichData
+         * @param {EventFacade} e
+         */
+        enrichData: function (e) {
 
+            var that = this,
+                data = this.get("host").get("data");
 
-     /////////////////////////////////////////////////////////////////////////////
-     //
-     // STATIC METHODS
-     //
-     /////////////////////////////////////////////////////////////////////////////
+            data.each(function (model) {
+                if(!this.get("disableModifyFunc")){
+                    that.addModifyAttr(model);
+                }
+                if(!this.get("disableDeleteFunc")){
+                    that.addDeleteAttr(model);
+                }
+            });
+        },
+        /**
+         * add Columns on the DataTable depending on the plugin configuration
+         *
+         * @method enrichData
+         */
+        enrichColumns: function () {
+            if(!this.get("disableModifyFunc")){
+                this.addModifyColumn();
+            }
+            if(!this.get("disableDeleteFunc")){
+                this.addDeleteColumn();
+            }
+        },
+        /**
+         * Provide the add button in order to add record on the DataTable
+         *
+         * @method addAddButton
+         */
+        addAddButton : function(){
+            if(!this.get("disableAddFunc")){
+            var button = Y.Node.create("<button id='addButton'>"+MSGS.addButtonText+"</button"),
+                panel = this.get("panel");
+            this.get("host").get("contentBox").append(button);
+            button.on("click",function  (e) {
+                panel.set("headerContent","Add Item");
+                panel.get("field").clear();
+                panel.show();
+            },this);
+            }
+        },
+        /**
+         *
+         * @method modifyRecord
+         */
+        modifyRecord : function(e){
+                e.stopPropagation();
+                var record = this.get("host").getRecord(e.currentTarget),
+                    panel = this.get("panel");
+                panel.set("headerContent","Modify Item");
+                panel.get('field').setValue(record.getAttrs());
+                panel.show();
+        },
+        /**
+         *
+         * @method deleteRecord
+         */
+        deleteRecord : function(e){
+                e.stopPropagation();
+                var record = this.get("host").getRecord(e.currentTarget);
+                if (!this.get("confirmDelete") || confirm(MSGS.confirmDeletion)) {
+                    this.get("host").get("data").remove(record);
+                }
+        },
+         /**
+         *
+         * @method deleteExtraColumns
+         */
+        deleteExtraColumns : function(){
+            if(!this.get("disableModifyFunc")){
+                this.removeModifyColumn();
+            }
+            if(!this.get("disableDeleteFunc")){
+                this.removeDeleteColumn();
+            }
+        },
+         /**
+         *
+         * @method _initPanel
+         * @private
+         */
+        _initPanel: function () {
 
-     /**
-  * Convert an inputEx fields definition to a DataTable columns definition
-  */
-     fieldsToColumndefs: function(fields) {
-         var columndefs = [];
-         for (var i = 0; i < fields.length; i++) {
-             columndefs.push(this.fieldToColumndef(fields[i]));
-         }
-         return columndefs;
-     },
+            var that = this;
 
-     /**
-  * Convert a single inputEx field definition to a DataTable column definition
-  */
-     fieldToColumndef: function(field) {
+            var panel = new Y.inputEx.Panel({
+                centered: true,
+                width: 500,
+                modal: true,
+                zIndex: 5,
+                visible: false,
+                inputEx: that.get("inputEx"),
+          
+      buttons: [{
+          value: "Cancel",
+          action: function (e) {
+              e.preventDefault();
+              panel.hide();
+          }
+      },{
+          value: "Save",
+          action: function (e) {
+              e.preventDefault();
 
-         var key,
-         label,
-         colmunDef;
+              var field = that.get("panel").get("field"),
+                  fieldValues = field.getValue(),
+                  host = that.get("host"),
+                  model;
 
-         key = field.name;
-         label = field.label;
+              if (field.validate()) {
 
-         columnDef = {
-             key: key,
-             label: label,
-             sortable: true,
-             resizeable: true
-         };
+                  if (fieldValues.id) {
+                      // modification
+                      host.get("data").getById(fieldValues.id).setAttrs(fieldValues);
+                  } else {
+                      // creation
+                      fieldValues.id = that.generateId(that.get("idSize"));
+                      model = new Y.Model();
+                      model.setAttrs(fieldValues);
+                      that.addModifyAttr(model);
+                      that.addDeleteAttr(model);
+                      host.get("data").add(model);
+                  }
+                  panel.hide();
+              }
+          }
+      }]
+            });
 
-         // Field formatter
-         if (field.type == "date") {
-             columnDef.formatter = YAHOO.widget.DataTable.formatDate;
-         }
-         else if (field.type == "integer" || field.type == "number") {
-             columnDef.formatter = YAHOO.widget.DataTable.formatNumber;
-             /*columnDef.sortOptions = {
-				defaultDir: "asc",
-				sortFunction: // TODO: sort numbers !!!
-			}*/
-         }
-         // TODO: other formatters
-         return columnDef;
-     }
+            // first the panel needs to be "render" then "show"
+            panel.render();
+            return panel;
 
- });
+        },
+        /**
+         *
+         * @method destructor
+         */
+        destructor : function(){
 
+            var that = this,
+                data = this.get("host").get("data");
 
+            data.each(function (model) {
 
+                if(!this.get("disableModifyFunc")){
+                    that.delModifyAttr(model);
+                }
+                if(!this.get("disableDeleteFunc")){
+                    that.delDeleteAttr(model);
+                }
 
- /////////////////////////////////////////////////////////////////////////////
- //
- // PROTOTYPE
- //
- /////////////////////////////////////////////////////////////////////////////
- Y.extend(DatatableInputex, Y.Plugin.Base, {
+            });
+            this.deleteExtraColumns();
+            if(!this.get("disableAddFunc")){
+                Y.one("#addButton").remove();
+            }
 
-     /////////////////////////////////////////////////////////////////////////////
-     //
-     // METHODS
-     //
-     /////////////////////////////////////////////////////////////////////////////
-     /**
- * Initializer.
+            this.get("panel").destroy();
+        },
+        /**
+         * Add the modify attribute on the data model
+         *
+         * @method addModifyAttr
+         */
+        addModifyAttr : function(model){model.addAttr("modify");},
+        /**
+         * Add the delete attribute on the data model
+         *
+         * @method addDeleteAttr
+         */
+        addDeleteAttr : function(model){model.addAttr("delete");},
+        /**
+         * Remove the modify attribute from the data model
+         *
+         * @method delModifyAttr
+         */
+        delModifyAttr : function(model){model.removeAttr("modify");},
+        /**
+         * Remove the modify attribute from the data model
+         *
+         * @method delDeleteAttr
+         */
+        delDeleteAttr : function(model){model.removeAttr("delete");},
+        /**
+         * Add the modify column on the DataTable
+         *
+         * @method addModifyColumn
+         */
+        addModifyColumn : function(){
+                this.get("host").addColumn({
+                key: this.get("modifyColumnLabel"),
+                className: "inputEx-DataTable-modify"
+            });
+        },
+        /**
+         * Add the delete column on the DataTable
+         *
+         * @method addDeleteColumn
+         */
+        addDeleteColumn : function(){
+            this.get("host").addColumn({
+                key: this.get("deleteColumnLabel"),
+                className: "inputEx-DataTable-delete"
+            });
+        },
+        /**
+         * Remove the modify column from the DataTable
+         *
+         * @method removeModifyColumn
+         */
+        removeModifyColumn : function(){this.get("host").removeColumn("modify");},
+        /**
+         * Remove the delete column from the DataTable
+         *
+         * @method removeDeleteColumn
+         */
+        removeDeleteColumn : function(){this.get("host").removeColumn("delete");},
+        generateId : function(size){
+            var prefixId = this.get("prefixId"),
+                size = size ? size : 5;
+            prefixId = prefixId ? prefixId : "";
+            return prefixId + Math.floor(Math.random()*Math.pow(10,size));
+        }
+    }, {
+/**
+ * Static property used to define the default attribute configuration of
+ * the Plugin.
  *
- * @method initializer
- * @param config {Object} Config object.
- * @private
+ * @property ATTRS
+ * @type {Object}
+ * @static
  */
-     initializer: function(config) {
-         var dt = this.get("host");
+ATTRS: {
+    /**
+     * This is an inputEx field definition. This is used when a user try to create/modify a record
+     *
+     * @attribute inputEx
+     */
+    inputEx: {},
+    /**
+     * This string is inserted before the generated id
+     *
+     * @attribute prefixId
+     * @type String
+     * @example prefixId : "po-" --> id = po-1342561
+     */
+    prefixId: {
+        value: ""
+    },
+    /**
+     * This represents the number of digits used in the id generation
+     * 
+     * @attribute idSize
+     * @type Number
+     */
+    idSize: {
+        value: 5
+    },
+    /**
+     * If true the add functionality is disabled
+     *
+     * @attribute disableAddFunc
+     * @type boolean
+     */
+    disableAddFunc: {
+        value: false
+    },
 
-         this.doAfter("renderUI", this._afterRenderUI);
+    /**
+     * If true the modify functionality is disabled
+     * @attribute disableModifyFunc
+     * @type boolean
+     */
+    disableModifyFunc: {
+        value: false
+    },
+    /**
+     * If true the delete functionality is disabled
+     *
+     * @attribute disableDeleteFunc
+     * @type boolean
+     */
+    disableDeleteFunc: {
+        value: false
+    },
+    /**
+     * Label of the modify column
+     *
+     * @attribute modifyColumnLabel
+     */
+    modifyColumnLabel: {
+        value: MSGS.modifyText
+    },
+    /**
+     * Label of the delete column
+     *
+     * @attribute deleteColumnLabel
+     */
+    deleteColumnLabel: {
+        value: MSGS.deleteText
+    },
+    /**
+     * If true a confirmation will be asked to the user when a delete attempt appear
+     *
+     * @attribute confirmDelete
+     * @type boolean
+     */
+    confirmDelete: {
+        value: true
+    },
+    /**
+     * This panel will be displayed on record creation/modication
+     * @attribute panel
+     * @type Y.inputEx.Panel
+     */
+    panel: {
+        valueFn: '_initPanel',
+        lazyAdd: true
+    }
+}});
 
-
-         this.doAfter("_addTheadTrNode", this._afterAddTheadTrNode);
-         this.doAfter("_createTbodyTrNode", this._afterCreateTbodyTrNode);
-
-         this.publish("addRow");
-
-         this.publish("modifyRow");
-
-         this.publish("deleteRow");
-
-         // Attach trigger handlers
-         dt.delegate("click", Y.bind(this._onRemoveLabelClick, this), "td.delete_column");
-         dt.delegate("click", Y.bind(this._onModifyLabelClick, this), "td.modify_column");
-         
-     },
-
-     _afterRenderUI: function() {
-         this._renderAddButton();
-     },
-
-     _renderAddButton: function() {
-         var button = Y.Node.create("<button>"+MSGS.addButtonText+"</button");
-
-         button.on('click', Y.bind(this._onAddButtonClick, this));
-
-         button.appendTo(this.get('host').get("contentBox"));
-     },
-
-     _onAddButtonClick: function(e) {
-         
-         this.set('mode','add');
-         
-         this.get('panel').get('field').clear();
-         this.showPanel();
-     },
-
-     _initPanel: function() {
-        
-        var that = this;
-        
-         var panel = new Y.inputEx.Panel({
-             centered: true,
-             width: 500,
-             modal: true,
-             zIndex: 5,
-             visible: false,
-             inputEx: this.get('inputEx'),
-             headerContent: "AddItem",
-
-             buttons: [
-             {
-                 value: "Save",
-                 action: function(e) {
-                     e.preventDefault();
-                     panel.hide();
-
-                     var evt = (that.get('mode') == 'modify') ? 'modifyRow' : 'addRow';
-                     
-                     that.fire(evt, {
-                        data: panel.get('field').getValue()
-                     });
-                 },
-                 section: Y.WidgetStdMod.FOOTER
-             },
-             {
-                 value: "Cancel",
-                 action: function(e) {
-                     e.preventDefault();
-                     panel.hide();
-                 },
-                 section: Y.WidgetStdMod.FOOTER
-             }
-             ]
-         });
-         panel.render();
-         
-         //this.set('panel', panel);
-         return panel;
-     },
-
-     showPanel: function() {
-         /*if (!this.get('panel')) {
-             this._renderPanel();
-         }*/
-         this.get('panel').show();
-     },
-
-
-     /**
-   * Add a "delete" column to the datatable
-   */
-     _afterAddTheadTrNode: function(o, isFirst, isLast) {
-         if (isFirst) {
-
-             var dt = this.get("host");
-
-
-             // Modify column
-
-             var modifyColumn = new Y.Column({
-                 label: this.get('modifyColumnLabel'),
-                 key: "modify_column"
-                 // formatter ?
-             });
-
-             dt._addTheadThNode({
-                 value: modifyColumn.get("label"),
-                 column: modifyColumn,
-                 tr: o.tr
-             });
-             
-             this.set('modifyColumn', modifyColumn);
-
-             // Delete column
-
-             var deleteColumn = new Y.Column({
-                 label: this.get('deleteColumnLabel'),
-                 key: "delete_column"
-                 // formatter ?
-             });
-
-             dt._addTheadThNode({
-                 value: deleteColumn.get("label"),
-                 column: deleteColumn,
-                 tr: o.tr
-             });
-
-             this.set('deleteColumn', deleteColumn);
-         }
-     },
-
-
-     /**
-   * Add the remove column to the table
-   * Create the TD node to delete
-   */
-     _afterCreateTbodyTrNode: function(a) {
-         var dt = this.get("host");
-
-         this._createModifyColumn(a);
-         this._createDeleteColumn(a);
-      },
-
-      _createDeleteColumn: function(a) {
-         // Delete column
-
-         var o = {};
-         o.headers = a.column.headers;
-         o.value = "delete"; // TODO: use template
-         o.classnames = a.classnames + " delete_column";
-
-         var t = Y.Lang.sub(Y.DataTable.Base.prototype.tdTemplate, o);
-
-         o.td = Y.Node.create(t);
-
-         // save a reference to the record
-         o.td.record = a.record;
-
-         o.td.tr = a.tr;
-
-         a.tr.appendChild(o.td);
-     },
-     
-     _createModifyColumn: function(a) {
-        
-              var dt = this.get("host");
-        // Modify column
-
-        var o = {};
-        o.headers = a.column.headers;
-        o.value = "modify"; // TODO: use template
-        o.classnames = a.classnames + " modify_column";
-
-        var t = Y.Lang.sub(Y.DataTable.Base.prototype.tdTemplate, o);
-
-        o.td = Y.Node.create(t);
-
-        // save a reference to the record
-        o.td.record = a.record;
-
-        o.td.tr = a.tr;
-
-        a.tr.appendChild(o.td);
-     },
-
-
-     _onModifyLabelClick: function(e) {
-        
-        var td = e.currentTarget,
-        tr = td.tr,
-        record = td.record,
-        dt = this.get('host'),
-        rs = dt.get('recordset');
-        
-        this.set('mode','modify');
-        this.set('modifyRecord', record);
-        
-        var data = record.get("data");
-        this.get('panel').get('field').setValue(data);
-        
-        this.showPanel();
-     },
-
-     /**
-   * Send the remove event
-   */
-     _onRemoveLabelClick: function(e) {
-
-         if (!this.get('confirmDelete') || confirm(MSGS.confirmDeletion)) {
-             this.fire("deleteRow", e);
-         }
-
-     },
-
-     /**
-   * Remove the Record from the record set
-   */
-     confirmDelete: function(e) {
-
-         var td = e.currentTarget,
-         tr = td.tr,
-         record = td.record,
-         dt = this.get('host'),
-         rs = dt.get('recordset');
-
-         // Remove the record from the recordset
-         rs.remove(rs.indexOf(record));
-
-         // Remove the row from the table
-         tr.remove();
-     },
-     
-     
-     addRow: function(data) {
-        
-        var dt = this.get('host'),
-            rs = dt.get('recordset');
-        
-        rs.add(data);
-        
-        // Only add tr ?
-        dt._uiSetRecordset( rs );
-     },
-     
-     modifyRow: function(data, details) {
-       
-          var dt = this.get('host'),
-              rs = dt.get('recordset');
-
-         var record = this.get('modifyRecord');
-
-         record.set('data', data);
-         
-         // TODO: update tr only ?
-         dt._uiSetRecordset( rs );
-     }
-
-
- });
-
- Y.namespace("Plugin").DatatableInputex = DatatableInputex;
-
-
-
-},
-'3.0.0a', {
-    requires: ['inputex-group', 'inputex-panel', 'datatable']
-});
+}, "", {requires: ['inputex-group', 'inputex-panel','datatable']});

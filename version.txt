@@ -28,6 +28,8 @@ Release Notes:
   * migration YUI2 --> YUI3
     * id's generation fixed by using Y.guid instead of YAHOO.util.Dom.generateId
     * string-availability module has been added with example
+    * inputex-linkedcombo (formely inputex-selecttwice) has been added with example
+    * DataTable plugin has been migrated
 
   * deleted item(s)
     * inputex-colorpicker

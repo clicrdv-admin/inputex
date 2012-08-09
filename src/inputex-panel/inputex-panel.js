@@ -13,8 +13,8 @@ YUI.add('inputex-panel',function(Y){
  *
  * @class inputEx.Panel
  * @constructor
- * @extends Panel
- * @uses inputEx.Base
+ * @extends Y.Panel
+ * @uses Y.inputEx.Base
  * @param {Object} object The user configuration for the instance.
  */
 Y.inputEx.Panel = Y.Base.create("panel", Y.Panel, [Y.inputEx.Base]);
