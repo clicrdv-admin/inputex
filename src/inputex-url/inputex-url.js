@@ -91,9 +91,21 @@ Y.extend(inputEx.UrlField, inputEx.StringField, {
     */
    displayFavicon: function() {
       inputEx.sn(this.favicon, null, {visibility: (this.favicon.naturalWidth!=0) ? 'visible' : 'hidden'});
-   }
-
-
+   },
+   /**
+     * Hide the favicon
+     */
+    hideFavicon: function () {
+        this.favicon.hide();
+    },
+    /**
+     * overriding hide in order to hide the favicon too
+     */
+    hide: function () {
+        Y.log("inputex-url : hide", 'debug');
+        inputEx.UrlField.superclass.hide.call(null, this);
+        hideFavicon();
+    }
 });
 
 // Register this class as "url" type

@@ -57,7 +57,7 @@ Y.one('#generateButton').on('click', function() {
 		
       "<link rel='stylesheet' href='http://yui.yahooapis.com/3.4.0/build/cssgrids/grids-min.css'>",
 
-      "<link rel='stylesheet' href='http://yui.yahooapis.com/combo?3.4.0/build/cssreset/reset-min.css&3.4.0/build/cssfonts/fonts-min.css'>",
+      "<link rel='stylesheet' href='http://yui.yahooapis.com/combo?3.6.0/build/cssreset/reset-min.css&3.6.0/build/cssfonts/fonts-min.css'>",
       
 		"  <style>",
 		"#formContainer {",

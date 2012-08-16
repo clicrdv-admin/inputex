@@ -25,18 +25,24 @@ Release Notes:
     * inputEx.use : using "type" as default module name
     * css fixes to use unprefixed "border-radius" and "box-shadow" rules (firefox 13)
     * background-position on the ColorField button
+    * treeField : migrate formatValue syntax to visuType: "func" ...
+    * lenses : fix some html parsing errors
+    * panel : favicon now disapear as all others components
+    * JSON schema *: a module wa fix a dead links missing
+    * I18N : fix the example
 
-  * migration YUI2 --> YUI3
+  * migration of YUI2 to YUI3 3.6.0
     * id's generation fixed by using Y.guid instead of YAHOO.util.Dom.generateId
     * string-availability module has been added with example
     * inputex-linkedcombo (formely inputex-selecttwice) has been added with example
-    * DataTable plugin has been migrated
+    * DataTable plugin has been migrated  
 
   * deleted item(s)
     * inputex-colorpicker
     * inputex-ddlist
 
   * yuidoc update
+  * TinyMCE editor v3.5.6 is now supported
 
 
 3.0.0a : August, 19th 2011
