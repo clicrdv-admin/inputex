@@ -175,7 +175,8 @@ YUI.add("inputex-datatable", function (Y) {
                   } else {
                       // creation
                       fieldValues.id = that.generateId(that.get("idSize"));
-                      model = new Y.Model();
+                      var recordType = host.get("recordType");
+                      model = new recordType();
                       model.setAttrs(fieldValues);
                       that.addModifyAttr(model);
                       that.addDeleteAttr(model);
