@@ -59,6 +59,17 @@ YUI.add("lang/inputex_de", function(Y) {
    deleteText: "Löschen",
    insertItemText: "Einfügen",
    confirmDeletion: "Möchten Sie das Element wirklich löschen?",
+   addButtonText: "Hinzufügen",
+   loadingText: "Lädt...",
+   emptyDataText: "Keine Datensätze gefunden",
+   errorDataText: "Data error.",
+   tableOptions: "Tabellenoptionen",
+   showColumnButton: "Zeigen",
+   hideColumnButton: "Verbergen",
+   columnDialogTitle: "Wählen Sie die Spalten, die Sie sehen möchten.",
+   columnDialogCloseButton: "Schließen",
+   addItemHeader: "Eintrag hinzufügen",
+   modifyItemHeader: "Eintrag bearbeiten",
    
       
    // TimeInterval

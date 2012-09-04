@@ -92,7 +92,9 @@ YUI.add("lang/inputex_en", function(Y) {
         showColumnButton: "Show",
         hideColumnButton: "Hide",
         columnDialogTitle: "Choose which columns you would like to see",
-        columnDialogCloseButton: "Close"
+        columnDialogCloseButton: "Close",
+        addItemHeader: "Add Item",
+        modifyItemHeader: "Modify Item",
 
     });
 

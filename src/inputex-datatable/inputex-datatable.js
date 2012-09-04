@@ -93,7 +93,7 @@ YUI.add("inputex-datatable", function (Y) {
                 panel = this.get("panel");
             this.get("host").get("contentBox").append(button);
             button.on("click",function  (e) {
-                panel.set("headerContent","Add Item");
+                panel.set("headerContent",MSGS.addItemHeader);
                 panel.get("field").clear();
                 panel.show();
             },this);
@@ -107,7 +107,7 @@ YUI.add("inputex-datatable", function (Y) {
                 e.stopPropagation();
                 var record = this.get("host").getRecord(e.currentTarget),
                     panel = this.get("panel");
-                panel.set("headerContent","Modify Item");
+                panel.set("headerContent",MSGS.modifyItemHeader);
                 panel.get('field').setValue(record.getAttrs());
                 panel.show();
         },
@@ -152,13 +152,13 @@ YUI.add("inputex-datatable", function (Y) {
                 inputEx: that.get("inputEx"),
           
       buttons: [{
-          value: "Cancel",
+          value: MSGS.cancelText,
           action: function (e) {
               e.preventDefault();
               panel.hide();
           }
       },{
-          value: "Save",
+          value: MSGS.saveText,
           action: function (e) {
               e.preventDefault();
 
