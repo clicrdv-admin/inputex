@@ -345,8 +345,8 @@ YUI.add("inputex-field",function(Y) {
         var el = this.getEl();
         
         // Unsubscribe all listeners on the "updated" event
-        //this.updatedEvt.unsubscribeAll();
-        // no equivalent in YUI3 Event mechanism
+        // this.detachAll( "updated" );
+		this.detachAll();
         
         // Purge element (remove listeners on el and childNodes recursively)
         Y.Event.purgeElement(el, true);
