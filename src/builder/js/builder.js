@@ -71,9 +71,9 @@ Y.one('#generateButton').on('click', function() {
 		"	 <div id='formContainer'> </div>",
 		"",
 		"<scr"+"ipt type='text/javascript' src='http://yui.yahooapis.com/3.7.2/build/yui/yui-debug.js'></scr"+"ipt>",
-		"<scr"+"ipt type='text/javascript' src='../../src/loader.js'></scr"+"ipt>",
+		"<scr"+"ipt type='text/javascript' src='../../build/inputex-loader/inputex-loader.js'></scr"+"ipt>",
 		"<scr"+"ipt>",
-		"YUI_config.groups.inputex.base = '../../src/';",
+		"YUI_config.groups.inputex.base = '../../build/';",
 		
 		  "var formDef = "+g.getValue().toPrettyJSONString(true)+";",
 		
