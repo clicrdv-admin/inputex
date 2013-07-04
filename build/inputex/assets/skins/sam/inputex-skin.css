@@ -1,9 +1,6 @@
-div.inputEx-invalid > div.inputEx-message {
-   color:#C00E0C;
-   font-weight:bold;
-}
-
-div.inputEx-invalid > div.inputEx-label {
+div.inputEx-invalid > div.inputEx-message,
+div.inputEx-invalid > div.inputEx-label,
+div.inputEx-invalid  div.inputEx-message-below {
    color:#C00E0C;
    font-weight:bold;
 }

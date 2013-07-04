@@ -9,8 +9,8 @@ var lang = Y.Lang,
 
 /**
  * An abstract class (never instantiated) that contains the shared features for all fields.
- * @class inputEx.Field
- * @constructor
+ * @class inputEx.constructor
+ * @Field
  * @param {Object} options Configuration object
  * <ul>
  *   <li>name: the name of the field</li>
@@ -79,6 +79,7 @@ inputEx.Field.prototype = {
       this.options.label = options.label;
       this.options.description = options.description;
       this.options.wrapperClassName = options.wrapperClassName;
+      this.options.messagePosition = options.messagePosition;
 
       // Define default messages
       this.messages.required = (options.messages && options.messages.required) ? options.messages.required : this.messages.required;
@@ -223,7 +224,8 @@ inputEx.Field.prototype = {
     */
    setClassFromState: function(state) {
 
-      var className, elNode = Y.one(this.el);
+      var className;
+
       // remove previous class
       if(this.previousState) {
          // remove invalid className for both required and invalid fields
@@ -375,19 +377,24 @@ inputEx.Field.prototype = {
     * @param {String} msg Message to display
     */
    displayMessage: function(msg) {
+
+      var messagePosition = this.options.messagePosition;
+
       if(!this.fieldContainer) {
          return;
       }
       if(!this.msgEl) {
          this.msgEl = inputEx.cn('div', {
-            className: 'inputEx-message'
+            className: (messagePosition === "below") ? 'inputEx-message-below' : 'inputEx-message'
          });
-         try {
-            var divElements = this.divEl.getElementsByTagName('div');
-             //insertBefore the clear:both div
+
+         var divElements = this.divEl.getElementsByTagName('div');
+         
+         if(messagePosition === "below"){
+            this.fieldContainer.appendChild(this.msgEl);
+         }else{
+            //insertBefore the clear:both div
             this.divEl.insertBefore(this.msgEl, divElements[(divElements.length - 1 >= 0) ? divElements.length - 1 : 0]);
-         } catch(e) {
-            alert(e);
          }
       }
       this.msgEl.innerHTML = msg;

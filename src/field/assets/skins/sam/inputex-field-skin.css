@@ -15,7 +15,7 @@
 .inputEx-Field {
    float: left;
 }
-
+.inputEx-message-below,
 .inputEx-description {
    clear:both;
    font-size: 75%;
