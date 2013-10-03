@@ -35,3 +35,11 @@
    width : 0;
    height : 0;
 }
+@media (max-width: 768px) {
+    .inputEx-responsive .inputEx-Group .inputEx-label {
+        width: auto;
+    }
+    .inputEx-responsive .inputEx-Field {
+        float: right;
+    }
+}
