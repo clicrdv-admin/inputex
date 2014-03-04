@@ -15,6 +15,8 @@
      * </ul>
      */
     inputEx.MultiSelectField = function (options) {
+        this.ddlist_name = options.name;
+        options.name  = Y.guid();
         inputEx.MultiSelectField.superclass.constructor.call(this, options);
     };
 
@@ -30,7 +32,8 @@
 
             this.ddlist = new inputEx.DDListField({
                 parentEl: this.fieldContainer,
-                removable: true
+                removable: true,
+                name: this.ddlist_name
             });
 
         },
