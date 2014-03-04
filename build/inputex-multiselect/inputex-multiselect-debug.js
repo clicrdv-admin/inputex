@@ -17,6 +17,8 @@ YUI.add('inputex-multiselect', function (Y, NAME) {
      * </ul>
      */
     inputEx.MultiSelectField = function (options) {
+        this.ddlist_name = options.name;
+        options.name  = Y.guid();
         inputEx.MultiSelectField.superclass.constructor.call(this, options);
     };
 
@@ -32,7 +34,8 @@ YUI.add('inputex-multiselect', function (Y, NAME) {
 
             this.ddlist = new inputEx.DDListField({
                 parentEl: this.fieldContainer,
-                removable: true
+                removable: true,
+                name: this.ddlist_name
             });
 
         },
