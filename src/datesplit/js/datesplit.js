@@ -23,19 +23,26 @@ inputEx.DateSplitField = function(options) {
    this.yearIndex = inputEx.indexOf('Y',formatSplit);
    this.monthIndex = inputEx.indexOf('m',formatSplit);
    this.dayIndex = inputEx.indexOf('d',formatSplit);
-   
-   options.fields = [];
-   for(var i = 0 ; i < 3 ; i++) {
-      if(i == this.dayIndex) {
-         options.fields.push({type: 'integer', typeInvite: this.messages.dayTypeInvite, size: 2, trim: true });
-      }
-      else if(i == this.yearIndex) {
-         options.fields.push({type: 'integer', typeInvite: this.messages.yearTypeInvite, size: 4, trim: true });
-      }
-      else {
-         options.fields.push({type: 'integer', typeInvite: this.messages.monthTypeInvite, size: 2, trim: true });
-      }
-   }
+
+    if(options && options.initValues){
+        var map = options.initValues;
+        this.initDayValue = map.day;
+        this.initMonthValue = map.month;
+        this.initYearValue = map.year;
+    }
+
+    options.fields = [];
+    for(var i = 0 ; i < 3 ; i++) {
+        if(i == this.dayIndex) {
+            options.fields.push({type: 'integer', typeInvite: this.messages.dayTypeInvite, size: 2, value: this.initDayValue,  trim: true });
+        }
+        else if(i == this.yearIndex) {
+            options.fields.push({type: 'integer', typeInvite: this.messages.yearTypeInvite, size: 4, value: this.initYearValue,  trim: true });
+        }
+        else {
+            options.fields.push({type: 'integer', typeInvite: this.messages.monthTypeInvite, size: 2, value: this.initMonthValue,  trim: true });
+        }
+    }
 
    options.separators = options.separators || [false,"&nbsp;","&nbsp;",false];
    
