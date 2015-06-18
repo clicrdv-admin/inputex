@@ -33,6 +33,15 @@ Y.extend(inputEx.UneditableField, inputEx.Field, {
    },
    
    /**
+    * Render only a wrapper. It will be filled in by setValue
+    * @method renderComponent
+    */
+   renderComponent: function() {
+      this.wrapEl = inputEx.cn('div', {className: 'inputEx-UneditableField-wrapper'});
+      this.fieldContainer.appendChild(this.wrapEl);
+   },
+
+   /**
     * Store the value and update the visu
     * @method setValue
     * @param {Any} val The value that will be sent to the visu
@@ -41,7 +50,7 @@ Y.extend(inputEx.UneditableField, inputEx.Field, {
    setValue: function(val, sendUpdatedEvt) {
       this.value = val;
       
-      inputEx.renderVisu(this.options.visu, val, this.fieldContainer);
+      inputEx.renderVisu(this.options.visu, val, this.wrapEl);
       
 	   inputEx.UneditableField.superclass.setValue.call(this, val, sendUpdatedEvt);
    },

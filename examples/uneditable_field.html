@@ -28,7 +28,8 @@
 			new Y.inputEx.UneditableField({
 				name: 'date', 
 				value: new Date(), 
-				parentEl: 'container1'
+				parentEl: 'container1',
+				description: "Current Date"
 			});
 		</pre>
 	</div>
@@ -49,7 +50,8 @@
 					visuType: 'func', 
 					func: function(value){ return inputEx.cn('img',{src:value},{border: '2px solid black'}); } 
 				},
-				parentEl: 'container2' 
+				parentEl: 'container2',
+				description: "An Image"
 			});
 		</pre>
 	</div>
