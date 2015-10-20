@@ -43,7 +43,16 @@ Y.extend(inputEx.StringField, inputEx.Field, {
       this.options.size = options.size;
       this.options.maxLength = options.maxLength;
       this.options.minLength = options.minLength;
-      this.options.typeInvite = options.typeInvite;
+
+      // if supported placeholder
+      if (document.createElement("input").placeholder !== undefined) {
+        this.options.placeholder = options.placeholder? options.placeholder:options.typeInvite;
+      }
+      // if not supported typeInvite
+      else {
+        this.options.typeInvite = options.placeholder? options.placeholder:options.typeInvite;
+      }
+
       this.options.readonly = options.readonly;
 
       // possible values: "on", "off", or "default" (= inherit from attribute set on form tag)
@@ -78,6 +87,11 @@ Y.extend(inputEx.StringField, inputEx.Field, {
       if(this.options.required){
          attributes.required = "required";
          attributes["aria-required"] = true;
+      }
+
+      // placeholder
+      if (this.options.placeholder) {
+        attributes.placeholder = this.options.placeholder;
       }
 
       // Create the node
