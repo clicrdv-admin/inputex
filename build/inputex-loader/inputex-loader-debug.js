@@ -846,12 +846,6 @@ YUI().use(function(Y) {
             "inputex-visus"
         ]
     },
-    "inputex-uppercase": {
-        "ix_provides": "uppercase",
-        "requires": [
-            "inputex-string"
-        ]
-    },
     "inputex-url": {
         "ix_provides": "url",
         "lang": [

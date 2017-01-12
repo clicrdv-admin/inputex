@@ -1,8 +1,0 @@
-{
-   "inputex-uppercase": {
-      "requires": [
-         "inputex-string"
-      ],
-      "ix_provides": "uppercase"
-   }
-}
