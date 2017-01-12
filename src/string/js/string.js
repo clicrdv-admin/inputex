@@ -27,6 +27,7 @@ inputEx.StringField = function(options) {
      if(this.options.typeInvite) {
         this.updateTypeInvite();
      }
+
 };
 
 Y.extend(inputEx.StringField, inputEx.Field, {
@@ -69,6 +70,11 @@ Y.extend(inputEx.StringField, inputEx.Field, {
       // see: https://developer.mozilla.org/en-US/docs/HTML/Element/input#attr-autocomplete
       this.options.autocomplete = !lang.isUndefined(options.autocomplete) ? options.autocomplete : "default";
       this.options.trim = (options.trim === true) ? true : false;
+
+      //
+      this.options.capitalize = (options.capitalize === true) ? true : false;
+      this.options.uppercase  = (options.uppercase  === true) ? true : false;
+
    },
 
 
@@ -154,6 +160,14 @@ Y.extend(inputEx.StringField, inputEx.Field, {
          value = lang.trim(value);
       }
 
+      if (this.options.capitalize ) {
+         value = this.toCapitalize(value);
+      }
+
+      if (this.options.uppercase) {
+         value = this.toUpperize(value);
+      }
+
       return value;
    },
 
@@ -164,11 +178,52 @@ Y.extend(inputEx.StringField, inputEx.Field, {
     * @param {boolean} [sendUpdatedEvt] (optional) Wether this setValue should fire the 'updated' event or not (default is true, pass false to NOT send the event)
     */
    setValue: function(value, sendUpdatedEvt) {
+
       // + check : if Null or Undefined we put '' in the stringField
       this.el.value = ( lang.isNull(value) || lang.isUndefined(value) ) ? '' : value;
-
+      
       // call parent class method to set style and fire "updated" event
-      inputEx.StringField.superclass.setValue.call(this, value, sendUpdatedEvt);
+      if (this.el.value !== this.getValue()) {
+         inputEx.StringField.superclass.setValue.call(this, this.el.value, sendUpdatedEvt);
+      }
+
+   },
+
+   /**
+    * Function to define capitalize method
+    * @method toCapitalize
+    * @param {String} str value to change
+    * @return {String} str changed
+    */
+   toCapitalize: function(str) {
+
+      var i,
+          letter,
+          length = str.length;
+
+      str = str.toLowerCase();
+
+      for (i=0; i < length; i++) {
+         letter = str.substring(i,i+1);
+
+         if (letter !== " ") {
+            str = letter.toUpperCase()+str.substring(i+1,length);
+            break;
+         }
+      }
+
+      return str;
+
+   },
+
+   /**
+    * Function to wrap toUpperCase() method
+    * @method toUpperize
+    * @param {String} str value to change
+    * @return {String} str changed
+    */
+   toUpperize: function(str) {
+      return str.toUpperCase();
    },
 
    /**
@@ -311,7 +366,7 @@ Y.extend(inputEx.StringField, inputEx.Field, {
    onFocus: function(e) {
       inputEx.StringField.superclass.onFocus.call(this,e);
 
-      if(this.options.typeInvite) {
+      if (this.options.typeInvite) {
          this.updateTypeInvite();
       }
    },
@@ -333,6 +388,11 @@ Y.extend(inputEx.StringField, inputEx.Field, {
     * @method onKeyUp
     */
    onKeyUp: function(e) {
+
+      lang.later(0, this, function() {
+         this.setValue( (this.getValue()) );
+      });
+
       // override me
       //
       //   example :
@@ -344,8 +404,6 @@ Y.extend(inputEx.StringField, inputEx.Field, {
    }
 
 });
-
-
 
 
 // Register this class as "string" type
