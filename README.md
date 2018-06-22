@@ -18,7 +18,6 @@ Resources
  * Repository: [https://github.com/clicrdv/inputex](https://github.com/clicrdv/inputex)
  * Wiki: [https://github.com/clicrdv/inputex/wiki](https://github.com/clicrdv/inputex/wiki)
  * Issues: [https://github.com/clicrdv/inputex/issues](https://github.com/clicrdv/inputex/issues)
- * Blog: [http://javascript.neyric.com/blog/category/inputex/](http://javascript.neyric.com/blog/category/inputex/)
  * Forum: [http://groups.google.com/group/inputex/](http://groups.google.com/group/inputex/)
 
 Contribute
