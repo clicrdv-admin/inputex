@@ -43,7 +43,7 @@ shifter --watch
 
 ### Building user guides and examples pages
 
-We are using [selleck](http://rgrove.github.com/selleck/) to build the
+We are using [selleck](https://github.com/yui/selleck) to build the
 examples and user guide pages.
 
 To build all docs :
