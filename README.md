@@ -11,6 +11,13 @@ For detailed informations, have a look at our complete documentation.
 
 It is built on top of the [YUI library](http://developer.yahoo.com/yui/3/) (3.x branch) and supports all major browsers. Please report your specific browser issues in the forum.
 
+Disclaimer
+==========
+
+YUI 3 support ended at **August 2014**. The last release of this library is from **November 2015**.
+
+**This project is not maintained anymore.**
+
 Resources
 =========
 
