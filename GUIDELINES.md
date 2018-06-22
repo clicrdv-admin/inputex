@@ -17,13 +17,15 @@ some of the prerequisites before starting to use the library :
 
 Install all the dev dependencies with npm :
 ```bash
-npm install -g 
+npm install -g
 ```
 
 ### Building components
 
-We use [shifter](http://davglass.github.com/shifter/) to build inputEx's
+We use [shifter](http://yui.github.io/shifter/) to build inputEx's
 modules.
+
+You will need to install shifter if it's not already done.
 
 To build the 'container' module :
 
@@ -108,4 +110,3 @@ Release
 Merge every change into gh-pages.
 
 Use [Jekyll](https://help.github.com/articles/using-jekyll-with-pages/) to test and publish the site.
-
